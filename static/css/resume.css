@@ -1,0 +1,696 @@
+/* Resume Upload Page Styles */
+.upload-section {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.upload-section h2 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #34495e;
+}
+
+.form-group select,
+.form-group input[type="text"],
+.form-group input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ecf0f1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* File Upload Area */
+.file-upload {
+    margin-top: 20px;
+}
+
+.file-drop-area {
+    border: 3px dashed #bdc3c7;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-drop-area.highlight {
+    border-color: #3498db;
+    background: #ebf5fb;
+}
+
+.file-drop-area input[type="file"] {
+    display: none;
+}
+
+.file-drop-area p {
+    margin: 10px 0;
+    color: #7f8c8d;
+}
+
+.file-drop-area span {
+    color: #3498db;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.file-hint {
+    font-size: 12px;
+    color: #95a5a6;
+}
+
+.file-info {
+    margin-top: 15px;
+}
+
+.file-info-details {
+    background: #f0f8ff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #b8e0ff;
+}
+
+/* Button Styles */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #ecf0f1;
+    color: #2c3e50;
+    border: 1px solid #bdc3c7;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #e0e6e8;
+}
+
+/* Progress Section */
+.progress-section {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.progress-section h3 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    height: 20px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+#progress-message {
+    text-align: center;
+    color: #34495e;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.step {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #95a5a6;
+    transition: all 0.3s;
+}
+
+.step.active {
+    background: #fff3e0;
+    color: #f39c12;
+    font-weight: 500;
+    border: 1px solid #f39c12;
+}
+
+.step.completed {
+    background: #e8f5e9;
+    color: #27ae60;
+    font-weight: 500;
+    border: 1px solid #27ae60;
+}
+
+/* Results Page Styles */
+.results-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.results-header h2 {
+    font-size: 32px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.results-header p {
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+/* Decision Banner */
+.decision-banner {
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.decision-shortlist {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+}
+
+.decision-interview {
+    background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+    color: white;
+}
+
+.decision-reject {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.decision-icon {
+    font-size: 48px;
+}
+
+.decision-content h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.decision-content p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Score Overview */
+.score-overview {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.score-overview h3 {
+    font-size: 20px;
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+.score-large {
+    font-size: 48px;
+    font-weight: bold;
+    color: #667eea;
+    margin-left: 10px;
+}
+
+.score-meter {
+    height: 20px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+.rank-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #f0f8ff;
+    border-radius: 20px;
+    color: #3498db;
+    font-weight: 500;
+}
+
+/* Score Grid */
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.score-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.score-card h4 {
+    color: #7f8c8d;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.score-excellent {
+    background: #e8f5e9;
+    color: #27ae60;
+    border: 3px solid #27ae60;
+}
+
+.score-good {
+    background: #fff3e0;
+    color: #f39c12;
+    border: 3px solid #f39c12;
+}
+
+.score-poor {
+    background: #fdeded;
+    color: #e74c3c;
+    border: 3px solid #e74c3c;
+}
+
+.score-card p {
+    color: #95a5a6;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Match Cards */
+.semantic-matches {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.semantic-matches h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.info-text {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
+
+.match-card {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 0 8px 8px 0;
+}
+
+.match-requirement {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.match-resume {
+    margin-bottom: 10px;
+    color: #27ae60;
+    background: #e8f5e9;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.match-score {
+    font-size: 14px;
+    color: #667eea;
+    font-weight: 500;
+}
+
+/* Skills Analysis */
+.skills-analysis {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.skills-matched h4,
+.skills-gap h4 {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.skill-tag {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin: 0 8px 8px 0;
+    font-size: 14px;
+}
+
+.skill-tag.success {
+    background: #e8f5e9;
+    color: #27ae60;
+    border: 1px solid #27ae60;
+}
+
+.skill-tag.warning {
+    background: #fff3e0;
+    color: #f39c12;
+    border: 1px solid #f39c12;
+}
+
+/* Strengths and Weaknesses */
+.strengths-weaknesses {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.strengths,
+.weaknesses {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.strengths h3 {
+    color: #27ae60;
+    margin-bottom: 15px;
+}
+
+.weaknesses h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+}
+
+.strengths ul,
+.weaknesses ul {
+    padding-left: 20px;
+}
+
+.strengths li {
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.weaknesses li {
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+/* Recommendations */
+.recommendations {
+    background: linear-gradient(135deg, #f6f9fc 0%, #edf2f7 100%);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.recommendations h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.recommendations ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.recommendations li {
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e6ed;
+}
+
+.recommendations li:last-child {
+    border-bottom: none;
+}
+
+/* Learning Path */
+.learning-path {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.learning-path h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.learning-phase {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.learning-phase h4 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.phase-skills {
+    margin-bottom: 15px;
+}
+
+.phase-resources {
+    background: white;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.phase-resources ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.phase-resources a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.phase-resources a:hover {
+    text-decoration: underline;
+}
+
+.reapply-info {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    background: #ebf5fb;
+    border-radius: 8px;
+}
+
+.reapply-info p {
+    margin-bottom: 15px;
+}
+
+/* Next Steps */
+.next-steps {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+}
+
+.next-steps h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+/* Error Message */
+.error-message {
+    background: #fdeded;
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #c0392b;
+}
+
+.error-message span {
+    font-size: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .upload-section,
+    .progress-section {
+        padding: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .progress-steps {
+        flex-direction: column;
+    }
+    
+    .step {
+        min-width: auto;
+    }
+    
+    .skills-grid,
+    .strengths-weaknesses {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .score-grid {
+        grid-template-columns: 1fr;
+    }
+    .file-drop-area {
+    position: relative;
+    border: 3px dashed #bdc3c7;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-drop-area:hover {
+    border-color: #3498db;
+    background: #ebf5fb;
+}
+
+.file-drop-area input[type="file"] {
+    position: absolute;
+    left: -9999px; /* Hide off-screen but keep functional */
+    opacity: 0;
+}
+
+.file-drop-area span {
+    color: #3498db;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.file-drop-area span:hover {
+    color: #2980b9;
+}
+}

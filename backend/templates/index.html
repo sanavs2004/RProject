@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecruitAI - JD Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .input-section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .input-section h2 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .output-section {
+            background: #1e1e2f;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        .output-section h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .jd-content {
+            background: #2d2d3f;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .placeholder {
+            color: #888;
+            text-align: center;
+            padding: 50px 20px;
+            font-style: italic;
+        }
+        
+        .success-badge {
+            background: #00d68f;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .error-badge {
+            background: #ff3b3b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .history-section {
+            margin-top: 40px;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 30px;
+        }
+        
+        .history-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .model-status {
+            display: inline-block;
+            background: #00d68f;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        input::placeholder,
+textarea::placeholder {
+    color: #888;        /* visible gray */
+    opacity: 1;         /* override browser fade */
+}
+
+        
+        .model-status.offline {
+            background: #ff3b3b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🚀 RecruitAI - JD Generator Module
+            <span id="modelStatus" class="model-status">Checking Ollama...</span>
+        </h1>
+        <div class="subtitle">
+            AI-Powered Job Description Generation using Phi-3 LLM
+        </div>
+        
+        <div class="form-grid">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h2>📋 Job Requirements</h2>
+                
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" id="role" placeholder="e.g. Senior Python Developer" value="Senior Python Developer">
+                </div>
+                
+                <div class="form-group">
+                    <label>Required Skills (comma separated)</label>
+                    <textarea id="skills" rows="2" placeholder="e.g. Python, Django, AWS, PostgreSQL">Python, Django, AWS, PostgreSQL</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Experience Required (years)</label>
+                    <select id="experience">
+                        <option value="0-1">Fresher (0-1 years)</option>
+                        <option value="1-3">Junior (1-3 years)</option>
+                        <option value="3-5" selected>Mid-Level (3-5 years)</option>
+                        <option value="5-8">Senior (5-8 years)</option>
+                        <option value="8+">Lead (8+ years)</option>
+                    </select>
+                </div>
+                
+                <button id="generateBtn" onclick="generateJD()">
+                    <span id="btnText">✨ Generate Job Description</span>
+                    <span id="spinner" class="spinner"></span>
+                </button>
+                
+                <div id="errorMessage" style="display:none;" class="error-badge"></div>
+                
+                <div class="status-bar">
+                    <span id="statusText">Ready to generate</span>
+                </div>
+            </div>
+            
+            <!-- Output Section -->
+            <div class="output-section">
+                <h2>
+                    📄 Generated JD
+                    <span id="successBadge" class="success-badge" style="display:none;">Generated Successfully</span>
+                </h2>
+                <div id="jdOutput" class="jd-content">
+                    <div class="placeholder">
+                        ⚡ Click "Generate Job Description" to create JD using Phi-3 LLM
+                    </div>
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button id="downloadBtn" onclick="downloadJD()" style="flex:1; background: #2d2d3f;" disabled>
+                        💾 Download
+                    </button>
+                    <button id="copyBtn" onclick="copyJD()" style="flex:1; background: #2d2d3f;" disabled>
+                        📋 Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History Section -->
+        <div class="history-section">
+            <h2>📚 Generated JD History</h2>
+            <div id="historyList" class="history-list">
+                <!-- History items will be loaded here -->
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    Loading history...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check Ollama status on load
+        async function checkOllamaStatus() {
+            try {
+                const response = await fetch('http://localhost:11434/api/tags');
+                if (response.ok) {
+                    document.getElementById('modelStatus').textContent = '✅ Phi-3 Online';
+                    document.getElementById('modelStatus').classList.remove('offline');
+                } else {
+                    throw new Error('Ollama not responding');
+                }
+            } catch (error) {
+                document.getElementById('modelStatus').textContent = '❌ Ollama Offline';
+                document.getElementById('modelStatus').classList.add('offline');
+                document.getElementById('generateBtn').disabled = true;
+            }
+        }
+        
+        // Generate JD
+        async function generateJD() {
+            const role = document.getElementById('role').value;
+            const skills = document.getElementById('skills').value;
+            const experience = document.getElementById('experience').value;
+            
+            if (!role || !skills || !experience) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('spinner').style.display = 'inline-block';
+            document.getElementById('btnText').textContent = ' Generating...';
+            document.getElementById('statusText').textContent = '⏳ Generating JD using Phi-3...';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        role: role,
+                        skills: skills,
+                        experience: experience
+                    })
+                });
+                
+                const data = await response.json();
+
+                
+                
+    // ✅ Single validation gate
+    if (!data.success || !data.jd_text) {
+        throw new Error(data.error || "Invalid server response");
+    }
+
+    // ✅ Render JD
+    document.getElementById('jdOutput').innerHTML =
+        data.jd_text.replace(/\n/g, '<br>');
+
+    // ✅ UI updates
+    document.getElementById('successBadge').style.display = 'inline-block';
+    document.getElementById('statusText').textContent = '✅ JD generated successfully!';
+    document.getElementById('downloadBtn').disabled = false;
+    document.getElementById('copyBtn').disabled = false;
+
+    loadHistory();
+
+} catch (error) {
+    document.getElementById('errorMessage').style.display = 'block';
+    document.getElementById('errorMessage').textContent = '❌ Error: ' + error.message;
+    document.getElementById('statusText').textContent = '❌ Generation failed';
+} finally {
+    document.getElementById('generateBtn').disabled = false;
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('btnText').textContent = '✨ Generate Job Description';
+}
+        }
+        // Download JD
+        function downloadJD() {
+            const jdText = document.getElementById('jdOutput').innerText;
+            if (jdText && !jdText.includes('Click "Generate"')) {
+                const blob = new Blob([jdText], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `job_description_${Date.now()}.txt`;
+                a.click();
+            }
+        }
+        
+        // Copy JD
+        function copyJD() {
+            const jdText = document.getElementById('jdOutput').innerText;
+            if (jdText && !jdText.includes('Click "Generate"')) {
+                navigator.clipboard.writeText(jdText);
+                alert('JD copied to clipboard!');
+            }
+        }
+        
+        // Load history
+        async function loadHistory() {
+            try {
+                const response = await fetch('/history');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const historyList = document.getElementById('historyList');
+                    if (data.jds.length === 0) {
+                        historyList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No JDs generated yet</div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    data.jds.slice(0, 6).forEach(jd => {
+                        html += `
+                            <div class="history-item" onclick="loadJD('${jd.filename}')">
+                                <strong>📄 ${jd.filename}</strong><br>
+                                <small>${new Date().toLocaleDateString()}</small>
+                            </div>
+                        `;
+                    });
+                    historyList.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+        
+        // Load specific JD
+        async function loadJD(filename) {
+            try {
+                const response = await fetch(`/download/${filename}`);
+                const text = await response.text();
+                document.getElementById('jdOutput').innerHTML = text.replace(/\n/g, '<br>');
+                document.getElementById('successBadge').style.display = 'inline-block';
+                document.getElementById('downloadBtn').disabled = false;
+                document.getElementById('copyBtn').disabled = false;
+            } catch (error) {
+                console.error('Failed to load JD:', error);
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            checkOllamaStatus();
+            loadHistory();
+        };
+    </script>
+</body>
+</html>

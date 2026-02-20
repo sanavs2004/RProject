@@ -1,0 +1,22 @@
+# Core Flask
+Flask==2.3.2
+Flask-CORS==4.0.0
+
+# ML Libraries - Latest compatible versions
+torch==2.5.1
+transformers==4.44.2
+sentence-transformers==3.0.1
+huggingface-hub==0.25.2
+scikit-learn==1.5.2
+numpy==1.26.4
+pandas==2.2.3
+
+# File processing
+PyPDF2==3.0.1
+python-docx==1.1.2
+docx2txt==0.8
+spacy==3.7.5
+nltk==3.9.1
+
+# Utilities
+python-dateutil==2.9.0

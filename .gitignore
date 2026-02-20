@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+.env
+
+# runtime data
+resume_store/uploads/
+backend/jd_store/

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening - RecruitAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resume.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RecruitAI</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/resume" class="active">Resume Screening</a>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="upload-section">
+                <h2>AI-Powered Resume Screening</h2>
+                <p class="subtitle">Our BERT-based semantic matching understands context, not just keywords</p>
+                
+                <form id="resumeUploadForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="job_id">Select Job Position</label>
+                        <select id="job_id" name="job_id" required>
+                            <option value="">Choose a job...</option>
+                            {% for job in jobs %}
+                            <option value="{{ job.id }}">{{ job.title }} - {{ job.department }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="candidate_name">Full Name</label>
+                            <input type="text" id="candidate_name" name="candidate_name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="candidate_email">Email</label>
+                            <input type="email" id="candidate_email" name="candidate_email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group file-upload">
+                        <label for="resume">Upload Resume</label>
+                        <div class="file-drop-area" id="fileDropArea">
+                            <!-- Make sure the input is NOT hidden, just visually hidden with CSS -->
+                            <input type="file" id="resume" name="resume" accept=".pdf,.docx,.txt" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                            <p>Drag and drop or <span id="browseTrigger" style="color: #3498db; text-decoration: underline; cursor: pointer;">click to browse</span></p>
+                            <p class="file-hint">Supported: PDF, DOCX, TXT (Max 5MB)</p>
+                        </div>
+                        <div id="file-info" class="file-info"></div>
+                    </div>
+                    <button type="submit" id="submitBtn" class="btn-primary">
+                        <span class="btn-text">Start AI Screening</span>
+                        <span class="btn-loader" style="display: none;">Processing...</span>
+                    </button>
+                </form>
+            </div>
+            
+            <div id="progress-section" class="progress-section" style="display: none;">
+                <h3>Processing Your Resume</h3>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p id="progress-message">Initializing...</p>
+                <div class="progress-steps">
+                    <div class="step" id="step-upload">📄 Uploaded</div>
+                    <div class="step" id="step-parse">🔍 Parsing</div>
+                    <div class="step" id="step-semantic">🧠 Semantic Analysis</div>
+                    <div class="step" id="step-bert">🤖 BERT Matching</div>
+                    <div class="step" id="step-scoring">📊 Scoring</div>
+                    <div class="step" id="step-complete">✅ Complete</div>
+                </div>
+            </div>
+            
+            <div id="results-section" class="results-section" style="display: none;">
+                <!-- Results will be loaded here -->
+            </div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screening Results - RecruitAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resume.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RecruitAI</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/resume">Resume Screening</a>
+                <a href="#" class="active">Results</a>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="results-header">
+                <h2>Screening Results</h2>
+                <p>Application ID: {{ results.application_id }}</p>
+            </div>
+            
+            <!-- Decision Banner -->
+            <div class="decision-banner {% if results.ranking.decision == 'shortlist' %}decision-shortlist{% elif results.ranking.decision == 'interview' %}decision-interview{% else %}decision-reject{% endif %}">
+                <div class="decision-icon">
+                    {% if results.ranking.decision == 'shortlist' %}
+                    🏆
+                    {% elif results.ranking.decision == 'interview' %}
+                    📞
+                    {% else %}
+                    📝
+                    {% endif %}
+                </div>
+                <div class="decision-content">
+                    <h3>
+                        {% if results.ranking.decision == 'shortlist' %}
+                        Shortlisted - Excellent Match!
+                        {% elif results.ranking.decision == 'interview' %}
+                        Interview Recommended
+                        {% else %}
+                        Not Selected at This Time
+                        {% endif %}
+                    </h3>
+                    <p>{{ results.feedback.summary }}</p>
+                </div>
+            </div>
+            
+            <!-- Score Overview -->
+            <div class="score-overview">
+                <h3>Overall Match: <span class="score-large">{{ "%.1f"|format(results.scores.overall) }}%</span></h3>
+                <div class="score-meter">
+                    <div class="meter-fill" style="width: {{ (results.scores.overall or 0)|float|round(1) }}%"></div>
+                    <!-- <div class="meter-fill" style="width: {{ results.scores.overall }}%"></div> -->
+                </div>
+                <p class="rank-badge">Rank: {{ results.ranking.rank }} | Top {{ results.ranking.percentile }}%</p>
+            </div>
+            
+            <!-- Score Breakdown -->
+            <div class="score-breakdown">
+                <h3>Score Breakdown</h3>
+                <div class="score-grid">
+                    <div class="score-card">
+                        <h4>Semantic Match</h4>
+                        <div class="score-circle {% if results.scores.semantic >= 80 %}score-excellent{% elif results.scores.semantic >= 60 %}score-good{% else %}score-poor{% endif %}">
+                            {{ "%.1f"|format(results.scores.semantic) }}%
+                        </div>
+                        <p>How well your resume matches the job description semantically</p>
+                    </div>
+                    
+                    <div class="score-card">
+                        <h4>Skill Relevance</h4>
+                        <div class="score-circle {% if results.scores.skill >= 80 %}score-excellent{% elif results.scores.skill >= 60 %}score-good{% else %}score-poor{% endif %}">
+                            {{ "%.1f"|format(results.scores.skill) }}%
+                        </div>
+                        <p>Relevance of your skills to job requirements</p>
+                    </div>
+                    
+                    <div class="score-card">
+                        <h4>Experience</h4>
+                        <div class="score-circle {% if results.scores.experience >= 80 %}score-excellent{% elif results.scores.experience >= 60 %}score-good{% else %}score-poor{% endif %}">
+                            {{ "%.1f"|format(results.scores.experience) }}%
+                        </div>
+                        <p>{{ results.experience_data.total_years }} years of experience</p>
+                    </div>
+                    
+                    <div class="score-card">
+                        <h4>Education</h4>
+                        <div class="score-circle {% if results.scores.education >= 80 %}score-excellent{% elif results.scores.education >= 60 %}score-good{% else %}score-poor{% endif %}">
+                            {{ "%.1f"|format(results.scores.education) }}%
+                        </div>
+                        <p>{{ results.experience_data.education|length }} degrees/certifications</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Semantic Matches -->
+            {% if results.semantic_match.detailed_matches %}
+            <div class="semantic-matches">
+                <h3>Key Semantic Matches</h3>
+                <p class="info-text">Our BERT model found these strong contextual matches:</p>
+                
+                {% for match in results.semantic_match.detailed_matches[:5] %}
+                <div class="match-card">
+                    <div class="match-requirement">
+                        <strong>Job Requirement:</strong> {{ match.job_requirement }}
+                    </div>
+                    <div class="match-resume">
+                        <strong>Your Resume:</strong> {{ match.resume_match }}
+                    </div>
+                    <div class="match-score">
+                        Similarity: {{ "%.1f"|format(match.similarity) }}%
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Skills Analysis -->
+            <div class="skills-analysis">
+                <h3>Skills Analysis</h3>
+                
+                <div class="skills-grid">
+                    <div class="skills-matched">
+                        <h4>✅ Matched Skills</h4>
+                        {% if results.skill_relevance.matched_skills %}
+                            {% for skill in results.skill_relevance.matched_skills %}
+                            <span class="skill-tag success">
+                                {{ skill.skill }} ({{ "%.0f"|format(skill.relevance) }}%)
+                            </span>
+                            {% endfor %}
+                        {% else %}
+                            <p>No specific skills matched</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="skills-gap">
+                        <h4>📚 Skills to Develop</h4>
+                        {% if results.skill_relevance.missing_skills %}
+                            {% for skill in results.skill_relevance.missing_skills %}
+                            <span class="skill-tag warning">{{ skill }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <p>No major skill gaps identified</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Strengths and Weaknesses -->
+            <div class="strengths-weaknesses">
+                <div class="strengths">
+                    <h3>💪 Strengths</h3>
+                    <ul>
+                        {% for strength in results.ranking.strengths %}
+                        <li>{{ strength }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="weaknesses">
+                    <h3>🎯 Areas for Improvement</h3>
+                    <ul>
+                        {% for weakness in results.ranking.weaknesses %}
+                        <li>{{ weakness }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Recommendations -->
+            {% if results.ranking.recommendations %}
+            <div class="recommendations">
+                <h3>📋 Recommendations</h3>
+                <ul>
+                    {% for rec in results.ranking.recommendations %}
+                    <li>{{ rec }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            <!-- Learning Path (for rejected candidates) -->
+            {% if results.ranking.decision == 'reject' and results.feedback.learning_recommendations %}
+            <div class="learning-path">
+                <h3>🎓 Personalized Learning Path</h3>
+                <p>Estimated duration: {{ results.feedback.learning_recommendations.estimated_duration }}</p>
+                
+                {% for phase in results.feedback.learning_recommendations.phases %}
+                <div class="learning-phase">
+                    <h4>{{ phase.name }} ({{ phase.duration }})</h4>
+                    
+                    {% if phase.skills %}
+                    <div class="phase-skills">
+                        <strong>Skills to learn:</strong>
+                        {% for skill in phase.skills %}
+                        <span class="skill-tag">{{ skill.skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if phase.resources %}
+                    <div class="phase-resources">
+                        <strong>Recommended resources:</strong>
+                        <ul>
+                            {% for resource in phase.resources %}
+                            <li>
+                                <a href="{{ resource.url }}" target="_blank">
+                                    {{ resource.name }} ({{ resource.type }})
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <div class="reapply-info">
+                    <p>{{ results.feedback.encouragement }}</p>
+                    <p>You can reapply after {{ results.feedback.reapplication_info.recommended_time }}</p>
+                    <button class="btn-secondary" onclick="window.location.href='/resume'">
+                        Apply for Another Position
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h3>⏭️ Next Steps</h3>
+                <p><strong>Action:</strong> {{ results.ranking.next_steps.action }}</p>
+                <p><strong>Timeline:</strong> {{ results.ranking.next_steps.timeline }}</p>
+                <p><strong>Priority:</strong> {{ results.ranking.next_steps.priority }}</p>
+                
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="window.location.href='/resume'">
+                        Screen Another Resume
+                    </button>
+                    <button class="btn-secondary" onclick="window.print()">
+                        Print Results
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
+</body>
+</html>
