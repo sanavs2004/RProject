@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Screen Candidates - RecruitAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 Screen Candidates</h1>
+            <a href="/" class="btn-secondary">← Back to Dashboard</a>
+        </header>
+        
+        <div class="upload-section">
+            <h2>Batch Resume Screening</h2>
+            
+            <form id="screeningForm" enctype="multipart/form-data" method="post">
+                <div class="form-section">
+                    <h3>Step 1: Select Job Description</h3>
+                    <div class="jd-options">
+                        <div class="option">
+                            <input type="radio" name="jd_option" id="use_existing" value="existing" checked>
+                            <label for="use_existing">Use existing JD</label>
+                            <select name="job_id" id="job_select">
+                                {% for job in jobs %}
+                                <option value="{{ job.id }}">{{ job.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="option">
+                            <input type="radio" name="jd_option" id="upload_new" value="new">
+                            <label for="upload_new">Upload new JD</label>
+                            <input type="file" name="jd_file" id="jd_file" accept=".txt,.pdf,.docx">
+                            <input type="text" name="job_title" placeholder="Job Title" id="job_title">
+                            <input type="text" name="required_skills" placeholder="Required skills (comma separated)" id="required_skills">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Step 2: Upload Resumes</h3>
+                    <div class="file-upload-area">
+                        <input type="file" name="resumes" id="resumes" multiple accept=".pdf,.docx,.txt">
+                        <p>Drag and drop or click to select multiple resumes</p>
+                        <p class="hint">Supported: PDF, DOCX, TXT (Max 5MB each)</p>
+                    </div>
+                    <div id="file-list"></div>
+                </div>
+                
+                <button type="submit" class="btn-primary">Start Screening</button>
+            </form>
+            
+            <div id="progress-section" style="display: none;">
+                <h3>Processing Resumes...</h3>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <p id="progress-message"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('screeningForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const files = document.getElementById('resumes').files;
+            
+            if (files.length === 0) {
+                alert('Please select at least one resume');
+                return;
+            }
+            
+            // Show progress
+            document.querySelector('.upload-section').style.display = 'none';
+            document.getElementById('progress-section').style.display = 'block';
+            
+            try {
+                const response = await fetch('/screen-candidates', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Start polling for status
+                    const interval = setInterval(async () => {
+                        const statusRes = await fetch(`/screening-status/${data.screening_id}`);
+                        const status = await statusRes.json();
+                        
+                        document.getElementById('progress-fill').style.width = status.progress + '%';
+                        document.getElementById('progress-message').textContent = status.message;
+                        
+                        if (status.status === 'completed') {
+                            clearInterval(interval);
+                            window.location.href = status.results_url;
+                        } else if (status.status === 'failed') {
+                            clearInterval(interval);
+                            alert('Processing failed: ' + status.message);
+                        }
+                    }, 2000);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+        
+        // Toggle JD options
+        document.querySelectorAll('input[name="jd_option"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'existing') {
+                    document.getElementById('job_select').disabled = false;
+                    document.getElementById('jd_file').disabled = true;
+                    document.getElementById('job_title').disabled = true;
+                    document.getElementById('required_skills').disabled = true;
+                } else {
+                    document.getElementById('job_select').disabled = true;
+                    document.getElementById('jd_file').disabled = false;
+                    document.getElementById('job_title').disabled = false;
+                    document.getElementById('required_skills').disabled = false;
+                }
+            });
+        });
+        
+        // Show selected files
+        document.getElementById('resumes').addEventListener('change', function() {
+            const list = document.getElementById('file-list');
+            list.innerHTML = '';
+            for (let file of this.files) {
+                list.innerHTML += `<div>📄 ${file.name} (${(file.size/1024).toFixed(2)} KB)</div>`;
+            }
+        });
+    </script>
+</body>
+</html>

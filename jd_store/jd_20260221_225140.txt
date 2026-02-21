@@ -1,0 +1,9 @@
+Role Summary:
+Dedicated senior developer to architect and maintain complex web applications using advanced programming skills.
+Key Responsibilities:
+- Designing scalable backends for enterprise-level clients utilizing Python frameworks such as Django.
+- Implement robust data persistence strategies with PostgreSQL, ensuring high availability in cloud environments like AWS.
+- Optimize code performance and conduct thorough testing across multi-threaded web service components to guarantee seamless user experiences.
+Required Qualifications:
+- A Bachelor's or Master’s degree in Computer Science with a specialization in software development is required, along with 3–5 years of professional Python programming experience.
+- Proven expertise working specifically with Django for web application projects and AWS as infrastructure service provider are necessary skills for this position to ensure alignment with company capabilities and services offered.

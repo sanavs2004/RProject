@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Screening History - RecruitAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .history-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .history-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .history-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .card-meta {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-top: 1px solid #ecf0f1;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-view {
+            flex: 1;
+            padding: 8px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .btn-view:hover {
+            background: #2980b9;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .empty-state h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Screening History</h1>
+            <nav>
+                <a href="/" class="btn-secondary">← Back to Dashboard</a>
+            </nav>
+        </header>
+        
+        <div class="history-container">
+            {% if screenings and screenings|length > 0 %}
+                <div class="history-header">
+                    <h2>Past Screening Sessions</h2>
+                    <span>{{ screenings|length }} total screenings</span>
+                </div>
+                
+                <div class="history-grid">
+                    {% for screening in screenings %}
+                    <div class="history-card">
+                        <div class="card-title">{{ screening.job_title }}</div>
+                        <div class="card-meta">
+                            📅 {{ screening.created_at[:10] }} at {{ screening.created_at[11:16] }}<br>
+                            🆔 {{ screening.id[:8] }}...
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <div class="stat-value">{{ screening.total }}</div>
+                                <div class="stat-label">Candidates</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">
+                                    {% set shortlisted = screening.candidates|selectattr('overall_score', '>=', 70)|list|length %}
+                                    {{ shortlisted }}
+                                </div>
+                                <div class="stat-label">Shortlisted</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">
+                                    {% if screening.candidates %}
+                                        {{ "%.0f"|format(screening.candidates[0].overall_score) }}%
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </div>
+                                <div class="stat-label">Top Score</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="/ranking-results/{{ screening.id }}" class="btn-view">View Results</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No screenings yet</h3>
+                    <p>Start by screening some candidates against a job description</p>
+                    <a href="/screen-candidates" class="btn-primary">Screen Candidates</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
