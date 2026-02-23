@@ -1,0 +1,11 @@
+Role Summary:
+The ideal candidate will bring fresh perspective and innovative approaches to web development projects using Python. Strong communication skills required for teamwork and client interactions is essential.
+Key Responsibilities:
+- Develop and maintain scalable back end services with a focus on performance, reliability, usability, security, compliance, change control, audit trail, quality assurance, load balancing, failover and redundancy planning to ensure uptime for web applications.
+- Implement cloud technologies such as AWS infrastructure design patterns to provide robust solutions in line with our organizational standards.
+- Design responsive interfaces using HTML that adapts seamlessly across various devices ensuring a consistent user experience, and optimize it based on client feedback and usability testing findings.
+- Monitor system performance data trends utilizing PostgreSQL for efficient database management to maintain high uptime levels in accordance with Service Level Agreements (SLAs).
+Required Qualifications:
+Minimum of a Bachelor's degree in Computer Science, Software Engineering or related field. Proficient knowledge and practical experience using Python programming language along with its frameworks like Django is required to effectively carry out this role’s responsibilities within the tech landscape. Familiarity with web development best practices as they relate to creating user-friendly interfaces that meet end client requirements, while ensuring optimal performance across various devices through appropriate design patterns and methods are essential for success in this position.
+Experience Required: 0–1 years of relevant experience preferred but not mandatory; strong foundational knowledge and quick learnability will be highly appreciated to accelerate on-the-job training period with respect to the required skill set.
+Key Skills: Python, Django, AWS, PostgreSQL, HTML

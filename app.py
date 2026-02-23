@@ -112,32 +112,49 @@ def view_jd(filename):
         return render_template('view_jd.html', filename=filename, content=content)
     
     return render_template('error.html', message='JD not found'), 404
-@app.route('/api/jd/<filename>')
-def get_jd_content(filename):
-    """Get JD content for preview - handles both text and binary files"""
+
+
+# @app.route('/api/recent-jds')
+# def api_recent_jds():
+#     """API endpoint to get recent JDs with display names"""
+#     jds = screening_engine.get_recent_jds()
+#     return jsonify(jds)
+
+@app.route('/api/recent-jds')
+def api_recent_jds():
+    """API endpoint to get recent JDs with display names"""
     import os
-    filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
+    from jd_module import STORE_FOLDER
     
-    if not os.path.exists(filepath):
-        return jsonify({'error': 'File not found'}), 404
+    jds = []
+    if os.path.exists(STORE_FOLDER):
+        for file in os.listdir(STORE_FOLDER):
+            if file.endswith('.txt'):
+                filepath = os.path.join(STORE_FOLDER, file)
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # Create display name
+                display_name = file.replace('jd_', '').replace('.txt', '')
+                if '_' in display_name:
+                    parts = display_name.split('_')
+                    # Remove timestamp if present
+                    if len(parts) > 1 and parts[-1].isdigit() and len(parts[-1]) == 14:
+                        display_name = ' '.join(parts[:-1])
+                    else:
+                        display_name = ' '.join(parts)
+                
+                jds.append({
+                    'filename': file,
+                    'display_name': display_name,
+                    'content': content[:200]  # Send preview only
+                })
+        
+        # Sort by filename (newest first)
+        jds.sort(key=lambda x: x['filename'], reverse=True)
     
-    try:
-        # Try to read as text first
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return jsonify({'content': content})
-    except UnicodeDecodeError:
-        # If it's a binary file, return a message
-        return jsonify({'content': f'[Binary file: {filename}. Preview not available.]'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    return jsonify(jds)
 
-    
-
-
-# ======================
-# RESUME SCREENING ROUTES
-# ======================
 @app.route('/screen-candidates', methods=['GET', 'POST'])
 def screen_candidates():
     """Screen candidates using semantic understanding"""
@@ -148,38 +165,47 @@ def screen_candidates():
             job_title = request.form.get('job_title', 'Custom Job')
             jd_text = ""
             
-            # Handle JD input
+            # Handle JD selection
             if jd_option == 'existing':
-                # Get from existing JD file
+                # Check if selected from dropdown
+                recent_jd = request.form.get('recent_jd')
+                if recent_jd:
+                    # Load JD from file
+                    jd_path = os.path.join(Config.JD_STORE_FOLDER, recent_jd)
+                    if os.path.exists(jd_path):
+                        with open(jd_path, 'r', encoding='utf-8') as f:
+                            jd_text = f.read()
+                        # Extract job title from filename
+                        job_title = recent_jd.replace('jd_', '').replace('.txt', '')
+                        if '_' in job_title:
+                            parts = job_title.split('_')
+                            if len(parts) > 1 and parts[-1].isdigit():
+                                job_title = ' '.join(parts[:-1])
+                            else:
+                                job_title = ' '.join(parts)
+                
+                # Check if file uploaded
                 jd_file = request.files.get('jd_file')
                 if jd_file and jd_file.filename:
                     jd_text = jd_file.read().decode('utf-8')
-                    # Get job title from filename if not provided
                     if not job_title or job_title == 'Custom Job':
                         job_title = os.path.splitext(jd_file.filename)[0]
             else:
                 # Use textarea input
                 jd_text = request.form.get('jd_text', '').strip()
+                job_title = request.form.get('job_title', 'Custom Job')
             
             if not jd_text:
-                return jsonify({
-                    'success': False, 
-                    'error': 'Job description is required'
-                }), 400
+                return jsonify({'success': False, 'error': 'Job description is required'}), 400
             
             # Get resume files
             resume_files = request.files.getlist('resumes')
-            
-            # Filter out empty files
             resume_files = [f for f in resume_files if f and f.filename]
             
             if not resume_files:
-                return jsonify({
-                    'success': False, 
-                    'error': 'Please upload at least one resume'
-                }), 400
+                return jsonify({'success': False, 'error': 'Please upload at least one resume'}), 400
             
-            # Run semantic screening
+            # Run screening
             screening_id, results = screening_engine.screen_resumes(
                 jd_text=jd_text,
                 resume_files=resume_files,
@@ -190,20 +216,124 @@ def screen_candidates():
                 'success': True,
                 'screening_id': screening_id,
                 'redirect': f'/ranking-results/{screening_id}',
-                'message': f'✅ Processed {len(results["candidates"])} resumes with semantic understanding',
-                'candidates_count': len(results["candidates"])
+                'message': f'✅ Processed {len(results["candidates"])} resumes'
             })
             
         except Exception as e:
             print(f"Error in screening: {e}")
-            return jsonify({
-                'success': False, 
-                'error': str(e)
-            }), 500
+            return jsonify({'success': False, 'error': str(e)}), 500
     
-    # GET request - show screening form
-    recent_jds = get_all_jds()[:10]
+    # GET request - show form with recent JDs
+    recent_jds = screening_engine.get_recent_jds() if hasattr(screening_engine, 'get_recent_jds') else []
     return render_template('screen_candidates.html', recent_jds=recent_jds)
+
+
+# @app.route('/api/jd/<filename>')
+# def get_jd_content(filename):
+#     """Get JD content for preview - handles both text and binary files"""
+#     import os
+#     filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
+    
+#     if not os.path.exists(filepath):
+#         return jsonify({'error': 'File not found'}), 404
+    
+#     try:
+#         # Try to read as text first
+#         with open(filepath, 'r', encoding='utf-8') as f:
+#             content = f.read()
+#         return jsonify({'content': content})
+#     except UnicodeDecodeError:
+#         # If it's a binary file, return a message
+#         return jsonify({'content': f'[Binary file: {filename}. Preview not available.]'})
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/jd/<filename>')
+def api_jd_content(filename):
+    """Get full JD content for preview"""
+    import os
+    from jd_module import STORE_FOLDER
+    
+    filepath = os.path.join(STORE_FOLDER, filename)
+    if os.path.exists(filepath):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return jsonify({'content': content})
+    return jsonify({'error': 'File not found'}), 404
+
+    
+
+
+# ======================
+# RESUME SCREENING ROUTES
+# # ======================
+# @app.route('/screen-candidates', methods=['GET', 'POST'])
+# def screen_candidates():
+#     """Screen candidates using semantic understanding"""
+#     if request.method == 'POST':
+#         try:
+#             # Get form data
+#             jd_option = request.form.get('jd_option', 'new')
+#             job_title = request.form.get('job_title', 'Custom Job')
+#             jd_text = ""
+            
+#             # Handle JD input
+#             if jd_option == 'existing':
+#                 # Get from existing JD file
+#                 jd_file = request.files.get('jd_file')
+#                 if jd_file and jd_file.filename:
+#                     jd_text = jd_file.read().decode('utf-8')
+#                     # Get job title from filename if not provided
+#                     if not job_title or job_title == 'Custom Job':
+#                         job_title = os.path.splitext(jd_file.filename)[0]
+#             else:
+#                 # Use textarea input
+#                 jd_text = request.form.get('jd_text', '').strip()
+            
+#             if not jd_text:
+#                 return jsonify({
+#                     'success': False, 
+#                     'error': 'Job description is required'
+#                 }), 400
+            
+#             # Get resume files
+#             resume_files = request.files.getlist('resumes')
+            
+#             # Filter out empty files
+#             resume_files = [f for f in resume_files if f and f.filename]
+            
+#             if not resume_files:
+#                 return jsonify({
+#                     'success': False, 
+#                     'error': 'Please upload at least one resume'
+#                 }), 400
+            
+#             # Run semantic screening
+#             screening_id, results = screening_engine.screen_resumes(
+#                 jd_text=jd_text,
+#                 resume_files=resume_files,
+#                 job_title=job_title
+#             )
+            
+#             return jsonify({
+#                 'success': True,
+#                 'screening_id': screening_id,
+#                 'redirect': f'/ranking-results/{screening_id}',
+#                 'message': f'✅ Processed {len(results["candidates"])} resumes with semantic understanding',
+#                 'candidates_count': len(results["candidates"])
+#             })
+            
+#         except Exception as e:
+#             print(f"Error in screening: {e}")
+#             return jsonify({
+#                 'success': False, 
+#                 'error': str(e)
+#             }), 500
+    
+#     # GET request - show screening form
+#     recent_jds = get_all_jds()[:10]
+#     return render_template('screen_candidates.html', recent_jds=recent_jds)
 
 
 @app.route('/ranking-results/<screening_id>')

@@ -4,7 +4,8 @@ import os
 from datetime import datetime
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-STORE_FOLDER = "jd_store"
+# STORE_FOLDER = "jd_store"
+STORE_FOLDER = os.path.join(os.path.dirname(__file__), 'jd_store')
 MODEL_NAME = "phi3"
 
 

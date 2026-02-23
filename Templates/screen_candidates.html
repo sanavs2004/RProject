@@ -4,174 +4,29 @@
     <title>Screen Candidates - RecruitAI</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-secondary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .screening-form {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        .form-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-        }
-        .form-section h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #34495e;
-        }
-        input[type="text"],
-        input[type="file"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ecf0f1;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .radio-group {
-            margin: 15px 0;
-        }
-        .radio-option {
-            margin: 10px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .radio-option:hover {
-            background: #ebf5fb;
-        }
-        .radio-option input[type="radio"] {
-            margin-right: 10px;
-        }
-        .file-upload-area {
-            border: 3px dashed #bdc3c7;
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .file-upload-area:hover {
-            border-color: #667eea;
-            background: #ebf5fb;
-        }
-        .file-upload-area input[type="file"] {
-            display: none;
-        }
-        .file-list {
-            margin-top: 15px;
-        }
-        .file-item {
-            background: #e8f5e9;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        .btn-primary:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        .progress-section {
-            text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        .progress-bar {
-            height: 20px;
-            background: #ecf0f1;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
-        }
-        .jd-preview {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: monospace;
-            white-space: pre-wrap;
-            border: 1px solid #e0e0e0;
-        }
-        .hint {
-            color: #7f8c8d;
-            font-size: 12px;
-            margin-top: 5px;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-secondary { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.3); }
+        .form-section { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .radio-option { margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; }
+        .radio-option:hover { background: #ebf5fb; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #34495e; }
+        input[type="text"], textarea, select { width: 100%; padding: 12px; border: 2px solid #ecf0f1; border-radius: 8px; font-size: 14px; }
+        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .file-upload-area { border: 3px dashed #bdc3c7; border-radius: 12px; padding: 40px; text-align: center; background: #f9f9f9; cursor: pointer; transition: all 0.3s; }
+        .file-upload-area:hover { border-color: #667eea; background: #ebf5fb; }
+        .file-list { margin-top: 15px; }
+        .file-item { background: #e8f5e9; padding: 10px; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; }
+        .progress-section { text-align: center; padding: 40px; background: white; border-radius: 10px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .progress-bar { height: 20px; background: #ecf0f1; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s ease; }
+        .hint { color: #7f8c8d; font-size: 12px; margin-top: 5px; }
+        .selected-jd-display { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -181,78 +36,105 @@
             <a href="/" class="btn-secondary">← Back to Dashboard</a>
         </header>
 
-        <!-- Screening Form -->
-        <div id="screeningForm" class="screening-form">
-            <h2>Batch Resume Screening</h2>
-            <p class="hint">Upload a job description and multiple resumes for AI-powered semantic screening</p>
-
-            <form id="uploadForm" enctype="multipart/form-data" method="POST">
-                <!-- Job Description Section -->
-                <div class="form-section">
-                    <h3>Step 1: Job Description</h3>
+        <!-- Main Form -->
+        <form id="uploadForm" enctype="multipart/form-data" method="POST">
+            
+            <!-- Step 1: JD Selection Section -->
+            <div id="jdSelectionArea" class="form-section">
+                <h3>Step 1: Select Job Description</h3>
+                
+                <!-- Create New JD Option -->
+                <div class="radio-option" onclick="document.getElementById('jdOptionNew').checked = true; toggleJDFields();">
+                    <input type="radio" name="jd_option" id="jdOptionNew" value="new" checked>
+                    <label style="font-weight: bold; cursor: pointer;">📝 Create New Job Description</label>
                     
-                    <div class="radio-group">
-                        <div class="radio-option" onclick="document.getElementById('jdOptionNew').checked = true;">
-                            <input type="radio" name="jd_option" id="jdOptionNew" value="new" checked>
-                            <label style="display: inline;">Create New Job Description</label>
-                            <div id="newJDFields">
-                                <div class="form-group" style="margin-top: 15px;">
-                                    <label>Job Title</label>
-                                    <input type="text" name="job_title" id="jobTitle" placeholder="e.g., Senior Python Developer">
-                                </div>
-                                <div class="form-group">
-                                    <label>Job Description</label>
-                                    <textarea name="jd_text" id="jdText" rows="8" placeholder="Paste your job description here..."></textarea>
-                                </div>
-                            </div>
+                    <div id="newJDFields" style="margin-top: 15px; margin-left: 25px;">
+                        <div class="form-group">
+                            <label>Job Title/Role</label>
+                            <input type="text" name="job_title" id="jobTitle" placeholder="e.g., Senior Python Developer">
                         </div>
-
-                        <div class="radio-option" onclick="document.getElementById('jdOptionExisting').checked = true;">
-                            <input type="radio" name="jd_option" id="jdOptionExisting" value="existing">
-                            <label style="display: inline;">Use Existing JD from File</label>
-                            <div id="existingJDFields" style="display: none; margin-top: 15px;">
-                                <div class="form-group">
-                                    <label>Upload JD File</label>
-                                    <input type="file" name="jd_file" id="jdFile" accept=".txt,.pdf,.docx">
-                                </div>
-                                <div class="form-group">
-                                    <label>Or Select from Recent JDs</label>
-                                    <select name="recent_jd" id="recentJD">
-                                        <option value="">-- Select a recent JD --</option>
-                                        {% for jd in recent_jds %}
-                                        <option value="{{ jd.filename }}">{{ jd.filename }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label>Job Description</label>
+                            <textarea name="jd_text" id="jdText" rows="6" placeholder="Paste your job description here..."></textarea>
                         </div>
-                    </div>
-                    
-                    <div id="jdPreview" class="jd-preview" style="display: none;">
-                        <strong>Preview:</strong>
-                        <div id="jdPreviewContent"></div>
+                        <button type="button" class="btn-primary" onclick="proceedToResumeUpload()">Continue to Resume Upload →</button>
                     </div>
                 </div>
-
-                <!-- Resumes Section -->
-                <div class="form-section">
-                    <h3>Step 2: Upload Resumes</h3>
+                
+                <!-- Use Existing JD Option -->
+                <div class="radio-option" onclick="document.getElementById('jdOptionExisting').checked = true; toggleJDFields(); loadJDs();">
+                    <input type="radio" name="jd_option" id="jdOptionExisting" value="existing">
+                    <label style="font-weight: bold; cursor: pointer;">📁 Use Existing JD from File</label>
                     
-                    <div class="file-upload-area" id="dropArea">
-                        <input type="file" name="resumes" id="resumes" multiple accept=".pdf,.docx,.txt">
-                        <p>📁 Drag and drop or <span style="color: #667eea; text-decoration: underline; cursor: pointer;">click to browse</span></p>
-                        <p class="hint">Supported formats: PDF, DOCX, TXT (Max 10MB each)</p>
+                    <div id="existingJDFields" style="display: none; margin-top: 15px; margin-left: 25px;">
+                        <!-- JD Selection Dropdown -->
+                        <div class="form-group">
+                            <label>Select from Recent Job Descriptions</label>
+                            <select id="recentJD" style="width: 100%; padding: 12px;">
+                                <option value="">-- Loading JDs... --</option>
+                            </select>
+                        </div>
+                        
+                        <!-- JD Preview Area (shown when JD selected) -->
+                        <div id="jdPreviewArea" style="display: none; margin-top: 15px; padding: 15px; background: #f0f8ff; border-radius: 8px;">
+                            <strong>📄 Preview:</strong>
+                            <div id="jdPreviewContent" style="margin-top: 10px; max-height: 150px; overflow-y: auto; padding: 10px; background: white; border-radius: 5px;"></div>
+                            
+                            <!-- Selected JD Name -->
+                            <div id="selectedJDName" style="margin-top: 10px; font-weight: bold; color: #27ae60;"></div>
+                            
+                            <!-- Hidden fields to store selected JD info -->
+                            <input type="hidden" id="selectedFilename" name="selected_filename" value="">
+                            <input type="hidden" id="selectedDisplayName" name="selected_display" value="">
+                            
+                            <!-- CONFIRM BUTTON -->
+                            <button type="button" class="btn-primary" style="margin-top: 15px; width: 100%; padding: 12px;" onclick="confirmJDSelection()">
+                                ✅ Confirm & Continue to Resume Upload
+                            </button>
+                        </div>
+                        
+                        <!-- OR Divider -->
+                        <div style="margin: 20px 0; text-align: center; color: #7f8c8d; position: relative;">
+                            <span style="background: white; padding: 0 10px;">— OR —</span>
+                            <hr style="border: none; border-top: 1px solid #ecf0f1; margin-top: -12px;">
+                        </div>
+                        
+                        <!-- Upload New JD File -->
+                        <div class="form-group">
+                            <label>Upload New JD File</label>
+                            <input type="file" name="jd_file" id="jdFile" accept=".txt,.pdf,.docx">
+                            <button type="button" class="btn-secondary" onclick="proceedWithUploadedJD()" style="margin-top: 10px; padding: 10px 15px;">Use Uploaded JD</button>
+                        </div>
                     </div>
-                    
-                    <div id="fileList" class="file-list"></div>
                 </div>
-
-                <button type="submit" class="btn-primary" id="submitBtn">
-                    🚀 Start Semantic Screening
-                </button>
-            </form>
-        </div>
-
+            </div>
+            
+            <!-- Step 2: Resume Upload Section (hidden initially) -->
+            <div id="resumeUploadArea" class="form-section" style="display: none;">
+                <h3>Step 2: Upload Resumes</h3>
+                
+                <!-- Selected JD Display -->
+                <div id="selectedJDDisplay" class="selected-jd-display"></div>
+                
+                <!-- File Upload Area -->
+                <div class="file-upload-area" id="dropArea">
+                    <input type="file" name="resumes" id="resumes" multiple accept=".pdf,.docx,.txt" style="display: none;">
+                    <p style="font-size: 18px; margin-bottom: 10px;">📁 Drag and drop or <span style="color: #667eea; text-decoration: underline; cursor: pointer;">click to browse</span></p>
+                    <p class="hint">Supported formats: PDF, DOCX, TXT (Max 10MB each)</p>
+                </div>
+                
+                <!-- File List -->
+                <div id="fileList" class="file-list"></div>
+                
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="button" class="btn-secondary" onclick="goBackToJDSelection()" style="flex: 1; padding: 12px;">← Back to JD Selection</button>
+                    <button type="submit" class="btn-primary" id="submitBtn" style="flex: 2; padding: 12px;">🚀 Start Semantic Screening</button>
+                </div>
+            </div>
+            
+        </form>
+        
         <!-- Progress Section (hidden initially) -->
         <div id="progressSection" class="progress-section" style="display: none;">
             <h3>Processing Resumes...</h3>
@@ -265,162 +147,269 @@
     </div>
 
     <script>
-    // Toggle JD options
-    document.addEventListener('DOMContentLoaded', function() {
-        const newRadio = document.getElementById('jdOptionNew');
-        const existingRadio = document.getElementById('jdOptionExisting');
-        const newFields = document.getElementById('newJDFields');
-        const existingFields = document.getElementById('existingJDFields');
+        // ==================== JD SELECTION FUNCTIONS ====================
         
-        if (newRadio) {
-            newRadio.addEventListener('change', function() {
-                newFields.style.display = 'block';
-                existingFields.style.display = 'none';
-            });
+        // Toggle JD fields based on selection
+        function toggleJDFields() {
+            const newOption = document.getElementById('jdOptionNew').checked;
+            const existingOption = document.getElementById('jdOptionExisting').checked;
+            
+            document.getElementById('newJDFields').style.display = newOption ? 'block' : 'none';
+            document.getElementById('existingJDFields').style.display = existingOption ? 'block' : 'none';
         }
-        
-        if (existingRadio) {
-            existingRadio.addEventListener('change', function() {
-                newFields.style.display = 'none';
-                existingFields.style.display = 'block';
-            });
+
+        // Load JDs from server
+        async function loadJDs() {
+            const select = document.getElementById('recentJD');
+            select.innerHTML = '<option value="">-- Loading JDs... --</option>';
+            
+            try {
+                const response = await fetch('/api/recent-jds');
+                const jds = await response.json();
+                
+                select.innerHTML = '<option value="">-- Select a JD --</option>';
+                
+                jds.forEach(jd => {
+                    const option = document.createElement('option');
+                    option.value = jd.filename;
+                    
+                    // Clean up display name
+                    let displayName = jd.display_name || jd.filename.replace('jd_', '').replace('.txt', '');
+                    displayName = displayName.replace(/_/g, ' ').trim();
+                    
+                    option.textContent = displayName;
+                    option.setAttribute('data-content', jd.content);
+                    option.setAttribute('data-filename', jd.filename);
+                    select.appendChild(option);
+                });
+                
+                console.log("✅ JDs loaded:", jds.length);
+            } catch (error) {
+                console.error('Error loading JDs:', error);
+                select.innerHTML = '<option value="">-- Error loading JDs --</option>';
+            }
         }
-    });
 
-    // File upload handling
-    const dropArea = document.getElementById('dropArea');
-    const fileInput = document.getElementById('resumes');
-    const fileList = document.getElementById('fileList');
-
-    if (dropArea) {
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
+        // Handle JD selection from dropdown
+        document.getElementById('recentJD')?.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const previewArea = document.getElementById('jdPreviewArea');
+            const previewContent = document.getElementById('jdPreviewContent');
+            const selectedName = document.getElementById('selectedJDName');
+            const selectedFilename = document.getElementById('selectedFilename');
+            const selectedDisplayName = document.getElementById('selectedDisplayName');
+            
+            if (this.value) {
+                const filename = this.value;
+                const displayName = selectedOption.textContent;
+                const content = selectedOption.getAttribute('data-content') || 'Preview not available';
+                
+                // Store selected values in hidden fields
+                selectedFilename.value = filename;
+                selectedDisplayName.value = displayName;
+                
+                // Show preview
+                previewContent.textContent = content;
+                selectedName.innerHTML = `Selected: <span style="color: #27ae60;">${displayName}</span>`;
+                previewArea.style.display = 'block';
+                
+                console.log("✅ JD selected:", filename, displayName);
+            } else {
+                previewArea.style.display = 'none';
+                document.getElementById('selectedFilename').value = '';
+                document.getElementById('selectedDisplayName').value = '';
+            }
         });
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        // Highlight drop area
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false);
-        });
-
-        // Handle dropped files
-        dropArea.addEventListener('drop', handleDrop, false);
-        dropArea.addEventListener('click', () => fileInput.click());
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            fileInput.files = files;
-            updateFileList(files);
-        }
-    }
-
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            updateFileList(this.files);
-        });
-    }
-
-    function updateFileList(files) {
-        if (!fileList) return;
-        fileList.innerHTML = '';
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const size = (file.size / 1024).toFixed(2);
-            fileList.innerHTML += `
-                <div class="file-item">
-                    <span>📄 ${file.name}</span>
-                    <span>${size} KB</span>
-                </div>
-            `;
-        }
-    }
-
-    // Form submission
-    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        // Validate form
-        const files = fileInput.files;
-        if (files.length === 0) {
-            alert('Please select at least one resume');
-            return;
-        }
-
-        // Check JD selection
-        const jdOption = document.querySelector('input[name="jd_option"]:checked').value;
-        if (jdOption === 'new') {
-            const jdText = document.getElementById('jdText').value;
-            if (!jdText.trim()) {
-                alert('Please enter a job description');
+        // Confirm JD selection and proceed to resume upload
+        function confirmJDSelection() {
+            const filename = document.getElementById('selectedFilename').value;
+            const displayName = document.getElementById('selectedDisplayName').value;
+            
+            console.log("Confirming JD:", filename, displayName);
+            
+            if (!filename) {
+                alert('❌ Please select a JD first');
                 return;
             }
+            
+            // Store selected JD info
+            const selectedJDDisplay = document.getElementById('selectedJDDisplay');
+            selectedJDDisplay.innerHTML = `
+                <strong>✅ Selected JD:</strong> ${displayName}
+                <input type="hidden" name="recent_jd" value="${filename}">
+                <input type="hidden" name="job_title" value="${displayName}">
+                <input type="hidden" name="jd_option" value="existing">
+            `;
+            
+            // Hide JD selection, show resume upload
+            document.getElementById('jdSelectionArea').style.display = 'none';
+            document.getElementById('resumeUploadArea').style.display = 'block';
+            
+            console.log("✅ Moving to resume upload with JD:", displayName);
         }
 
-        // Show progress
-        document.getElementById('screeningForm').style.display = 'none';
-        document.getElementById('progressSection').style.display = 'block';
-
-        const formData = new FormData(this);
-
-        try {
-            const response = await fetch('/screen-candidates', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                // Update progress
-                document.getElementById('progressFill').style.width = '100%';
-                document.getElementById('progressMessage').textContent = '✅ Screening complete!';
-                document.getElementById('progressDetail').textContent = `Processed ${data.candidates_count || 0} resumes`;
-
-                // Redirect to results
-                setTimeout(() => {
-                    window.location.href = data.redirect;
-                }, 1500);
-            } else {
-                alert('Error: ' + (data.error || 'Unknown error'));
-                document.getElementById('screeningForm').style.display = 'block';
-                document.getElementById('progressSection').style.display = 'none';
+        // Proceed with new JD
+        function proceedToResumeUpload() {
+            const jobTitle = document.getElementById('jobTitle').value;
+            const jdText = document.getElementById('jdText').value;
+            
+            if (!jobTitle || !jdText) {
+                alert('❌ Please fill in both Job Title and Job Description');
+                return;
             }
-        } catch (error) {
-            alert('Error: ' + error.message);
-            document.getElementById('screeningForm').style.display = 'block';
-            document.getElementById('progressSection').style.display = 'none';
+            
+            // Store JD info
+            const selectedJDDisplay = document.getElementById('selectedJDDisplay');
+            selectedJDDisplay.innerHTML = `
+                <strong>✅ New JD Created:</strong> ${jobTitle}
+                <input type="hidden" name="job_title" value="${jobTitle}">
+                <input type="hidden" name="jd_text" value="${jdText}">
+                <input type="hidden" name="jd_option" value="new">
+            `;
+            
+            document.getElementById('jdSelectionArea').style.display = 'none';
+            document.getElementById('resumeUploadArea').style.display = 'block';
         }
-    });
 
-    // Preview JD when selecting from recent
-    const recentJD = document.getElementById('recentJD');
-    if (recentJD) {
-        recentJD.addEventListener('change', async function() {
-            const filename = this.value;
-            if (filename) {
-                try {
-                    const response = await fetch(`/api/jd/${filename}`);
-                    const data = await response.json();
-                    if (data.content) {
-                        document.getElementById('jdPreviewContent').textContent = data.content;
-                        document.getElementById('jdPreview').style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Error loading JD preview:', error);
+        // Proceed with uploaded JD file
+        function proceedWithUploadedJD() {
+            const jdFile = document.getElementById('jdFile').files[0];
+            if (!jdFile) {
+                alert('❌ Please select a file to upload');
+                return;
+            }
+            
+            // Store file info
+            const selectedJDDisplay = document.getElementById('selectedJDDisplay');
+            selectedJDDisplay.innerHTML = `
+                <strong>✅ Uploaded JD:</strong> ${jdFile.name}
+                <input type="hidden" name="jd_option" value="existing">
+            `;
+            
+            document.getElementById('jdSelectionArea').style.display = 'none';
+            document.getElementById('resumeUploadArea').style.display = 'block';
+        }
+
+        // Go back to JD selection
+        function goBackToJDSelection() {
+            document.getElementById('resumeUploadArea').style.display = 'none';
+            document.getElementById('jdSelectionArea').style.display = 'block';
+        }
+
+        // ==================== FILE UPLOAD FUNCTIONS ====================
+        
+        // File upload handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropArea = document.getElementById('dropArea');
+            const fileInput = document.getElementById('resumes');
+            const fileList = document.getElementById('fileList');
+            
+            if (dropArea && fileInput) {
+                dropArea.addEventListener('click', () => fileInput.click());
+                
+                dropArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropArea.style.background = '#ebf5fb';
+                });
+                
+                dropArea.addEventListener('dragleave', () => {
+                    dropArea.style.background = '#f9f9f9';
+                });
+                
+                dropArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropArea.style.background = '#f9f9f9';
+                    fileInput.files = e.dataTransfer.files;
+                    updateFileList(e.dataTransfer.files);
+                });
+            }
+            
+            if (fileInput) {
+                fileInput.addEventListener('change', () => {
+                    updateFileList(fileInput.files);
+                });
+            }
+            
+            function updateFileList(files) {
+                if (!fileList) return;
+                fileList.innerHTML = '';
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    fileList.innerHTML += `
+                        <div class="file-item">
+                            <span>📄 ${file.name}</span>
+                            <span>${(file.size / 1024).toFixed(2)} KB</span>
+                        </div>
+                    `;
                 }
             }
+            
+            // Initialize
+            toggleJDFields();
+            loadJDs();
         });
-    }
-</script>
+
+        // ==================== FORM SUBMISSION ====================
+        
+        // Form submission
+        document.getElementById('uploadForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log("📝 Form submission started");
+            
+            try {
+                // Get form data
+                const formData = new FormData(this);
+                console.log("📦 FormData created");
+                
+                // Validate resumes
+                const files = document.getElementById('resumes').files;
+                console.log("📁 Files selected:", files.length);
+                
+                if (files.length === 0) {
+                    alert('Please select at least one resume');
+                    return;
+                }
+                
+                // Show progress
+                document.getElementById('jdSelectionArea').style.display = 'none';
+                document.getElementById('resumeUploadArea').style.display = 'none';
+                document.getElementById('progressSection').style.display = 'block';
+                document.getElementById('progressMessage').textContent = 'Starting screening process...';
+                
+                // Send request
+                console.log("📤 Sending request to /screen-candidates");
+                const response = await fetch('/screen-candidates', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log("📥 Response status:", response.status);
+                const data = await response.json();
+                console.log("📊 Response data:", data);
+                
+                if (data.success) {
+                    // Update progress
+                    document.getElementById('progressFill').style.width = '100%';
+                    document.getElementById('progressMessage').textContent = '✅ Screening complete!';
+                    document.getElementById('progressDetail').textContent = `Processed ${data.candidates_count || 0} resumes`;
+                    
+                    // Redirect to results
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 1500);
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown error'));
+                    document.getElementById('progressSection').style.display = 'none';
+                    document.getElementById('jdSelectionArea').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                alert('Error: ' + error.message);
+                document.getElementById('progressSection').style.display = 'none';
+                document.getElementById('jdSelectionArea').style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>

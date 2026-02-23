@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JD History - RecruitAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-secondary { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.3); }
+        .jd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .jd-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .jd-card:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .jd-title { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
+        .jd-meta { color: #7f8c8d; font-size: 14px; margin-bottom: 15px; }
+        .jd-preview { background: #f8f9fa; padding: 15px; border-radius: 5px; max-height: 150px; overflow-y: auto; font-size: 13px; border: 1px solid #e0e0e0; margin-bottom: 15px; }
+        .jd-actions { display: flex; gap: 10px; }
+        .btn-view, .btn-use { flex: 1; padding: 8px; text-align: center; border-radius: 5px; text-decoration: none; }
+        .btn-view { background: #3498db; color: white; }
+        .btn-use { background: #27ae60; color: white; }
+        .empty-state { text-align: center; padding: 60px; background: #f8f9fa; border-radius: 10px; }
+        .empty-state h2 { color: #2c3e50; margin-bottom: 10px; }
+        .empty-state p { color: #7f8c8d; margin-bottom: 20px; }
+        .btn-primary { display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Job Description History</h1>
+            <div>
+                <a href="/" class="btn-secondary">← Dashboard</a>
+                <a href="/generate-jd" class="btn-secondary" style="margin-left: 10px;">+ New JD</a>
+            </div>
+        </header>
+        
+        {% if jds and jds|length > 0 %}
+            <div class="jd-grid">
+                {% for jd in jds %}
+                <div class="jd-card">
+                    <div class="jd-title">{{ jd.filename }}</div>
+                    <div class="jd-meta">Created: {{ jd.filename[3:11] if jd.filename.startswith('jd_') else 'Unknown' }}</div>
+                    <div class="jd-preview">{{ jd.content[:200] }}...</div>
+                    <div class="jd-actions">
+                        <a href="/jd/{{ jd.filename }}" class="btn-view">View</a>
+                        <a href="/screen-candidates?use_jd={{ jd.filename }}" class="btn-use">Use for Screening</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No Job Descriptions Yet</h2>
+                <p>Generate your first job description to get started</p>
+                <a href="/generate-jd" class="btn-primary">Generate JD</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
