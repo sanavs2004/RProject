@@ -112,6 +112,27 @@ def view_jd(filename):
         return render_template('view_jd.html', filename=filename, content=content)
     
     return render_template('error.html', message='JD not found'), 404
+@app.route('/api/jd/<filename>')
+def get_jd_content(filename):
+    """Get JD content for preview - handles both text and binary files"""
+    import os
+    filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
+    
+    if not os.path.exists(filepath):
+        return jsonify({'error': 'File not found'}), 404
+    
+    try:
+        # Try to read as text first
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return jsonify({'content': content})
+    except UnicodeDecodeError:
+        # If it's a binary file, return a message
+        return jsonify({'content': f'[Binary file: {filename}. Preview not available.]'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    
 
 
 # ======================

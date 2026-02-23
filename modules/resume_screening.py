@@ -36,6 +36,35 @@ class ResumeScreeningEngine:
         os.makedirs(config.UPLOAD_FOLDER, exist_ok=True)
         os.makedirs(config.RESULTS_FOLDER, exist_ok=True)
     
+    def safe_cosine_similarity(self, emb1, emb2):
+        """Safe cosine similarity with dtype handling"""
+        try:
+            import torch
+            
+            # Convert to tensors if needed
+            if not isinstance(emb1, torch.Tensor):
+                emb1 = torch.tensor(emb1)
+            if not isinstance(emb2, torch.Tensor):
+                emb2 = torch.tensor(emb2)
+            
+            # Ensure both are float32
+            emb1 = emb1.float()
+            emb2 = emb2.float()
+            
+            # Reshape if needed for cosine_similarity
+            if len(emb1.shape) == 1:
+                emb1 = emb1.unsqueeze(0)
+            if len(emb2.shape) == 1:
+                emb2 = emb2.unsqueeze(0)
+            
+            # Calculate similarity
+            similarity = torch.nn.functional.cosine_similarity(emb1, emb2)
+            return float(similarity.mean().item() * 100)
+            
+        except Exception as e:
+            print(f"⚠️ Similarity error: {e}")
+            return 50.0
+    
     def screen_resumes(self, jd_text, resume_files, job_title="Custom Job"):
         """
         Screen multiple resumes against a job description using semantic understanding
@@ -103,13 +132,13 @@ class ResumeScreeningEngine:
             resume_embedding = self.embedder.encode(parsed_data['text'])
             job_embedding = np.array(job['embedding'])
             
-            # Calculate semantic similarity
-            semantic_similarity = util.cos_sim(resume_embedding, job_embedding).item() * 100
+            # Calculate semantic similarity - USING SAFE FUNCTION
+            semantic_similarity = self.safe_cosine_similarity(resume_embedding, job_embedding)
             
             # Extract skills semantically
             skills = self.skill_extractor.extract_semantic(parsed_data['text'])
             
-            # Calculate skill relevance
+            # Calculate skill relevance - USING SAFE FUNCTION
             skill_relevance = self._calculate_semantic_skill_relevance(
                 skills, 
                 job['semantic_keywords']
@@ -118,13 +147,13 @@ class ResumeScreeningEngine:
             # Extract experience with semantic understanding
             experience = self.parser.extract_experience_semantic(parsed_data['text'])
             
-            # Calculate experience relevance
+            # Calculate experience relevance - USING SAFE FUNCTION
             exp_relevance = self._calculate_experience_relevance(
                 experience,
                 job['description']
             )
             
-            # Calculate education relevance
+            # Calculate education relevance - USING SAFE FUNCTION
             education = self.parser.extract_education_semantic(parsed_data['text'])
             edu_relevance = self._calculate_education_relevance(
                 education,
@@ -166,15 +195,12 @@ class ResumeScreeningEngine:
     
     def _extract_semantic_keywords(self, text):
         """Extract semantically important keywords from JD"""
-        # Use sentence transformer to identify important terms
-        # This is simplified - in production use keyBERT or similar
         words = text.lower().split()
         word_freq = {}
         for word in words:
             if len(word) > 3:
                 word_freq[word] = word_freq.get(word, 0) + 1
         
-        # Get most frequent important words
         sorted_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
         return [w[0] for w in sorted_words[:20]]
     
@@ -183,7 +209,6 @@ class ResumeScreeningEngine:
         if not jd_keywords or not candidate_skills:
             return 50  # Neutral score
         
-        # Create embeddings for skills and keywords
         skill_text = ' '.join([s['skill'] for s in candidate_skills])
         keyword_text = ' '.join(jd_keywords)
         
@@ -193,12 +218,12 @@ class ResumeScreeningEngine:
         skill_emb = self.embedder.encode(skill_text)
         keyword_emb = self.embedder.encode(keyword_text)
         
-        similarity = util.cos_sim(skill_emb, keyword_emb).item() * 100
+        # USING SAFE FUNCTION
+        similarity = self.safe_cosine_similarity(skill_emb, keyword_emb)
         return similarity
     
     def _calculate_experience_relevance(self, experience, jd_text):
         """Calculate experience relevance"""
-        # Create experience summary
         exp_text = f"{experience['years']} years of experience. "
         exp_text += ' '.join(experience['descriptions'])
         
@@ -208,7 +233,8 @@ class ResumeScreeningEngine:
         exp_emb = self.embedder.encode(exp_text[:500])
         jd_emb = self.embedder.encode(jd_text[:500])
         
-        similarity = util.cos_sim(exp_emb, jd_emb).item() * 100
+        # USING SAFE FUNCTION
+        similarity = self.safe_cosine_similarity(exp_emb, jd_emb)
         
         # Bonus for high experience
         if experience['years'] > 5:
@@ -228,23 +254,25 @@ class ResumeScreeningEngine:
         edu_emb = self.embedder.encode(edu_text)
         jd_emb = self.embedder.encode(jd_text[:500])
         
-        similarity = util.cos_sim(edu_emb, jd_emb).item() * 100
+        # USING SAFE FUNCTION
+        similarity = self.safe_cosine_similarity(edu_emb, jd_emb)
         return similarity
     
     def _find_semantic_matches(self, resume_points, jd_text):
         """Find semantic matches between resume and JD"""
         matches = []
         
-        for point in resume_points[:5]:  # Check top 5 points
+        for point in resume_points[:5]:
             if not point:
                 continue
             
             point_emb = self.embedder.encode(point)
             jd_emb = self.embedder.encode(jd_text[:1000])
             
-            similarity = util.cos_sim(point_emb, jd_emb).item() * 100
+            # USING SAFE FUNCTION
+            similarity = self.safe_cosine_similarity(point_emb, jd_emb)
             
-            if similarity > 70:  # High similarity threshold
+            if similarity > 70:
                 matches.append({
                     'point': point,
                     'similarity': round(similarity, 1)
@@ -278,6 +306,5 @@ class ResumeScreeningEngine:
                         'created_at': data['created_at']
                     })
         
-        # Sort by date (newest first)
         screenings.sort(key=lambda x: x['created_at'], reverse=True)
         return screenings

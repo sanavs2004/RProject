@@ -85,26 +85,58 @@ Key Skills: {', '.join(skills)}
 # ==============================
 # Get JD History
 # ==============================
+
 def get_all_jds():
+    """Get all job descriptions"""
     if not os.path.exists(STORE_FOLDER):
         return []
-
+    
     jds = []
     for file in os.listdir(STORE_FOLDER):
         if file.startswith("jd_") and file.endswith(".txt"):
             path = os.path.join(STORE_FOLDER, file)
-
-            with open(path, "r", encoding="utf-8") as f:
-                content = f.read()
-
-            jds.append({
-                "filename": file,
-                "content": content
-            })
-
-    # newest first
+            try:
+                # Try to read as text
+                with open(path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                jds.append({
+                    "filename": file,
+                    "content": content[:200] + "..." if len(content) > 200 else content,
+                    "preview": content[:500]
+                })
+            except UnicodeDecodeError:
+                # If can't read as text, still include filename but with note
+                jds.append({
+                    "filename": file,
+                    "content": "[Binary file - preview not available]",
+                    "preview": "[Binary file]"
+                })
+            except Exception as e:
+                print(f"Error reading {file}: {e}")
+    
+    # Sort by filename (which includes timestamp)
     jds.sort(key=lambda x: x["filename"], reverse=True)
     return jds
+# def get_all_jds():
+#     if not os.path.exists(STORE_FOLDER):
+#         return []
+
+#     jds = []
+#     for file in os.listdir(STORE_FOLDER):
+#         if file.startswith("jd_") and file.endswith(".txt"):
+#             path = os.path.join(STORE_FOLDER, file)
+
+#             with open(path, "r", encoding="utf-8") as f:
+#                 content = f.read()
+
+#             jds.append({
+#                 "filename": file,
+#                 "content": content
+#             })
+
+#     # newest first
+#     jds.sort(key=lambda x: x["filename"], reverse=True)
+#     return jds
 
 
 # ==============================

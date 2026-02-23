@@ -6,6 +6,17 @@ from datetime import datetime
 class SemanticParser:
     """Parse resumes with semantic understanding"""
     
+    def __init__(self):
+        # Try to import sentence_transformers for similarity
+        try:
+            from sentence_transformers import SentenceTransformer, util
+            self.util = util
+            self.model = SentenceTransformer('all-MiniLM-L6-v2')
+            self.semantic_support = True
+        except ImportError:
+            self.semantic_support = False
+            print("⚠️ sentence-transformers not installed. Using basic matching.")
+    
     def parse_resume_semantic(self, file_path):
         """Extract and understand resume content semantically"""
         # Extract raw text
@@ -27,6 +38,25 @@ class SemanticParser:
             'word_count': len(text.split()),
             'char_count': len(text)
         }
+    
+    # ========== ADD THE FUNCTION HERE (inside the class) ==========
+    def calculate_similarity(self, embedding1, embedding2):
+        """Calculate similarity with proper type handling"""
+        try:
+            if not self.semantic_support:
+                return 50.0
+            
+            # Convert both to same dtype (float32)
+            if embedding1.dtype != embedding2.dtype:
+                embedding1 = embedding1.astype('float32')
+                embedding2 = embedding2.astype('float32')
+            
+            # Now calculate similarity
+            similarity = self.util.cos_sim(embedding1, embedding2).item() * 100
+            return similarity
+        except Exception as e:
+            print(f"Error calculating similarity: {e}")
+            return 50.0
     
     def _extract_text(self, file_path):
         """Extract text from file"""
