@@ -4,6 +4,82 @@
     <title>Ranking Results - RecruitAI</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
+        .candidate-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.candidate-row:hover {
+    background-color: #f0f8ff !important;
+}
+.missing-skills-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    z-index: 1000;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+.skill-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin: 3px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.skill-tag.high { background: #f44336; color: white; }
+.skill-tag.medium { background: #ff9800; color: white; }
+.skill-tag.low { background: #4caf50; color: white; }
+.more-skills-btn {
+    background: none;
+    border: 1px dashed #667eea;
+    color: #667eea;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+.more-skills-btn:hover {
+    background: #667eea;
+    color: white;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #7f8c8d;
+}
+.close-btn:hover {
+    color: #f44336;
+}
+.top-skills {
+    display: inline-block;
+    background: #e8f5e9;
+    padding: 3px 10px;
+    border-radius: 15px;
+    margin: 2px;
+    font-size: 12px;
+}
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .job-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
         .job-header h1 { font-size: 32px; margin-bottom: 10px; }
@@ -85,41 +161,38 @@
                 </tr>
             </thead>
             <tbody>
-                {% for candidate in candidates %}
-                <tr>
-                    <td><strong>#{{ loop.index }}</strong></td>
-                    <td>{{ candidate.filename }}</td>
-                    <td>
-                        <span class="score-badge 
-                            {% if candidate.overall_score >= 75 %}score-high
-                            {% elif candidate.overall_score >= 60 %}score-medium
-                            {% else %}score-low{% endif %}">
-                            {{ candidate.overall_score }}%
-                        </span>
-                    </td>
-                    <td>{{ candidate.semantic_score }}%</td>
-                    <td>{{ candidate.verification_score }}%</td>
-                    <td>{{ candidate.experience_years }} yrs</td>
-                    <!-- <td>
-                        <span class="decision-badge decision-{{ candidate.decision.action }}">
-                            {{ candidate.decision.action|upper }}
-                        </span>
-                    </td> -->
-                    <td>
-                        {% if candidate.missing_skills %}
-                            {% for skill in candidate.missing_skills[:2] %}
-                                <span class="skill-tag {{ skill.priority }}">{{ skill.skill }}</span>
-                            {% endfor %}
-                            {% if candidate.missing_skills|length > 2 %}
-                                <span class="skill-tag">+{{ candidate.missing_skills|length - 2 }} more</span>
-                            {% endif %}
-                        {% else %}
-                            <span style="color: #4caf50;">✓ All skills matched</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+    {% for candidate in candidates %}
+    <tr class="candidate-row" onclick="viewCandidateDetails('{{ candidate.candidate_id }}')">
+        <td><strong>#{{ loop.index }}</strong></td>
+        <td>{{ candidate.filename }}</td>
+        <td>
+            <span class="score-badge 
+                {% if candidate.overall_score >= 75 %}score-high
+                {% elif candidate.overall_score >= 60 %}score-medium
+                {% else %}score-low{% endif %}">
+                {{ "%.1f"|format(candidate.overall_score) }}%
+            </span>
+        </td>
+        <td>{{ "%.1f"|format(candidate.semantic_score) }}%</td>
+        <td>{{ "%.1f"|format(candidate.verification_score) }}%</td>
+        <td>{{ candidate.experience_years }} yrs</td>
+        <td>
+            <div>
+                {% if candidate.extracted_skills %}
+                    {% for skill in candidate.extracted_skills[:3] %}
+                        <span class="top-skills">{{ skill }}</span>
+                    {% endfor %}
+                    {% if candidate.extracted_skills|length > 3 %}
+                        <button class="more-skills-btn" onclick="event.stopPropagation(); showAllSkills('{{ candidate.candidate_id }}')">+{{ candidate.extracted_skills|length - 3 }} more</button>
+                    {% endif %}
+                {% else %}
+                    <span style="color: #95a5a6;">No skills detected</span>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
         </table>
         
         <!-- Detailed Missing Skills Analysis -->
@@ -195,11 +268,29 @@
         </div>
         {% endif %}
          -->
+        <div id="popupOverlay" class="popup-overlay" onclick="closePopup()"></div>
+
+<!-- Candidate Details Popup -->
+<div id="candidatePopup" class="missing-skills-popup">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <div id="popupContent"></div>
+</div>
+
+<!-- Popup Overlay -->
+<div id="popupOverlay" class="popup-overlay" onclick="closePopup()"></div>
+
+<!-- Candidate Details Popup -->
+<div id="candidatePopup" class="missing-skills-popup">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <div id="popupContent"></div>
+</div>
         <div class="actions">
             <button class="btn-primary" onclick="window.print()">🖨️ Print Results</button>
             <button class="btn-secondary" onclick="history.back()">← Back</button>
             <a href="/screen-candidates" class="btn-secondary">New Screening</a>
         </div>
     </div>
+
+
 </body>
 </html>

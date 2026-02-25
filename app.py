@@ -119,7 +119,6 @@ def view_jd(filename):
 #     """API endpoint to get recent JDs with display names"""
 #     jds = screening_engine.get_recent_jds()
 #     return jsonify(jds)
-
 @app.route('/api/recent-jds')
 def api_recent_jds():
     """API endpoint to get recent JDs with display names"""
@@ -131,24 +130,33 @@ def api_recent_jds():
         for file in os.listdir(STORE_FOLDER):
             if file.endswith('.txt'):
                 filepath = os.path.join(STORE_FOLDER, file)
-                with open(filepath, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                
-                # Create display name
-                display_name = file.replace('jd_', '').replace('.txt', '')
-                if '_' in display_name:
-                    parts = display_name.split('_')
-                    # Remove timestamp if present
-                    if len(parts) > 1 and parts[-1].isdigit() and len(parts[-1]) == 14:
-                        display_name = ' '.join(parts[:-1])
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    # Extract display name from filename
+                    if file == "latest_jd.txt":
+                        display_name = "Latest JD"
                     else:
-                        display_name = ' '.join(parts)
-                
-                jds.append({
-                    'filename': file,
-                    'display_name': display_name,
-                    'content': content[:200]  # Send preview only
-                })
+                        # Remove 'jd_' prefix and timestamp
+                        # Format: jd_Python_Developer_20260223_224423.txt
+                        name_part = file.replace('jd_', '').replace('.txt', '')
+                        parts = name_part.split('_')
+                        
+                        # Check if last part is timestamp (14 digits)
+                        if len(parts) > 1 and parts[-1].isdigit() and len(parts[-1]) == 14:
+                            # Remove timestamp
+                            display_name = ' '.join(parts[:-1])
+                        else:
+                            display_name = ' '.join(parts)
+                    
+                    jds.append({
+                        'filename': file,
+                        'display_name': display_name,
+                        'content': content[:200] + '...'  # Preview
+                    })
+                except Exception as e:
+                    print(f"Error reading {file}: {e}")
         
         # Sort by filename (newest first)
         jds.sort(key=lambda x: x['filename'], reverse=True)
@@ -425,6 +433,21 @@ def candidate_details(candidate_id):
 @app.errorhandler(404)
 def not_found(error):
     return render_template('error.html', message='Page not found'), 404
+
+@app.route('/api/candidate/<candidate_id>')
+def get_candidate_details(candidate_id):
+    """Get detailed candidate information"""
+    # Search through all screenings
+    screenings = screening_engine.get_all_screenings()
+    
+    for screening in screenings:
+        result = screening_engine.get_screening_result(screening['id'])
+        if result:
+            for candidate in result.get('candidates', []):
+                if candidate.get('candidate_id') == candidate_id:
+                    return jsonify(candidate)
+    
+    return jsonify({'error': 'Candidate not found'}), 404
 
 
 @app.errorhandler(500)

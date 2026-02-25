@@ -1,0 +1,11 @@
+Role Summary:
+A dynamic team player to develop and maintain company's web applications. Must effectively work in a fast-paced environment where agility is key. Require experience with full stack development tools and methodologies.
+Key Responsibilities:
+- Create responsive frontend using HTML, CSS, JavaScript, and Bootstrap components to enhance user interface interactions.
+- Implement backend functionality leveraging Python frameworks for API developments and server management in Docker containers.
+- Integrate web technologies with a focus on seamless data flow between the front and back end.
+- Maintain code quality by following best coding practices, documentation standards, and conduct regular Git branching strategies for version control purposes within GitHub platforms.
+Required Qualifications:
+Experience in full stack web development (0–1 years preferred). Expertise with Python frameworks like Django or Flask required to develop backend services. Knowledge of CSS Flexbox/Grid, HTML5 semantic markup and JavaScript ES6+ is essential for creating responsive designs and dynamic user interfaces. Familiarity with Git workflows as well as experience using version control tools such as GitHub is mandatory. Proficiency in front-end frameworks (Bootstrap) or libraries like jQuery will be required to improve the UI/UX of web applications.
+Rules:
+Leave one blank line between sections. Use hyphen bullets only. Do not use markdown or symbols. Keep sentences concise.

@@ -15,7 +15,7 @@ MODEL_NAME = "phi3"
 def generate_job_description(role, skills, experience):
     """
     Generate a job description using Phi-3 via Ollama.
-    Saves both latest and timestamped copies.
+    Saves both latest and timestamped copies with job role in filename.
     Returns the cleaned JD text.
     Raises exception on failure.
     """
@@ -51,7 +51,6 @@ Experience Required: {experience} years
 Key Skills: {', '.join(skills)}
 """
 
-    # 🔥 Increased timeout for model cold start
     response = requests.post(
         OLLAMA_URL,
         json={"model": MODEL_NAME, "prompt": prompt, "stream": False},
@@ -70,13 +69,18 @@ Key Skills: {', '.join(skills)}
     # Save files
     os.makedirs(STORE_FOLDER, exist_ok=True)
 
-    # Save latest
+    # Save latest (overwrites each time)
     with open(os.path.join(STORE_FOLDER, "latest_jd.txt"), "w", encoding="utf-8") as f:
         f.write(cleaned_jd)
 
-    # Save timestamped
+    # Save timestamped with job role in filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"jd_{timestamp}.txt"
+    
+    # Clean the role to make it filename-friendly
+    clean_role = re.sub(r'[^\w\s-]', '', role)  # Remove special characters
+    clean_role = re.sub(r'[-\s]+', '_', clean_role)  # Replace spaces/hyphens with underscore
+    
+    filename = f"jd_{clean_role}_{timestamp}.txt"
     with open(os.path.join(STORE_FOLDER, filename), "w", encoding="utf-8") as f:
         f.write(cleaned_jd)
 

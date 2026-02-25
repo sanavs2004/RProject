@@ -135,16 +135,34 @@
             
         </form>
         
-        <!-- Progress Section (hidden initially) -->
-        <div id="progressSection" class="progress-section" style="display: none;">
-            <h3>Processing Resumes...</h3>
-            <div class="progress-bar">
-                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
-            </div>
-            <p id="progressMessage">Starting screening process...</p>
-            <p id="progressDetail" class="hint"></p>
-        </div>
+      <!-- Progress Section (hidden initially) -->
+<div id="progressSection" class="progress-section" style="display: none;">
+    <h3>🔄 Processing Resumes...</h3>
+    
+    <!-- Progress Bar -->
+    <div class="progress-bar" style="height: 25px; background: #ecf0f1; border-radius: 15px; overflow: hidden; margin: 25px 0; position: relative;">
+        <div id="progressFill" class="progress-fill" style="height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.3s ease; border-radius: 15px;"></div>
+        <span id="progressPercentage" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">0%</span>
     </div>
+    
+    <!-- Progress Status -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <p id="progressMessage" style="font-size: 16px; color: #2c3e50;">Starting screening process...</p>
+        <span id="progressCounter" style="background: #667eea; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">0/0</span>
+    </div>
+    
+    <!-- File being processed -->
+    <div id="currentFile" style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-family: monospace; color: #34495e;">
+        <span id="currentFileName">Initializing...</span>
+    </div>
+    
+    <!-- Processing Log (optional) -->
+    <div id="progressLog" style="max-height: 150px; overflow-y: auto; background: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; margin-top: 15px;">
+        <div>> System ready</div>
+    </div>
+    
+    <p id="progressDetail" class="hint" style="margin-top: 15px; color: #7f8c8d;"></p>
+</div>
 
     <script>
         // ==================== JD SELECTION FUNCTIONS ====================
@@ -170,18 +188,15 @@
                 select.innerHTML = '<option value="">-- Select a JD --</option>';
                 
                 jds.forEach(jd => {
-                    const option = document.createElement('option');
-                    option.value = jd.filename;
-                    
-                    // Clean up display name
-                    let displayName = jd.display_name || jd.filename.replace('jd_', '').replace('.txt', '');
-                    displayName = displayName.replace(/_/g, ' ').trim();
-                    
-                    option.textContent = displayName;
-                    option.setAttribute('data-content', jd.content);
-                    option.setAttribute('data-filename', jd.filename);
-                    select.appendChild(option);
-                });
+    const option = document.createElement('option');
+    option.value = jd.filename;
+    
+    // Use the display_name from the API
+    option.textContent = jd.display_name;
+    option.setAttribute('data-content', jd.content);
+    option.setAttribute('data-filename', jd.filename);
+    select.appendChild(option);
+});
                 
                 console.log("✅ JDs loaded:", jds.length);
             } catch (error) {
@@ -350,66 +365,139 @@
             loadJDs();
         });
 
-        // ==================== FORM SUBMISSION ====================
+// ==================== FORM SUBMISSION WITH PROGRESS ====================
+document.getElementById('uploadForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    console.log("📝 Form submission started");
+    
+    try {
+        // Get form data
+        const formData = new FormData(this);
         
-        // Form submission
-        document.getElementById('uploadForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            console.log("📝 Form submission started");
-            
-            try {
-                // Get form data
-                const formData = new FormData(this);
-                console.log("📦 FormData created");
-                
-                // Validate resumes
-                const files = document.getElementById('resumes').files;
-                console.log("📁 Files selected:", files.length);
-                
-                if (files.length === 0) {
-                    alert('Please select at least one resume');
-                    return;
-                }
-                
-                // Show progress
-                document.getElementById('jdSelectionArea').style.display = 'none';
-                document.getElementById('resumeUploadArea').style.display = 'none';
-                document.getElementById('progressSection').style.display = 'block';
-                document.getElementById('progressMessage').textContent = 'Starting screening process...';
-                
-                // Send request
-                console.log("📤 Sending request to /screen-candidates");
-                const response = await fetch('/screen-candidates', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                console.log("📥 Response status:", response.status);
-                const data = await response.json();
-                console.log("📊 Response data:", data);
-                
-                if (data.success) {
-                    // Update progress
-                    document.getElementById('progressFill').style.width = '100%';
-                    document.getElementById('progressMessage').textContent = '✅ Screening complete!';
-                    document.getElementById('progressDetail').textContent = `Processed ${data.candidates_count || 0} resumes`;
-                    
-                    // Redirect to results
-                    setTimeout(() => {
-                        window.location.href = data.redirect;
-                    }, 1500);
-                } else {
-                    alert('Error: ' + (data.error || 'Unknown error'));
-                    document.getElementById('progressSection').style.display = 'none';
-                    document.getElementById('jdSelectionArea').style.display = 'block';
-                }
-            } catch (error) {
-                console.error('❌ Error:', error);
-                alert('Error: ' + error.message);
-                document.getElementById('progressSection').style.display = 'none';
-                document.getElementById('jdSelectionArea').style.display = 'block';
-            }
+        // Validate resumes
+        const files = document.getElementById('resumes').files;
+        console.log("📁 Files selected:", files.length);
+        
+        if (files.length === 0) {
+            alert('Please select at least one resume');
+            return;
+        }
+        
+        // Show progress
+        document.getElementById('jdSelectionArea').style.display = 'none';
+        document.getElementById('resumeUploadArea').style.display = 'none';
+        document.getElementById('progressSection').style.display = 'block';
+        
+        // Initialize progress
+        const totalFiles = files.length;
+        let processedFiles = 0;
+        
+        updateProgressBar(0, totalFiles, 'Starting...', 'Initializing...');
+        addToLog('🚀 Starting screening process...');
+        
+        // Send request
+        console.log("📤 Sending request to /screen-candidates");
+        const response = await fetch('/screen-candidates', {
+            method: 'POST',
+            body: formData
         });
+        
+        console.log("📥 Response status:", response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("📊 Response data:", data);
+        
+        if (data.success) {
+            // Complete progress
+            updateProgressBar(100, totalFiles, '✅ Complete!', 'All files processed');
+            addToLog('✅ Screening completed successfully!');
+            document.getElementById('progressDetail').textContent = `Processed ${data.candidates_count || totalFiles} resumes`;
+            
+            // Redirect to results
+            setTimeout(() => {
+                window.location.href = data.redirect;
+            }, 1500);
+        } else {
+            throw new Error(data.error || 'Unknown error');
+        }
+    } catch (error) {
+        console.error('❌ Error:', error);
+        
+        // Show error in progress bar
+        document.getElementById('progressFill').style.background = 'linear-gradient(90deg, #f44336, #d32f2f)';
+        document.getElementById('progressMessage').innerHTML = '❌ Error: ' + error.message;
+        document.getElementById('progressMessage').style.color = '#f44336';
+        addToLog(`❌ ERROR: ${error.message}`);
+        
+        setTimeout(() => {
+            document.getElementById('progressSection').style.display = 'none';
+            document.getElementById('jdSelectionArea').style.display = 'block';
+        }, 3000);
+    }
+});
+
+// Helper function to update progress bar
+function updateProgressBar(percent, total, message, currentFile) {
+    const fill = document.getElementById('progressFill');
+    const percentage = document.getElementById('progressPercentage');
+    const counter = document.getElementById('progressCounter');
+    const msg = document.getElementById('progressMessage');
+    const fileName = document.getElementById('currentFileName');
+    
+    // Update bar
+    fill.style.width = percent + '%';
+    percentage.textContent = Math.round(percent) + '%';
+    
+    // Update counter
+    const processed = Math.round((percent / 100) * total);
+    counter.textContent = `${processed}/${total}`;
+    
+    // Update message
+    msg.textContent = message;
+    
+    // Update current file
+    if (currentFile) {
+        fileName.textContent = currentFile;
+    }
+}
+
+// Helper function to add to log
+function addToLog(message) {
+    const log = document.getElementById('progressLog');
+    const timestamp = new Date().toLocaleTimeString();
+    log.innerHTML += `<div style="color: #a8e6cf;">> [${timestamp}] ${message}</div>`;
+    log.scrollTop = log.scrollHeight;
+}
+
+// Simulate progress (remove this in production - it's just for demo)
+function simulateProgress() {
+    let percent = 0;
+    const files = document.getElementById('resumes').files;
+    const fileNames = Array.from(files).map(f => f.name);
+    
+    const interval = setInterval(() => {
+        if (percent >= 90) {
+            clearInterval(interval);
+            return;
+        }
+        
+        percent += 10;
+        const currentFileIndex = Math.floor((percent / 100) * files.length);
+        const currentFile = fileNames[currentFileIndex] || fileNames[fileNames.length - 1];
+        
+        updateProgressBar(percent, files.length, `Processing ${currentFile}...`, currentFile);
+        addToLog(`📄 Processing: ${currentFile}`);
+    }, 500);
+    
+    return interval;
+}
+
+// Note: In production, you'd get real progress from the server
+// The simulation above is just for UI demonstration
     </script>
 </body>
 </html>

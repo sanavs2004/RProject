@@ -44,6 +44,66 @@
         "maintainability practices in coding standards": 1,
         "cross-browser compatibility knowledge": 1
       }
+    },
+    {
+      "screening_id": "59f2f168-61f9-4033-bb8e-a6b03778f89b",
+      "job_title": "latest jd",
+      "date": "2026-02-24T13:46:09.797735",
+      "total_candidates": 6,
+      "average_score": 33.9,
+      "top_score": 40.1,
+      "skill_gaps": {
+        "Bootstrap": 2,
+        "Git version control on GitHub platform": 2,
+        "coding best practices and documentation standards.": 2,
+        "Docker containerization and management": 1,
+        "API developments with Django REST Framework beyond basic usage": 1
+      }
+    },
+    {
+      "screening_id": "9888d718-fb6e-4c44-b8b0-33ab69075d62",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-24T14:00:55.735280",
+      "total_candidates": 4,
+      "average_score": 36.0,
+      "top_score": 41.0,
+      "skill_gaps": {
+        "AWS services proficiency (particularly relating to S3": 1,
+        "EC2": 1,
+        "RDS for PostgreSQL)": 1,
+        "understanding of scalable web application design principles": 1,
+        "experience with database management strategies particularly using SQL databases like PostgreSQL": 1
+      }
+    },
+    {
+      "screening_id": "c901dc34-3686-4e7c-89da-829c9adeaf05",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-24T15:01:51.790472",
+      "total_candidates": 5,
+      "average_score": 33.7,
+      "top_score": 38.7,
+      "skill_gaps": {
+        "PostgreSQL database interaction expertise": 5,
+        "AWS deployment techniques": 5,
+        "CI/CD pipeline collaboration abilities": 5,
+        "software scalability strategies": 4,
+        "secure API gateway establishment.": 3
+      }
+    },
+    {
+      "screening_id": "0beb1bf2-68c5-4764-ac09-2284c0c15a5c",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T09:49:57.260830",
+      "total_candidates": 5,
+      "average_score": 33.7,
+      "top_score": 38.7,
+      "skill_gaps": {
+        "PostgreSQL database interactions": 3,
+        "API gateway security": 2,
+        "AWS infrastructure deployment": 1,
+        "CI/CD pipeline collaboration": 1,
+        "secure coding practices": 1
+      }
     }
   ]
 }

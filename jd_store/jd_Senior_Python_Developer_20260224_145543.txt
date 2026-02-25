@@ -1,0 +1,9 @@
+Senior Python Developer
+_Roles and Responsibilities_
+The Senior Python Developer will serve as a leader in the software development team by spearheading complex Python projects utilizing frameworks such as Django. The individual is expected to ensure code quality, improve system performance, and guide junior developers through best practices of coding standards within AWS cloud services while also maintaining database interactions using PostgreSQL.
+_Key Responsibilities: - Oversee the development lifecycle for Python projects._
+- Design and implement advanced algorithms in Django applications to enhance user experience and system robustness._
+- Optimize queries within a PostgreSQL environment, improving data retrieval times._
+- Mentor junior developers on industry best practices and secure coding principles._
+_Required Qualifications: - Bachelor's or Master’s degree in Computer Science, Engineering, Information Technology, or related field (Master’s preferred). - At least 1 year of experience working with Python programming languages. - Proven knowledge of Django framework to manage complex web applications and services._
+- Familiarity with AWS cloud infrastructure essential for deploying applications within the AWS ecosystem._

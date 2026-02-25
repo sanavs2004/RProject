@@ -1,0 +1,13 @@
+Role Summary: To drive web application development with a focus on cloud infrastructure and database integration using Python technologies.
+- 
+Key Responsibilities:
+- Designing scalable and efficient web applications utilizing the Django framework for backend services.
+- Implement complex data storage solutions leveraging AWS, PostgreSQL databases to handle high-volume traffic with minimal latency.
+- Writing clean, well-documented code following PEP 8 standards while ensuring security best practices are met throughout development and deployment stages.
+- Collaborating closely with cross-functional teams for continuous integration/continuous deployment (CI/CD) processes to maintain quality assurance protocols consistently across releases.
+- 
+Required Qualifications:
+- Bachelor's degree in Computer Science, Information Technology or related field is required; a Master’s Degree preferred with an additional year of experience would be highly regarded.
+- Proven working knowledge and hands-on proficiency demonstrated through previous Python project experiences involving Django for web application development within cloud environments like AWS (Amazon Web Services).
+- Familiarity with PostgreSQL, NoSQL databases as well as SQL relational database management to effectively handle data persistence needs of applications.
+- Excellent problem-solving skills and capability to work collaboratively in a team setting is mandatory for success within this role. Strong communication abilities both verbally and via written mediums are expected when documenting code, technical problems or providing updates on project milestones/progress reports.
