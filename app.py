@@ -450,6 +450,40 @@ def get_candidate_details(candidate_id):
     return jsonify({'error': 'Candidate not found'}), 404
 
 
+@app.route('/debug-candidate/<screening_id>')
+def debug_candidate(screening_id):
+    """Debug endpoint to see raw candidate data"""
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return jsonify({'error': 'Screening not found'}), 404
+    
+    candidates = result.get('candidates', [])
+    debug_data = []
+    
+    for c in candidates:
+        debug_data.append({
+            'filename': c.get('filename'),
+            'semantic_score': c.get('semantic_score'),
+            'skill_match_score': c.get('skill_match_score'),
+            'experience_score': c.get('experience_score'),
+            'education_score': c.get('education_score'),
+            'github_score': c.get('github_score'),
+            'confidence_bonus': c.get('confidence_bonus'),
+            'overall_score': c.get('overall_score'),
+            'final_score': c.get('final_score'),
+            'extracted_skills': c.get('extracted_skills', [])[:5],
+            'missing_skills': c.get('missing_skills', [])[:3]
+        })
+    
+    return jsonify({
+        'screening_id': screening_id,
+        'job_title': result.get('job', {}).get('title'),
+        'total_candidates': len(candidates),
+        'candidates': debug_data
+    })
+
+
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('error.html', message='Internal server error'), 500

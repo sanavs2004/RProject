@@ -29,6 +29,16 @@
         .btn-secondary { background: #ecf0f1; color: #2c3e50; }
         .skill-tag { background: #f44336; color: white; padding: 2px 5px; border-radius: 3px; margin: 2px; display: inline-block; font-size: 11px; }
         .github-username { color: #7f8c8d; font-size: 11px; margin-top: 3px; }
+        .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px; }
+        .status-shortlist { background: #4caf50; color: white; }
+        .status-hold { background: #ff9800; color: white; }
+        .status-reject { background: #f44336; color: white; }
+        .component-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px; }
+        .component-semantic { background: #3498db; color: white; }
+        .component-skills { background: #9b59b6; color: white; }
+        .component-exp { background: #e67e22; color: white; }
+        .component-edu { background: #2ecc71; color: white; }
+        .debug-panel { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 5px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
@@ -44,12 +54,12 @@
                 <div class="stat-label">Total Candidates</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 75)|list|length if candidates else 0 }}</div>
-                <div class="stat-label">Shortlisted (75%+)</div>
+                <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 65)|list|length if candidates else 0 }}</div>
+                <div class="stat-label">Shortlisted (65%+)</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 60)|list|length if candidates else 0 }}</div>
-                <div class="stat-label">Interview (60%+)</div>
+                <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 50)|selectattr('overall_score', '<', 65)|list|length if candidates else 0 }}</div>
+                <div class="stat-label">On Hold (50-65%)</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ candidates|selectattr('github_username', 'defined')|list|length if candidates else 0 }}</div>
@@ -59,6 +69,27 @@
                 <div class="stat-value">{{ "%.1f"|format(candidates[0].overall_score) if candidates and candidates[0].overall_score else 0 }}%</div>
                 <div class="stat-label">Top Score</div>
             </div>
+        </div>
+        
+        <!-- Debug Panel - Shows available fields (remove after fixing) -->
+        <div class="debug-panel">
+            <h4>🔍 Debug: Available Data Fields</h4>
+            {% if candidates and candidates|length > 0 %}
+                <p><strong>First candidate has these fields:</strong></p>
+                <ul style="columns: 3;">
+                {% for key in candidates[0].keys() %}
+                    <li>{{ key }}</li>
+                {% endfor %}
+                </ul>
+                <p><strong>Sample values:</strong></p>
+                <pre style="background: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
+{% for key in candidates[0].keys() %}
+{{ key }}: {{ candidates[0][key] }}
+{% endfor %}
+                </pre>
+            {% else %}
+                <p>No candidate data available</p>
+            {% endif %}
         </div>
         
         <div class="ranking-table">
@@ -72,6 +103,7 @@
                         <th>Bonus</th>
                         <th>Skills Found</th>
                         <th>Missing Skills</th>
+                        <th>Status</th>
                         <th>Explanation</th>
                     </tr>
                 </thead>
@@ -84,8 +116,8 @@
                         <!-- Overall Score -->
                         <td>
                             <span class="score-badge 
-                                {% if candidate.overall_score >= 75 %}score-high
-                                {% elif candidate.overall_score >= 60 %}score-medium
+                                {% if candidate.overall_score >= 65 %}score-high
+                                {% elif candidate.overall_score >= 50 %}score-medium
                                 {% else %}score-low{% endif %}">
                                 {{ "%.1f"|format(candidate.overall_score) }}%
                             </span>
@@ -100,6 +132,10 @@
                                 {% if candidate.github_username %}
                                     <div class="github-username">@{{ candidate.github_username }}</div>
                                 {% endif %}
+                            {% elif candidate.github_score %}
+                                <span class="github-badge">
+                                    {{ "%.1f"|format(candidate.github_score) }}%
+                                </span>
                             {% else %}
                                 <span style="color: #95a5a6;">—</span>
                             {% endif %}
@@ -118,7 +154,7 @@
                         
                         <!-- Skills Found -->
                         <td>
-                            {% if candidate.extracted_skills %}
+                            {% if candidate.extracted_skills and candidate.extracted_skills|length > 0 %}
                                 {{ candidate.extracted_skills[:3]|join(', ') }}
                                 {% if candidate.extracted_skills|length > 3 %}
                                     <span style="color: #7f8c8d;">+{{ candidate.extracted_skills|length - 3 }} more</span>
@@ -130,9 +166,9 @@
                         
                         <!-- Missing Skills -->
                         <td>
-                            {% if candidate.missing_skills %}
+                            {% if candidate.missing_skills and candidate.missing_skills|length > 0 %}
                                 {% for skill in candidate.missing_skills[:2] %}
-                                    <span class="skill-tag">{{ skill.skill }}</span>
+                                    <span class="skill-tag">{{ skill.skill if skill is mapping else skill }}</span>
                                 {% endfor %}
                                 {% if candidate.missing_skills|length > 2 %}
                                     <span style="color: #7f8c8d;">+{{ candidate.missing_skills|length - 2 }} more</span>
@@ -142,32 +178,61 @@
                             {% endif %}
                         </td>
                         
-                        <!-- Explanation Column -->
+                        <!-- Status -->
+                        <td>
+                            {% if candidate.overall_score >= 65 %}
+                                <span class="status-badge status-shortlist">✅ SHORTLIST</span>
+                            {% elif candidate.overall_score >= 50 %}
+                                <span class="status-badge status-hold">⏸️ HOLD</span>
+                            {% else %}
+                                <span class="status-badge status-reject">❌ REJECT</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Explanation Column - FIXED GITHUB DISPLAY -->
                         <td class="explanation-column">
-                            {% if candidate.overall_score >= 75 %}
+                            {% if candidate.overall_score >= 65 %}
                                 <div class="explanation-text" style="border-left-color: #4caf50;">
                                     <strong>✅ Shortlisted</strong><br>
                                     Score: {{ "%.1f"|format(candidate.overall_score) }}%<br>
                                     {% if candidate.github_username %}
-                                        GitHub: {{ "%.1f"|format(candidate.github_verification.github_score) }}%<br>
+                                        GitHub: 
+                                        {% if candidate.github_verification and candidate.github_verification.github_score %}
+                                            {{ "%.1f"|format(candidate.github_verification.github_score) }}%
+                                        {% elif candidate.github_score %}
+                                            {{ "%.1f"|format(candidate.github_score) }}%
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                        <br>
                                     {% endif %}
                                     {% if candidate.confidence_bonus %}
                                         Bonus: +{{ candidate.confidence_bonus }}<br>
                                     {% endif %}
                                     {% if candidate.experience_years %}
-                                        Exp: {{ candidate.experience_years }} yrs
+                                        Experience: {{ candidate.experience_years }} yrs
                                     {% endif %}
                                 </div>
-                            {% else %}
-                                <div class="explanation-text" style="border-left-color: #f44336;">
-                                    <strong>❌ Not Selected</strong><br>
+                            {% elif candidate.overall_score >= 50 %}
+                                <div class="explanation-text" style="border-left-color: #ff9800;">
+                                    <strong>⏸️ On Hold</strong><br>
                                     Score: {{ "%.1f"|format(candidate.overall_score) }}%<br>
                                     {% if candidate.missing_skills %}
                                         Missing: {{ candidate.missing_skills[:2]|map(attribute='skill')|join(', ') }}<br>
                                     {% endif %}
-                                    {% if candidate.github_verification and candidate.github_verification.github_score < 50 %}
-                                        Low GitHub activity ({{ "%.1f"|format(candidate.github_verification.github_score) }}%)
+                                    <small>Consider for future openings</small>
+                                </div>
+                            {% else %}
+                                <div class="explanation-text" style="border-left-color: #f44336;">
+                                    <strong>❌ Rejected</strong><br>
+                                    Score: {{ "%.1f"|format(candidate.overall_score) }}%<br>
+                                    {% if candidate.missing_skills %}
+                                        Missing: {{ candidate.missing_skills[:2]|map(attribute='skill')|join(', ') }}<br>
                                     {% endif %}
+                                    {% if candidate.github_verification and candidate.github_verification.github_score and candidate.github_verification.github_score < 50 %}
+                                        Low GitHub activity ({{ "%.1f"|format(candidate.github_verification.github_score) }}%)<br>
+                                    {% endif %}
+                                    <small>Learning path recommended</small>
                                 </div>
                             {% endif %}
                         </td>
@@ -175,6 +240,212 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Detailed Score Breakdown Section -->
+        <div class="score-breakdown-section" style="margin-top: 30px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 20px; color: #2c3e50;">📊 Detailed Score Breakdown</h3>
+            
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #34495e; color: white;">
+                        <th style="padding: 12px; text-align: left;">Candidate</th>
+                        <th style="padding: 12px; text-align: center;">Semantic</th>
+                        <th style="padding: 12px; text-align: center;">Skills</th>
+                        <th style="padding: 12px; text-align: center;">Experience</th>
+                        <th style="padding: 12px; text-align: center;">Education</th>
+                        <th style="padding: 12px; text-align: center;">GitHub</th>
+                        <th style="padding: 12px; text-align: center;">Bonus</th>
+                        <th style="padding: 12px; text-align: center;">Overall</th>
+                        <th style="padding: 12px; text-align: center;">Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for candidate in candidates %}
+                    <tr style="border-bottom: 1px solid #ecf0f1;">
+                        <td style="padding: 12px; font-weight: bold;">{{ candidate.filename }}</td>
+                        
+                        <!-- Semantic Score -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% set semantic = candidate.semantic_score if candidate.semantic_score is defined else 0 %}
+                            <span class="component-badge component-semantic">
+                                {{ "%.1f"|format(semantic|float) }}%
+                            </span>
+                            <br><small style="color: #7f8c8d;">{{ "%.1f"|format(semantic|float * 0.25) }} pts</small>
+                        </td>
+                        
+                        <!-- Skills Score -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% set skills = candidate.skill_match_score if candidate.skill_match_score is defined else 
+                                           candidate.skill_relevance if candidate.skill_relevance is defined else
+                                           candidate.verification_score if candidate.verification_score is defined else 0 %}
+                            <span class="component-badge component-skills">
+                                {{ "%.1f"|format(skills|float) }}%
+                            </span>
+                            <br><small style="color: #7f8c8d;">{{ "%.1f"|format(skills|float * 0.40) }} pts</small>
+                        </td>
+                        
+                        <!-- Experience Score -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% set exp = candidate.experience_score if candidate.experience_score is defined else
+                                        candidate.experience_relevance if candidate.experience_relevance is defined else 0 %}
+                            <span class="component-badge component-exp">
+                                {{ "%.1f"|format(exp|float) }}%
+                            </span>
+                            <br><small style="color: #7f8c8d;">{{ "%.1f"|format(exp|float * 0.25) }} pts</small>
+                        </td>
+                        
+                        <!-- Education Score -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% set edu = candidate.education_score if candidate.education_score is defined else
+                                        candidate.education_relevance if candidate.education_relevance is defined else 0 %}
+                            <span class="component-badge component-edu">
+                                {{ "%.1f"|format(edu|float) }}%
+                            </span>
+                            <br><small style="color: #7f8c8d;">{{ "%.1f"|format(edu|float * 0.10) }} pts</small>
+                        </td>
+                        
+                        <!-- GitHub Score -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% if candidate.github_verification and candidate.github_verification.github_score %}
+                                <span class="github-badge" style="font-size: 11px;">
+                                    {{ "%.1f"|format(candidate.github_verification.github_score) }}%
+                                </span>
+                            {% elif candidate.github_score %}
+                                <span class="github-badge" style="font-size: 11px;">
+                                    {{ "%.1f"|format(candidate.github_score) }}%
+                                </span>
+                            {% else %}
+                                <span style="color: #95a5a6;">—</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Bonus -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% if candidate.confidence_bonus and candidate.confidence_bonus > 0 %}
+                                <span class="bonus-badge">
+                                    +{{ "%.1f"|format(candidate.confidence_bonus) }}
+                                </span>
+                            {% else %}
+                                <span style="color: #95a5a6;">—</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Overall Score -->
+                        <td style="padding: 12px; text-align: center; font-weight: bold;">
+                            {% if candidate.overall_score is defined %}
+                                {{ "%.1f"|format(candidate.overall_score) }}%
+                            {% elif candidate.base_score is defined %}
+                                {{ "%.1f"|format(candidate.base_score) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Final Score -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% set final = candidate.final_score if candidate.final_score is defined else candidate.overall_score %}
+                            <span class="score-badge 
+                                {% if final >= 65 %}score-high
+                                {% elif final >= 50 %}score-medium
+                                {% else %}score-low{% endif %}" style="font-size: 11px;">
+                                {{ "%.1f"|format(final|float) }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Legend -->
+            <div style="margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <div><span class="component-badge component-semantic" style="display: inline-block; width: 12px; height: 12px; padding: 0;"></span> Semantic (25%)</div>
+                <div><span class="component-badge component-skills" style="display: inline-block; width: 12px; height: 12px; padding: 0;"></span> Skills (40%)</div>
+                <div><span class="component-badge component-exp" style="display: inline-block; width: 12px; height: 12px; padding: 0;"></span> Experience (25%)</div>
+                <div><span class="component-badge component-edu" style="display: inline-block; width: 12px; height: 12px; padding: 0;"></span> Education (10%)</div>
+                <div><span class="github-badge" style="display: inline-block; width: 12px; height: 12px; padding: 0; background: #24292e;"></span> GitHub (bonus)</div>
+            </div>
+        </div>
+        
+        <!-- Detailed Missing Skills Analysis with Priority -->
+        <div class="missing-skills-section" style="margin-top: 30px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 20px; color: #2c3e50;">🔍 Skill Gap Analysis by Priority</h3>
+            
+            {% set high_skills = {} %}
+            {% set medium_skills = {} %}
+            
+            {% for candidate in candidates %}
+                {% for skill in candidate.missing_skills %}
+                    {% set priority = skill.priority if skill is mapping and skill.priority is defined else 'medium' %}
+                    {% set skill_name = skill.skill if skill is mapping else skill %}
+                    
+                    {% if priority == 'high' %}
+                        {% if skill_name not in high_skills %}
+                            {% set _dummy = high_skills.__setitem__(skill_name, {'count': 1, 'candidates': [candidate.filename]}) %}
+                        {% else %}
+                            {% set current = high_skills[skill_name] %}
+                            {% set _dummy = high_skills.__setitem__(skill_name, {'count': current.count + 1, 'candidates': current.candidates + [candidate.filename]}) %}
+                        {% endif %}
+                    {% else %}
+                        {% if skill_name not in medium_skills %}
+                            {% set _dummy = medium_skills.__setitem__(skill_name, {'count': 1, 'candidates': [candidate.filename]}) %}
+                        {% else %}
+                            {% set current = medium_skills[skill_name] %}
+                            {% set _dummy = medium_skills.__setitem__(skill_name, {'count': current.count + 1, 'candidates': current.candidates + [candidate.filename]}) %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            
+            <!-- High Priority Skills -->
+            {% if high_skills %}
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #f44336; margin-bottom: 10px;">🔴 High Priority Missing Skills</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #ffebee;">
+                            <th style="padding: 10px; text-align: left;">Skill</th>
+                            <th style="padding: 10px; text-align: left;">Candidates Missing</th>
+                            <th style="padding: 10px; text-align: left;">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill, data in high_skills.items()|sort(attribute='1.count', reverse=True) %}
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>{{ skill }}</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ data.candidates|join(', ') }}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ data.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            
+            <!-- Medium Priority Skills -->
+            {% if medium_skills %}
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #ff9800; margin-bottom: 10px;">🟠 Medium Priority Missing Skills</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #fff3e0;">
+                            <th style="padding: 10px; text-align: left;">Skill</th>
+                            <th style="padding: 10px; text-align: left;">Candidates Missing</th>
+                            <th style="padding: 10px; text-align: left;">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill, data in medium_skills.items()|sort(attribute='1.count', reverse=True) %}
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ skill }}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ data.candidates|join(', ') }}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ data.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
         
         <div class="actions">
@@ -186,7 +457,6 @@
 
     <script>
         function viewCandidateDetails(candidateId) {
-            // This will be enhanced later for detailed popup
             alert('Viewing details for candidate: ' + candidateId);
         }
     </script>

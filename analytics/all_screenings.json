@@ -293,6 +293,242 @@
         "Problem solving skills for quick issue resolution": 1,
         "understanding and maintaining code quality standards": 1
       }
+    },
+    {
+      "screening_id": "0d19d573-a108-4dea-aa7b-9b7b33959648",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T11:29:59.598854",
+      "total_candidates": 4,
+      "average_score": 62.4,
+      "top_score": 62.8,
+      "skill_gaps": {
+        "JDBC/Hibernate ORM toolkit": 4,
+        "API design and debugging skills": 3,
+        "performance optimization techniques": 3,
+        "knowledge in computer science or information systems": 3,
+        "Java": 2
+      }
+    },
+    {
+      "screening_id": "b270a308-9d43-48c5-9cd1-bb07d5647753",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T11:42:32.464955",
+      "total_candidates": 6,
+      "average_score": 63.4,
+      "top_score": 65.3,
+      "skill_gaps": {
+        "JDBC/Hibernate ORM toolkit": 4,
+        "API design and debugging skills": 3,
+        "performance optimization techniques": 2,
+        "basic knowledge in Computer Science or Information Systems": 2,
+        "Java": 2
+      }
+    },
+    {
+      "screening_id": "2be65ca1-b220-42be-b5d6-26e85058355b",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T11:54:17.323069",
+      "total_candidates": 6,
+      "average_score": 62.9,
+      "top_score": 65.3,
+      "skill_gaps": {
+        "JDBC/Hibernate ORM toolkit": 4,
+        "API design and debugging skills": 3,
+        "Java": 2,
+        "performance optimization techniques": 2,
+        "knowledge in computer science or information systems": 2
+      }
+    },
+    {
+      "screening_id": "4e7b65e9-d2d0-4671-94ef-04f4b275df5d",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-26T11:58:32.961423",
+      "total_candidates": 1,
+      "average_score": 68.9,
+      "top_score": 68.9,
+      "skill_gaps": {
+        "AWS EC2 Service (No specific skill but necessary to understand and use AWS services)": 1
+      }
+    },
+    {
+      "screening_id": "ddde2c56-12c4-494c-a743-9d7e34d6b462",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T12:14:09.035711",
+      "total_candidates": 1,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "JDBC": 1,
+        "Hibernate ORM toolkit": 1,
+        "API design and debugging": 1,
+        "performance optimization techniques": 1,
+        "Java programming": 1
+      }
+    },
+    {
+      "screening_id": "165c144d-43db-4a7a-b562-a7256fa1cb68",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T12:14:43.034327",
+      "total_candidates": 1,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "Java": 1,
+        "JDBC/Hibernate ORM toolkit implementation skills": 1,
+        "API design and debugging capabilities": 1,
+        "performance optimization techniques knowledge": 1,
+        "strong foundation in Computer Science or Information Systems": 1
+      }
+    },
+    {
+      "screening_id": "f53f5979-10de-487c-9d20-f23099a922c0",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T12:19:56.559510",
+      "total_candidates": 1,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "Comma-separated list of skills: JDBC": 1,
+        "Hibernate ORM toolkit": 1,
+        "API design and debugging": 1,
+        "performance optimization techniques": 1,
+        "server code implementation": 1
+      }
+    },
+    {
+      "screening_id": "2a0a4b0b-0ab4-414d-a38f-324d9750c3b3",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-26T12:37:27.300887",
+      "total_candidates": 4,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "HTML": 4,
+        "CSS": 4,
+        "JavaScript (JS)": 4,
+        "React.js": 4,
+        "AngularJS": 4
+      }
+    },
+    {
+      "screening_id": "29628921-b165-47c3-aff7-f3412a9bcec7",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T14:05:00.771583",
+      "total_candidates": 6,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "JDBC": 6,
+        "Hibernate ORM toolkit": 6,
+        "API design and debugging skills": 6,
+        "performance optimization techniques": 6,
+        "strong foundation in computer science or related field knowledge": 6
+      }
+    },
+    {
+      "screening_id": "b3af49f3-1e6e-492c-a167-1a6c5fa0df37",
+      "job_title": "Backend developer 20260226",
+      "date": "2026-02-26T14:11:24.260810",
+      "total_candidates": 5,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "JDBC": 5,
+        "Hibernate ORM toolkit": 5,
+        "API design and debugging": 5,
+        "performance optimization techniques": 5,
+        "server code implementation for database access methods": 5
+      }
+    },
+    {
+      "screening_id": "7a6eaa4c-891c-4535-9b41-ee94118240e9",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-26T14:14:34.609063",
+      "total_candidates": 1,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "Python programming (Django framework)": 1,
+        "AWS services understanding": 1,
+        "PostgreSQL database management": 1,
+        "high-volume traffic handling skills": 1,
+        "PEP 8 code standard adherence": 1
+      }
+    },
+    {
+      "screening_id": "0be29d03-6dc3-4e4d-b337-8b1aee0f4e80",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-26T14:19:45.936839",
+      "total_candidates": 1,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "html": 1,
+        "css": 1,
+        "JavaScript (JS)": 1,
+        "React.js libraries": 1,
+        "Angular": 1
+      }
+    },
+    {
+      "screening_id": "370b093b-8ad2-4dc9-b1f0-408c284e17b4",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-26T14:30:23.263115",
+      "total_candidates": 1,
+      "average_score": 15.0,
+      "top_score": 15.0,
+      "skill_gaps": {
+        "java": 1,
+        "javascript": 1,
+        "react": 1,
+        "angular": 1,
+        "vue": 1
+      }
+    },
+    {
+      "screening_id": "504720e8-e3ab-4425-9e13-662f517b3a62",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-26T14:50:48.500960",
+      "total_candidates": 1,
+      "average_score": 73.7,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "AngularJS": 1,
+        "Ember.js": 1,
+        "VueRouter": 1,
+        "User Experience Design Principles": 1,
+        "Cross-Browser Compatibility Testing": 1
+      }
+    },
+    {
+      "screening_id": "7991f7c7-6537-4ed0-a9b2-9bad1af17d27",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-26T15:19:48.896909",
+      "total_candidates": 4,
+      "average_score": 49.2,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "java": 2,
+        "javascript": 2,
+        "react": 2,
+        "angular": 2,
+        "vue": 2
+      }
+    },
+    {
+      "screening_id": "59d4cda6-a3e0-4285-9cbf-06adca148d3d",
+      "job_title": "Backend Developer 20260225",
+      "date": "2026-02-26T15:40:08.049812",
+      "total_candidates": 5,
+      "average_score": 52.3,
+      "top_score": 65.1,
+      "skill_gaps": {
+        "Java programming": 5,
+        "C#": 5,
+        "knowledge of relational databases SQL query optimization techniques": 3,
+        "understanding RESTful APIs design principles for microservices architecture": 3,
+        "SQL query optimization techniques": 2
+      }
     }
   ]
 }
