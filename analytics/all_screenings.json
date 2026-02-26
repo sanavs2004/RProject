@@ -104,6 +104,195 @@
         "CI/CD pipeline collaboration": 1,
         "secure coding practices": 1
       }
+    },
+    {
+      "screening_id": "d6c7a863-223a-4925-b2ce-b68d0c525255",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T14:27:50.559606",
+      "total_candidates": 5,
+      "average_score": 34.3,
+      "top_score": 41.0,
+      "skill_gaps": {
+        "AWS services expertise": 4,
+        "PostgreSQL database understanding": 4,
+        "high traffic load optimization techniques": 4,
+        "PEP 8 code standards adherence": 2,
+        "Django framework proficiency for web application development": 2
+      }
+    },
+    {
+      "screening_id": "fc323971-7d37-4251-80dc-0bb07dd9c2b7",
+      "job_title": "20260224",
+      "date": "2026-02-25T14:58:43.385080",
+      "total_candidates": 4,
+      "average_score": 36.2,
+      "top_score": 40.1,
+      "skill_gaps": {
+        "GitHub": 3,
+        "docker container management": 3,
+        "data flow integration": 3,
+        "coding best practices": 2,
+        "Bootstrap": 2
+      }
+    },
+    {
+      "screening_id": "0294df3a-440b-434a-84f4-05d598544dc6",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T14:59:29.808497",
+      "total_candidates": 3,
+      "average_score": 35.6,
+      "top_score": 41.1,
+      "skill_gaps": {
+        "postgresql": 2,
+        "aws": 2,
+        "1. Django\n2. PostgreSQL\n3. AWS (implied from maintaining database interactions using services likely provided by AWS)": 1,
+        "python": 1,
+        "django": 1
+      }
+    },
+    {
+      "screening_id": "89e4dfc2-dfd3-4989-a880-304ee0092b12",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T15:45:13.176968",
+      "total_candidates": 1,
+      "average_score": 27.1,
+      "top_score": 27.1,
+      "skill_gaps": {
+        "SQL": 1,
+        "PostgreSQL": 1,
+        "AWS knowledge in cloud infrastructure and database integration using Python technologies. None (If the candidate's proficiency with SQL and understanding of Django framework is strong enough to assume they would quickly adapt)": 1
+      }
+    },
+    {
+      "screening_id": "2f93986a-49e5-49ec-a597-cfd67280879c",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T21:44:28.200009",
+      "total_candidates": 1,
+      "average_score": 26.2,
+      "top_score": 26.2,
+      "skill_gaps": {
+        "sql": 1,
+        "postgresql": 1,
+        "aws": 1
+      }
+    },
+    {
+      "screening_id": "605f1a26-d607-424e-8af8-9e2e5d921811",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T21:57:53.661744",
+      "total_candidates": 0,
+      "average_score": 0,
+      "top_score": 0,
+      "skill_gaps": {}
+    },
+    {
+      "screening_id": "175c6410-2541-4914-8503-5620b51f24d4",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T22:02:13.109004",
+      "total_candidates": 0,
+      "average_score": 0,
+      "top_score": 0,
+      "skill_gaps": {}
+    },
+    {
+      "screening_id": "ef08b7b4-26e7-45a3-a0f0-4f982950afed",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T22:07:23.354185",
+      "total_candidates": 1,
+      "average_score": 26.2,
+      "top_score": 26.2,
+      "skill_gaps": {
+        "PostgreSQL": 1,
+        "AWS infrastructure deployment expertise": 1,
+        "CI/CD pipeline collaboration experience. None (the listed Python programming proficiency is implicit in Django development)": 1
+      }
+    },
+    {
+      "screening_id": "d5fae720-2972-44e1-bdbf-5ddacaa9e2dd",
+      "job_title": "20260224",
+      "date": "2026-02-25T22:33:07.817427",
+      "total_candidates": 1,
+      "average_score": 27.5,
+      "top_score": 27.5,
+      "skill_gaps": {
+        "Docker container management for server deployment; Git branching strategies within GitHub platforms; understanding of responsive design principles using HTML5 and CSS3 (missing: JavaScript": 1,
+        "Bootstrap components)": 1
+      }
+    },
+    {
+      "screening_id": "da01fdfc-3746-42d6-9e29-3d09e2331014",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-25T22:38:26.429130",
+      "total_candidates": 3,
+      "average_score": 33.8,
+      "top_score": 38.2,
+      "skill_gaps": {
+        "PostgreSQL database interaction": 2,
+        "AWS infrastructure deployment": 2,
+        "API gateway security setup": 2,
+        "CI/CD pipeline creation and maintenance": 2,
+        "web application scalability strategies": 1
+      }
+    },
+    {
+      "screening_id": "6bcbd930-1fa6-401f-946e-079ce0a6f5ee",
+      "job_title": "Backend Developer 20260225",
+      "date": "2026-02-25T23:11:35.970344",
+      "total_candidates": 6,
+      "average_score": 34.3,
+      "top_score": 37.7,
+      "skill_gaps": {
+        "- Backend Development\n\n- Database Management\n\n- Cybersecurity Measures Implementation\n\n- GDPR Compliance Awareness\n\n- Query Optimization Skills\n\n- Collaboration and Communication Abilities with Cross-Functional Teams (DevOps": 3,
+        "QA)\n\n- Familiarity with CI/CD methodologies\n\n- Experience in using Containerization Tools like Docker or Kubernetes": 3,
+        "GDPR Compliance Awareness": 2,
+        "Cybersecurity Measures Implementation": 2,
+        "Query Optimization Skills": 1
+      }
+    },
+    {
+      "screening_id": "9f6d1220-6782-47b7-ad46-15e4b9173d26",
+      "job_title": "Backend Developer 20260225",
+      "date": "2026-02-25T23:34:56.856124",
+      "total_candidates": 5,
+      "average_score": 64.0,
+      "top_score": 65.5,
+      "skill_gaps": {
+        "GDPR compliance knowledge": 5,
+        "Backend development": 4,
+        "API design": 4,
+        "security protocol implementation": 4,
+        "database management optimization": 4
+      }
+    },
+    {
+      "screening_id": "034c1b2d-fba6-47e2-a719-243a4106ca78",
+      "job_title": "Backend Developer 20260225",
+      "date": "2026-02-25T23:45:19.185120",
+      "total_candidates": 7,
+      "average_score": 64.4,
+      "top_score": 65.5,
+      "skill_gaps": {
+        "Object-Oriented Programming": 5,
+        "Database Management Systems": 4,
+        "RESTful API development": 4,
+        "SQL expertise (including advanced query optimization techniques)": 3,
+        "knowledge of security protocols and encryption methods for data protection": 3
+      }
+    },
+    {
+      "screening_id": "8da5fbba-b927-4392-8a1e-58317fa84a39",
+      "job_title": "java developer  20260226",
+      "date": "2026-02-26T10:55:16.754934",
+      "total_candidates": 8,
+      "average_score": 64.1,
+      "top_score": 67.2,
+      "skill_gaps": {
+        "Java programming": 4,
+        "SQL database management using MySQL": 2,
+        "C++ understanding": 2,
+        "Problem solving skills for quick issue resolution": 1,
+        "understanding and maintaining code quality standards": 1
+      }
     }
   ]
 }

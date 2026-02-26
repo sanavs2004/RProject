@@ -1,0 +1,82 @@
+{
+  "default": {
+    "weights": {
+      "resume": 0.35,
+      "skill_test": 0.40,
+      "github": 0.15,
+      "other": 0.10
+    },
+    "thresholds": {
+      "shortlist": 75,
+      "interview": 60,
+      "reject": 50
+    },
+    "required_channels": ["resume"],
+    "optional_channels": ["github", "skill_test", "other"]
+  },
+  "software_engineer": {
+    "weights": {
+      "resume": 0.30,
+      "skill_test": 0.35,
+      "github": 0.25,
+      "other": 0.10
+    },
+    "thresholds": {
+      "shortlist": 75,
+      "interview": 60,
+      "reject": 50
+    }
+  },
+  "data_scientist": {
+    "weights": {
+      "resume": 0.30,
+      "skill_test": 0.40,
+      "github": 0.15,
+      "other": 0.15
+    },
+    "thresholds": {
+      "shortlist": 75,
+      "interview": 60,
+      "reject": 50
+    }
+  },
+  "devops_engineer": {
+    "weights": {
+      "resume": 0.30,
+      "skill_test": 0.35,
+      "github": 0.25,
+      "other": 0.10
+    },
+    "thresholds": {
+      "shortlist": 75,
+      "interview": 60,
+      "reject": 50
+    }
+  },
+  "project_manager": {
+    "weights": {
+      "resume": 0.45,
+      "skill_test": 0.35,
+      "github": 0.05,
+      "other": 0.15
+    },
+    "thresholds": {
+      "shortlist": 70,
+      "interview": 55,
+      "reject": 45
+    }
+  },
+  "hr_manager": {
+    "weights": {
+      "resume": 0.50,
+      "skill_test": 0.40,
+      "github": 0.00,
+      "other": 0.10
+    },
+    "thresholds": {
+      "shortlist": 70,
+      "interview": 55,
+      "reject": 45
+    }
+  }
+}

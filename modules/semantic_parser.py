@@ -17,6 +17,46 @@ class SemanticParser:
             self.semantic_support = False
             print("⚠️ sentence-transformers not installed. Using basic matching.")
     
+    # ========== ADD THE EXTRACT GITHUB METHOD HERE (INSIDE THE CLASS) ==========
+    def extract_github_username(self, text):
+        """
+        Extract GitHub username from resume text
+        Looks for patterns like:
+        - github.com/username
+        - github.com/username/
+        - https://github.com/username
+        - www.github.com/username
+        - @username in GitHub context
+        - username in same line as github.com
+        """
+        import re
+        
+        # Print first 500 chars to debug
+        print("🔍 Searching for GitHub in text...")
+        
+        # Pattern 1: github.com/username (with or without https/www)
+        pattern1 = r'(?:https?://)?(?:www\.)?github\.com/([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])'
+        match = re.search(pattern1, text, re.IGNORECASE)
+        if match:
+            username = match.group(1)
+            print(f"✅ Found GitHub username (pattern 1): {username}")
+            return username
+        
+        # Pattern 2: Look for lines containing both 'github' and a username
+        lines = text.split('\n')
+        for line in lines:
+            if 'github' in line.lower():
+                # Look for patterns like: github: username, @username, etc.
+                pattern2 = r'(?:github)[:\s]+@?([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])'
+                match = re.search(pattern2, line, re.IGNORECASE)
+                if match:
+                    username = match.group(1)
+                    print(f"✅ Found GitHub username (pattern 2): {username}")
+                    return username
+        
+        print("❌ No GitHub username found")
+        return None
+    
     def parse_resume_semantic(self, file_path):
         """Extract and understand resume content semantically"""
         # Extract raw text
@@ -24,6 +64,11 @@ class SemanticParser:
         
         # Clean text
         text = self._clean_text(text)
+        
+        # Extract GitHub username
+        github_username = self.extract_github_username(text)
+        if github_username:
+            print(f"🐙 Found GitHub username: {github_username}")
         
         # Extract semantic sections
         sections = self._extract_sections_semantic(text)
@@ -35,11 +80,12 @@ class SemanticParser:
             'text': text,
             'sections': sections,
             'key_points': key_points,
+            'github_username': github_username,
+            'has_github': github_username is not None,
             'word_count': len(text.split()),
             'char_count': len(text)
         }
     
-    # ========== ADD THE FUNCTION HERE (inside the class) ==========
     def calculate_similarity(self, embedding1, embedding2):
         """Calculate similarity with proper type handling"""
         try:
@@ -160,7 +206,7 @@ class SemanticParser:
                     key_points.append(sentence)
                     break
         
-        return key_points[:10]  # Return top 10 key points
+        return key_points[:10]
     
     def extract_experience_semantic(self, text):
         """Extract experience with semantic understanding"""

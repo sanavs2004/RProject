@@ -1,0 +1,40 @@
+{
+  "username": "sanavs2004",
+  "github_score": 33,
+  "breakdown": {
+    "account_maturity": 5,
+    "repo_count": 5,
+    "language_diversity": 8,
+    "stars_received": 0,
+    "recent_activity": 15,
+    "documentation_quality": 0,
+    "community_recognition": 0
+  },
+  "languages_used": {
+    "Python": 1
+  },
+  "repo_count": 2,
+  "account_age_days": 60,
+  "is_new_account": false,
+  "account_created": "2025-12-27T07:30:34Z",
+  "follower_count": 0,
+  "following_count": 0,
+  "public_repos": 2,
+  "has_blog": false,
+  "has_company": false,
+  "has_bio": false,
+  "timestamp": "2026-02-25T15:40:38.073204",
+  "skill_verification": {
+    "verified": [
+      "python"
+    ],
+    "partial": [],
+    "unverified": [
+      "java",
+      "javascript",
+      "css",
+      "mysql",
+      "docker"
+    ]
+  }
+}

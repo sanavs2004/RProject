@@ -1,0 +1,8 @@
+Role Summary: The Backend Developer will be responsible for creating and managing server-side components of web applications. They must possess a robust understanding of backend technologies to ensure efficient operations within the organization's digital infrastructure.
+Key Responsibilities: - Design, develop, deploy, maintain, and troubleshoot high performance backends that interact with user interfaces or external systems via API calls.
+- Implement security measures for database protection against cyber threats and ensure compliance with data privacy regulations such as GDPR.
+- Optimize queries to enhance the responsiveness of web applications, thereby improving customer experience. - Collaborate closely with DevOps team members to streamline release processes using continuous integration/continuous deployment (CI/CD) methodologies and containerization tools like Docker or Kubernetes.
+Required Qualifications:
+- Bachelor's degree in Computer Science, Software Engineering, Information Technology, or a related field is required for consideration of the position; although not mandatory, professional certification such as Oracle Certified Professional Java SE Programmer can be an asset to your career growth within this company. - Proven experience with Python and Django framework preferred but not limited due to our commitment towards learning-friendly environment that encourages skill diversity.
+Experience Required: 0–1 years
+Key Skills: Python, Django, REST API development, PostgreSQL
