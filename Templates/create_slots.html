@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Interview Slots - RecruitAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-secondary { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        .slot-form { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #34495e; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ecf0f1; border-radius: 8px; font-size: 14px; }
+        .slot-card { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea; }
+        .remove-slot { background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; float: right; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+        .btn-success { background: #27ae60; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; }
+        .slot-list { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗓️ Create Interview Slots</h1>
+            <a href="/" class="btn-secondary">← Back to Dashboard</a>
+        </header>
+
+        <div class="slot-form">
+            <h2>Set Your Availability</h2>
+            <p style="color: #7f8c8d; margin-bottom: 20px;">Create multiple interview slots for candidates to book</p>
+
+            <div class="form-group">
+                <label>Recruiter Email</label>
+                <input type="email" id="recruiterEmail" value="recruiter@company.com" placeholder="your-email@company.com">
+            </div>
+
+            <div id="slotsContainer">
+                <!-- Slots will be added here dynamically -->
+                <div class="slot-card" id="slot-1">
+                    <button type="button" class="remove-slot" onclick="removeSlot(1)">×</button>
+                    <h3>Slot #1</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label>Date</label>
+                            <input type="date" class="slot-date" id="date-1" min="{{ today }}">
+                        </div>
+                        <div>
+                            <label>Start Time</label>
+                            <input type="time" class="slot-start" id="start-1">
+                        </div>
+                        <div>
+                            <label>End Time</label>
+                            <input type="time" class="slot-end" id="end-1">
+                        </div>
+                        <div>
+                            <label>Duration (minutes)</label>
+                            <select class="slot-duration" id="duration-1">
+                                <option value="30">30 minutes</option>
+                                <option value="45">45 minutes</option>
+                                <option value="60" selected>60 minutes</option>
+                                <option value="90">90 minutes</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Mode</label>
+                            <select class="slot-mode" id="mode-1">
+                                <option value="video">📹 Video Call</option>
+                                <option value="phone">📞 Phone Call</option>
+                                <option value="inperson">🏢 In-Person</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Location/Link</label>
+                            <input type="text" class="slot-location" id="location-1" placeholder="Google Meet link or address">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button class="btn-secondary" onclick="addSlot()">+ Add Another Slot</button>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn-primary" onclick="previewSlots()">Preview Slots</button>
+                <button class="btn-success" onclick="createSlots()">Create Slots</button>
+            </div>
+        </div>
+
+        <!-- Preview Modal (hidden by default) -->
+        <div id="previewModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div style="background: white; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 10px;">
+                <h3>Preview Slots</h3>
+                <div id="previewList"></div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button class="btn-secondary" onclick="closePreview()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let slotCount = 1;
+
+        function addSlot() {
+            slotCount++;
+            const container = document.getElementById('slotsContainer');
+            const today = "{{ today }}";  // Pass today from Flask
+            const newSlot = document.createElement('div');
+            newSlot.className = 'slot-card';
+            newSlot.id = `slot-${slotCount}`;
+            newSlot.innerHTML = `
+                <button type="button" class="remove-slot" onclick="removeSlot(${slotCount})">×</button>
+                <h3>Slot #${slotCount}</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label>Date</label>
+                        <input type="date" class="slot-date" id="date-${slotCount}" min="${today}">
+                    </div>
+                    <div>
+                        <label>Start Time</label>
+                        <input type="time" class="slot-start" id="start-${slotCount}">
+                    </div>
+                    <div>
+                        <label>End Time</label>
+                        <input type="time" class="slot-end" id="end-${slotCount}">
+                    </div>
+                    <div>
+                        <label>Duration</label>
+                        <select class="slot-duration" id="duration-${slotCount}">
+                            <option value="30">30 min</option>
+                            <option value="45">45 min</option>
+                            <option value="60">60 min</option>
+                            <option value="90">90 min</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Mode</label>
+                        <select class="slot-mode" id="mode-${slotCount}">
+                            <option value="video">Video</option>
+                            <option value="phone">Phone</option>
+                            <option value="inperson">In-Person</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Location</label>
+                        <input type="text" class="slot-location" id="location-${slotCount}" placeholder="Link or address">
+                    </div>
+                </div>
+            `;
+            container.appendChild(newSlot);
+        }
+        function removeSlot(id) {
+            if (slotCount > 1) {
+                document.getElementById(`slot-${id}`).remove();
+            }
+        }
+
+        function previewSlots() {
+            const slots = [];
+            let valid = true;
+
+            for (let i = 1; i <= slotCount; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                if (!slot) continue;
+
+                const date = document.getElementById(`date-${i}`).value;
+                const start = document.getElementById(`start-${i}`).value;
+                const end = document.getElementById(`end-${i}`).value;
+                const duration = document.getElementById(`duration-${i}`).value;
+                const mode = document.getElementById(`mode-${i}`).value;
+                const location = document.getElementById(`location-${i}`).value;
+
+                if (!date || !start || !end) {
+                    alert(`Please fill all fields for Slot ${i}`);
+                    valid = false;
+                    break;
+                }
+
+                slots.push({
+                    date, start, end, duration, mode, location
+                });
+            }
+
+            if (valid && slots.length > 0) {
+                let previewHtml = '<ul style="list-style: none; padding: 0;">';
+                slots.forEach((slot, index) => {
+                    previewHtml += `
+                        <li style="padding: 10px; border-bottom: 1px solid #ecf0f1;">
+                            <strong>Slot ${index + 1}:</strong> ${slot.date} | ${slot.start}-${slot.end} | 
+                            ${slot.mode} | ${slot.location || 'TBD'}
+                        </li>
+                    `;
+                });
+                previewHtml += '</ul>';
+                document.getElementById('previewList').innerHTML = previewHtml;
+                document.getElementById('previewModal').style.display = 'block';
+            }
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        async function createSlots() {
+            const slots = [];
+            const recruiterEmail = document.getElementById('recruiterEmail').value;
+
+            for (let i = 1; i <= slotCount; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                if (!slot) continue;
+
+                const date = document.getElementById(`date-${i}`).value;
+                const start = document.getElementById(`start-${i}`).value;
+                const end = document.getElementById(`end-${i}`).value;
+                const duration = document.getElementById(`duration-${i}`).value;
+                const mode = document.getElementById(`mode-${i}`).value;
+                const location = document.getElementById(`location-${i}`).value;
+
+                if (!date || !start || !end) {
+                    alert(`Please fill Slot ${i} completely`);
+                    return;
+                }
+
+                slots.push({ date, start_time: start, end_time: end, duration, mode, location });
+            }
+
+            try {
+                const response = await fetch('/api/create-interview-slots', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recruiter_email: recruiterEmail, slots })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(`✅ Successfully created ${slots.length} slots!`);
+                    window.location.href = `/send-invites?slot_group_id=${data.slot_group_id}`;
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to create slots');
+            }
+        }
+    </script>
+</body>
+</html>

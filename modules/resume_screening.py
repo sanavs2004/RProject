@@ -216,6 +216,45 @@ class ResumeScreeningEngine:
         
         return screening_id, output
     
+    def _extract_email_from_text(self, text):
+        """Extract email from text using improved regex"""
+        import re
+        
+        # More comprehensive email pattern
+        email_patterns = [
+            r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',  # Standard email
+            r'mailto:([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})',  # mailto links
+            r'E[\s]*mail[\s]*:[\s]*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})',  # "Email: " format
+            r'Contact[\s]*:[\s]*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})'  # "Contact: " format
+        ]
+        
+        for pattern in email_patterns:
+            emails = re.findall(pattern, text, re.IGNORECASE)
+            if emails:
+                # Clean up the email
+                email = emails[0].strip().lower()
+                # Validate it looks like a real email
+                if '@' in email and '.' in email.split('@')[1]:
+                    print(f"📧 Found real email: {email}")
+                    return email
+        
+        # Try to find email in first few lines (often in header)
+        lines = text.split('\n')[:20]  # Check first 20 lines
+        for line in lines:
+            if '@' in line and '.' in line:
+                # Look for email pattern in this line
+                words = line.split()
+                for word in words:
+                    if '@' in word and '.' in word:
+                        # Clean up common artifacts
+                        email = word.strip('.,;:()[]{}<>').lower()
+                        if email.count('@') == 1 and '.' in email.split('@')[1]:
+                            print(f"📧 Found email in header: {email}")
+                            return email
+        
+        print(f"⚠️ No real email found in resume")
+        return None
+    
     def _process_single_resume_semantic(self, file, job):
         """Process a single resume with semantic understanding (EXPERIENCE REMOVED)"""
         try:
@@ -235,6 +274,11 @@ class ResumeScreeningEngine:
             print(f"\n📄 Processing: {filename}")
             print(f"   Word count: {word_count}")
             
+            # Extract email
+            candidate_email = self._extract_email_from_text(text)
+            if candidate_email:
+                print(f"📧 Found email: {candidate_email}")
+            
             # Check for empty files
             if char_count < 100:
                 print(f"⛔ REJECTED: Empty file ({char_count} chars)")
@@ -242,6 +286,7 @@ class ResumeScreeningEngine:
                 return {
                     'candidate_id': candidate_id,
                     'filename': filename,
+                    'email': candidate_email,
                     'semantic_score': 0,
                     'skill_match_score': 0,
                     'overall_score': 10.0,
@@ -253,6 +298,7 @@ class ResumeScreeningEngine:
                     'rejection_reason': 'Empty or unreadable file',
                     'github_username': None,
                     'has_github': False
+                    # 'email': candidate_email 
                 }
             
             # Extract GitHub username
@@ -275,21 +321,19 @@ class ResumeScreeningEngine:
             # Calculate skill relevance
             skill_relevance = self._calculate_semantic_skill_relevance(skills, job['semantic_keywords'])
             
-            # Calculate education relevance (keep this)
+            # Calculate education relevance
             education = self.parser.extract_education_semantic(parsed_data['text'])
             edu_relevance = self._calculate_education_relevance(education, job['description'])
             
-            # ===== EXPERIENCE REMOVED - Using neutral value =====
-            # Experience is not considered - using default neutral score
-            exp_relevance = 70  # Neutral default
+            # Experience not considered - using neutral value
+            exp_relevance = 70
             print(f"   Experience: Not considered (using default 70%)")
             
-            # Calculate base score WITHOUT experience (weights redistributed)
-            # New weights: Semantic 40%, Skills 50%, Education 10%
+            # Calculate base score WITHOUT experience
             base_score = (
-                semantic_similarity * 0.40 +      # Increased from 0.25
-                skill_relevance * 0.50 +           # Increased from 0.40
-                edu_relevance * 0.10                # Kept same
+                semantic_similarity * 0.40 +
+                skill_relevance * 0.50 +
+                edu_relevance * 0.10
             )
             print(f"   Base score: {base_score:.1f}% (Semantic 40%, Skills 50%, Education 10%)")
             
@@ -333,20 +377,23 @@ class ResumeScreeningEngine:
             confidence_bonus = 0
             signals_used = ['resume']
             github_score = None
-            
+
             if github_username and hasattr(self, 'github_verifier'):
                 print(f"🔍 Verifying GitHub: {github_username}")
                 github_result = self.github_verifier.verify_github(github_username, skill_list)
                 
-                if github_result and github_result.get('github_score'):
-                    github_score = github_result.get('github_score', 0)
-                    signals_used.append('github')
-                    github_bonus = github_score * 0.15
-                    confidence_bonus += github_bonus
+                if github_result:
+                    github_score = github_result.get('github_score')
+                    print(f"✅ GitHub Score: {github_score}")
                     
-                    if hasattr(self, 'skill_verifier'):
-                        skill_verification = self.skill_verifier.verify_skills(skill_list, github_result)
-                        confidence_bonus += skill_verification.get('confidence_bonus', 0)
+                    if github_score:
+                        signals_used.append('github')
+                        github_bonus = github_score * 0.15
+                        confidence_bonus += github_bonus
+                        
+                        if hasattr(self, 'skill_verifier'):
+                            skill_verification = self.skill_verifier.verify_skills(skill_list, github_result)
+                            confidence_bonus += skill_verification.get('confidence_bonus', 0)
             
             # Calculate final score
             final_score = boosted_score + confidence_bonus
@@ -355,10 +402,11 @@ class ResumeScreeningEngine:
             # Clean up
             os.remove(file_path)
             
-            # Return complete result
+            # Return complete result with email
             return {
                 'candidate_id': candidate_id,
                 'filename': filename,
+                'email': candidate_email,  # Email extracted from resume
                 'semantic_score': round(semantic_similarity, 1),
                 'skill_match_score': round(skill_relevance, 1),
                 'skill_relevance': round(skill_relevance, 1),
@@ -373,6 +421,7 @@ class ResumeScreeningEngine:
                 'missing_skills': missing_skills,
                 'word_count': word_count,
                 'github_username': github_username,
+                'github_score': github_score,
                 'github_verification': github_result,
                 'has_github': github_username is not None,
                 'is_empty_resume': False

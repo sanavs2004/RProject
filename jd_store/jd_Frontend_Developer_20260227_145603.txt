@@ -1,0 +1,10 @@
+Role Summary:
+Essential frontend development role where applicants create responsive and user-friendly web interfaces.
+This position involves working with modern JavaScript frameworks to build dynamic applications that interact seamlessly with the server backend through API calls, requiring basic knowledge of RESTful services principles for integration testing purposes.
+Key Responsibilities: - Developing and maintaining responsive frontend features using HTML5/CSS3 in combination with CSS preprocessors like SASS or LESS to ensure consistent styling across different browsers
+- Crafting intuitive user interfaces that promote seamless navigation, employing JavaScript frameworks such as React.js for enhanced reactivity and state management within application screens
+- Integrating the frontend components with server APIs using AJAX calls or Fetch API to retrieve data dynamically from a backend system via RESTful endpoints while ensuring proper error handling measures are in place
+Required Qualifications: - Proficient knowledge of HTML5, CSS3 and related frameworks (e.g., Bootstrap)
+- Experienced with JavaScript ES6+ features including promises/async await for asynchronous data fetching techniques
+- Familiarity with React.js or VueJS as well as Node.js environment setup to enable frontend development in a serverless architecture, if required
+Job Title: Frontend Developer ✅ Experience Required: 0-1 years - Key Skills HTML, CSS, JavaScript, Bootstrap, React, RESTful APIs

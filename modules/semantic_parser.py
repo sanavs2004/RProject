@@ -17,42 +17,82 @@ class SemanticParser:
             self.semantic_support = False
             print("⚠️ sentence-transformers not installed. Using basic matching.")
     
-    # ========== ADD THE EXTRACT GITHUB METHOD HERE (INSIDE THE CLASS) ==========
     def extract_github_username(self, text):
         """
-        Extract GitHub username from resume text
-        Looks for patterns like:
-        - github.com/username
-        - github.com/username/
-        - https://github.com/username
-        - www.github.com/username
-        - @username in GitHub context
-        - username in same line as github.com
+        Extract GitHub username from resume text - ENHANCED VERSION
+        Looks for various GitHub URL patterns
         """
         import re
         
-        # Print first 500 chars to debug
         print("🔍 Searching for GitHub in text...")
         
-        # Pattern 1: github.com/username (with or without https/www)
-        pattern1 = r'(?:https?://)?(?:www\.)?github\.com/([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])'
-        match = re.search(pattern1, text, re.IGNORECASE)
-        if match:
-            username = match.group(1)
-            print(f"✅ Found GitHub username (pattern 1): {username}")
-            return username
+        # Print sample of text for debugging
+        sample = text[:500].replace('\n', ' ')
+        print(f"Text sample: {sample}")
         
-        # Pattern 2: Look for lines containing both 'github' and a username
+        # List to store all found usernames
+        found_usernames = []
+        
+        # ===== PATTERN 1: Standard GitHub URLs =====
+        # github.com/username, https://github.com/username, www.github.com/username
+        patterns = [
+            r'github\.com[/:]([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])',
+            r'https?://(?:www\.)?github\.com/([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])',
+            r'www\.github\.com/([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])',
+        ]
+        
+        for pattern in patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for username in matches:
+                if username and username not in found_usernames:
+                    found_usernames.append(username)
+                    print(f"✅ Found GitHub username (URL): {username}")
+        
+        # ===== PATTERN 2: GitHub with @ mention =====
+        # @username in context of GitHub
         lines = text.split('\n')
         for line in lines:
             if 'github' in line.lower():
-                # Look for patterns like: github: username, @username, etc.
-                pattern2 = r'(?:github)[:\s]+@?([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])'
-                match = re.search(pattern2, line, re.IGNORECASE)
-                if match:
-                    username = match.group(1)
-                    print(f"✅ Found GitHub username (pattern 2): {username}")
-                    return username
+                # Look for @username
+                at_matches = re.findall(r'@([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])', line)
+                for username in at_matches:
+                    if username and username not in found_usernames:
+                        found_usernames.append(username)
+                        print(f"✅ Found GitHub username (@mention): {username}")
+        
+        # ===== PATTERN 3: GitHub: username format =====
+        for line in lines:
+            if 'github' in line.lower():
+                # Look for "github: username" or "github username" 
+                pattern = r'github[\s:]+([a-zA-Z0-9](?:[a-zA-Z0-9]|-(?!-)){0,38}[a-zA-Z0-9])'
+                matches = re.findall(pattern, line, re.IGNORECASE)
+                for username in matches:
+                    if username and username not in found_usernames:
+                        found_usernames.append(username)
+                        print(f"✅ Found GitHub username (label): {username}")
+        
+        # ===== PATTERN 4: Look in contact sections =====
+        # Often GitHub is listed with other contact info
+        contact_keywords = ['contact', 'profile', 'portfolio', 'github', 'git']
+        for line in lines:
+            line_lower = line.lower()
+            if any(keyword in line_lower for keyword in contact_keywords):
+                # Look for usernames that might be GitHub
+                # Match words that look like usernames (alphanumeric, hyphens)
+                potential_usernames = re.findall(r'\b([a-zA-Z0-9][a-zA-Z0-9_-]{2,38}[a-zA-Z0-9])\b', line)
+                for username in potential_usernames:
+                    # Avoid common false positives
+                    if username.lower() not in ['email', 'phone', 'linkedin', 'twitter']:
+                        if username and username not in found_usernames:
+                            # Check if this line also contains 'github'
+                            if 'github' in line_lower:
+                                found_usernames.append(username)
+                                print(f"✅ Found GitHub username (contact section): {username}")
+        
+        # Return the first valid username found
+        if found_usernames:
+            print(f"🐙 Using GitHub username: {found_usernames[0]}")
+            return found_usernames[0]
         
         print("❌ No GitHub username found")
         return None
@@ -117,13 +157,16 @@ class SemanticParser:
                 with open(file_path, 'rb') as f:
                     pdf = PyPDF2.PdfReader(f)
                     for page in pdf.pages:
-                        text += page.extract_text() or ""
+                        page_text = page.extract_text()
+                        if page_text:
+                            text += page_text + "\n"
                 return text
             elif ext == 'docx':
                 return docx2txt.process(file_path)
             else:
                 return ""
-        except:
+        except Exception as e:
+            print(f"Error extracting text: {e}")
             return ""
     
     def _clean_text(self, text):
@@ -239,6 +282,34 @@ class SemanticParser:
             'descriptions': descriptions[:5],
             'quality': quality
         }
+    
+    def extract_email(self, text):
+        """Extract email from resume text"""
+        import re
+        
+        # Common patterns where email appears
+        email_indicators = [
+            r'email[\s]*:[\s]*([^\s]+)',
+            r'e-mail[\s]*:[\s]*([^\s]+)',
+            r'contact[\s]*:[\s]*([^\s]+)',
+            r'mail[\s]*:[\s]*([^\s]+)'
+        ]
+        
+        # Try indicator patterns first
+        for pattern in email_indicators:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                potential = match.group(1).strip('.,;:')
+                if '@' in potential and '.' in potential:
+                    return potential
+        
+        # Then try standard email regex
+        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        emails = re.findall(email_pattern, text)
+        if emails:
+            return emails[0]
+        
+        return None
     
     def _extract_years(self, text):
         """Extract years of experience"""

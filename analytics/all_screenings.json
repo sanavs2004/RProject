@@ -529,6 +529,180 @@
         "understanding RESTful APIs design principles for microservices architecture": 3,
         "SQL query optimization techniques": 2
       }
+    },
+    {
+      "screening_id": "9c18f9d7-6958-4b6c-95c8-4651faf55657",
+      "job_title": "Software Engineer Trainee",
+      "date": "2026-02-26T21:09:58.182273",
+      "total_candidates": 6,
+      "average_score": 62.4,
+      "top_score": 64.8,
+      "skill_gaps": {
+        "software design principles": 3,
+        "version control systems": 3,
+        "Object-oriented programming": 2,
+        "agile methodology understanding": 2,
+        "basic troubleshooting skills.": 2
+      }
+    },
+    {
+      "screening_id": "690600e1-bce5-4557-8bb7-8a4eeff06a8e",
+      "job_title": "java developer  20260226",
+      "date": "2026-02-26T22:39:22.801359",
+      "total_candidates": 1,
+      "average_score": 52.5,
+      "top_score": 52.5,
+      "skill_gaps": {
+        "Java": 1,
+        "SQL (MySQL)": 1,
+        "problem-solving skills.": 1
+      }
+    },
+    {
+      "screening_id": "04ff49d9-b384-42e8-b486-befad2d058d4",
+      "job_title": "Backend Developer 20260225",
+      "date": "2026-02-26T22:53:36.898434",
+      "total_candidates": 1,
+      "average_score": 58.5,
+      "top_score": 58.5,
+      "skill_gaps": {
+        "PostgreSQL": 1,
+        "Django": 1,
+        "Python\n\n\n--- Here's the solution with explanation to make it more challenging:": 1
+      }
+    },
+    {
+      "screening_id": "aec2b671-4849-4818-9b79-e8cd605f297c",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-02-26T23:09:16.515591",
+      "total_candidates": 1,
+      "average_score": 55.3,
+      "top_score": 55.3,
+      "skill_gaps": {
+        "```plaintext\nPython programming": 1,
+        "Django framework expertise": 1,
+        "PostgreSQL database interactions": 1,
+        "AWS deployment proficiency": 1,
+        "CI/CD pipeline experience": 1
+      }
+    },
+    {
+      "screening_id": "5251a061-e611-4b86-990f-0e17110b29df",
+      "job_title": "20260222",
+      "date": "2026-02-26T23:16:31.750611",
+      "total_candidates": 1,
+      "average_score": 60.8,
+      "top_score": 60.8,
+      "skill_gaps": {
+        "django": 1,
+        "aws": 1,
+        "go": 1
+      }
+    },
+    {
+      "screening_id": "503f25e5-36c7-4b0b-8d72-4cbcec8444d5",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-27T09:52:41.544908",
+      "total_candidates": 4,
+      "average_score": 64.0,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "Angular (missing)": 1,
+        "Based on analyzing this resume against the job requirements and considering that Angular was specifically mentioned in addition to React JS libraries/frameworks as part of the required technologies for a full-stack development role focusing primarily on frontend work:\n\nAngular": 1,
+        "HTML5": 1,
+        "CSS3": 1,
+        "1. HTML/CSS and JavaScript (JS) proficiency specifically with React JS libraries or frameworks like Angular;\n2. Experience in designing responsive user interfaces following UX principles for various devices using frontend development tools;\n3. Collaboration experience working closely with a backend team to ensure smooth integration of the application": 1
+      }
+    },
+    {
+      "screening_id": "7adc6b16-38c0-43b4-be25-654642db2bb5",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-27T15:01:15.686372",
+      "total_candidates": 6,
+      "average_score": 54.1,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "Angular": 3,
+        "HTML": 3,
+        "CSS": 2,
+        "JavaScript (JS)": 2,
+        "Ember.js": 1
+      }
+    },
+    {
+      "screening_id": "e2e31a33-056d-4495-b98d-d9749e43449c",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-02-27T15:50:03.481379",
+      "total_candidates": 5,
+      "average_score": 55.3,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "Vue.js": 5,
+        "UX principles": 3,
+        "user testing": 3,
+        "requirements gathering": 3,
+        "React.js": 3
+      }
+    },
+    {
+      "screening_id": "cd1d1b52-1a8a-4ade-a019-5f01f64721df",
+      "job_title": "Senior Python Developer 20260224",
+      "date": "2026-03-02T10:00:19.686573",
+      "total_candidates": 1,
+      "average_score": 10.0,
+      "top_score": 10.0,
+      "skill_gaps": {
+        "Python programming skills": 1,
+        "Django web framework expertise": 1,
+        "AWS services proficiency (e.g.": 1,
+        "EC2": 1,
+        "S3)": 1
+      }
+    },
+    {
+      "screening_id": "91940a3b-a394-4071-b702-c951f2676d6d",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-03T11:07:52.134136",
+      "total_candidates": 5,
+      "average_score": 49.2,
+      "top_score": 64.1,
+      "skill_gaps": {
+        "JSP pages": 3,
+        "Servlets": 2,
+        "SQL queries": 2,
+        "Java; SQL queries for CRUD applications": 1,
+        "Java servlets JSP Java SQL MySQL CRUD application development None (Python and JavaScript also not relevant to job requirements)": 1
+      }
+    },
+    {
+      "screening_id": "2e9ea732-8a75-47fa-b705-8fe0aef2347d",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-03-03T14:53:17.324651",
+      "total_candidates": 5,
+      "average_score": 62.5,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "vue": 3,
+        "java": 2,
+        "javascript": 2,
+        "react": 2,
+        "angular": 2
+      }
+    },
+    {
+      "screening_id": "51314de7-c620-4b07-8d01-0a710a961906",
+      "job_title": "frontend developer 20260226",
+      "date": "2026-03-03T15:46:11.546097",
+      "total_candidates": 4,
+      "average_score": 64.3,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "Angular": 3,
+        "React.js": 2,
+        "Ember.js": 1,
+        "Vue Router": 1,
+        "User Experience Design Principles": 1
+      }
     }
   ]
 }

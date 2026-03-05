@@ -39,6 +39,7 @@
         .component-exp { background: #e67e22; color: white; }
         .component-edu { background: #2ecc71; color: white; }
         .debug-panel { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 5px; border: 1px solid #ddd; }
+        .debug-row { background: #fff3cd; padding: 10px; margin: 5px 0; border-radius: 5px; border-left: 4px solid #ff9800; }
     </style>
 </head>
 <body>
@@ -55,11 +56,11 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 65)|list|length if candidates else 0 }}</div>
-                <div class="stat-label">Shortlisted (65%+)</div>
+                <div class="stat-label"></div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 50)|selectattr('overall_score', '<', 65)|list|length if candidates else 0 }}</div>
-                <div class="stat-label">On Hold (50-65%)</div>
+                <div class="stat-value">{{ candidates|selectattr('overall_score', '>=', 50)|selectattr('overall_score', '<', 60)|list|length if candidates else 0 }}</div>
+                <div class="stat-label"></div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ candidates|selectattr('github_username', 'defined')|list|length if candidates else 0 }}</div>
@@ -100,7 +101,7 @@
                         <th>Candidate</th>
                         <th>Overall</th>
                         <th>GitHub</th>
-                        <th>Bonus</th>
+                        <!-- <th>Bonus</th> -->
                         <th>Skills Found</th>
                         <th>Missing Skills</th>
                         <th>Status</th>
@@ -109,6 +110,24 @@
                 </thead>
                 <tbody>
                     {% for candidate in candidates %}
+                    <!-- Debug row for GitHub data -->
+                    <!-- <tr class="debug-row">
+                        <td colspan="9">
+                            <strong>🔍 DEBUG for {{ candidate.filename }}:</strong><br>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
+                                <span>github_username: <strong>{{ candidate.github_username or 'None' }}</strong></span>
+                                <span>github_score: <strong>{{ candidate.github_score or 'None' }}</strong></span>
+                                <span>has_github: <strong>{{ candidate.has_github }}</strong></span>
+                                <span>github_verification exists: <strong>{{ 'Yes' if candidate.github_verification else 'No' }}</strong></span>
+                                {% if candidate.github_verification %}
+                                <span>verification.github_score: <strong>{{ candidate.github_verification.github_score }}</strong></span>
+                                <span>repos: <strong>{{ candidate.github_verification.repo_count }}</strong></span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr> -->
+                    
+                    <!-- Main candidate row -->
                     <tr class="candidate-row" onclick="viewCandidateDetails('{{ candidate.candidate_id }}')">
                         <td><strong>#{{ loop.index }}</strong></td>
                         <td>{{ candidate.filename }}</td>
@@ -125,24 +144,27 @@
                         
                         <!-- GitHub Score -->
                         <td>
-                            {% if candidate.github_verification and candidate.github_verification.github_score %}
+                            {% if candidate.github_score %}
+                                <span class="github-badge">
+                                    {{ "%.1f"|format(candidate.github_score) }}%
+                                </span>
+                                {% if candidate.github_username %}
+                                    <div class="github-username">@{{ candidate.github_username }}</div>
+                                {% endif %}
+                            {% elif candidate.github_verification and candidate.github_verification.github_score %}
                                 <span class="github-badge">
                                     {{ "%.1f"|format(candidate.github_verification.github_score) }}%
                                 </span>
                                 {% if candidate.github_username %}
                                     <div class="github-username">@{{ candidate.github_username }}</div>
                                 {% endif %}
-                            {% elif candidate.github_score %}
-                                <span class="github-badge">
-                                    {{ "%.1f"|format(candidate.github_score) }}%
-                                </span>
                             {% else %}
                                 <span style="color: #95a5a6;">—</span>
                             {% endif %}
                         </td>
                         
                         <!-- Confidence Bonus -->
-                        <td>
+                        <!-- <td>
                             {% if candidate.confidence_bonus and candidate.confidence_bonus > 0 %}
                                 <span class="bonus-badge">
                                     +{{ candidate.confidence_bonus }}
@@ -150,7 +172,7 @@
                             {% else %}
                                 <span style="color: #95a5a6;">—</span>
                             {% endif %}
-                        </td>
+                        </td> -->
                         
                         <!-- Skills Found -->
                         <td>
@@ -180,7 +202,7 @@
                         
                         <!-- Status -->
                         <td>
-                            {% if candidate.overall_score >= 65 %}
+                            {% if candidate.overall_score >= 60%}
                                 <span class="status-badge status-shortlist">✅ SHORTLIST</span>
                             {% elif candidate.overall_score >= 50 %}
                                 <span class="status-badge status-hold">⏸️ HOLD</span>
@@ -189,7 +211,7 @@
                             {% endif %}
                         </td>
                         
-                        <!-- Explanation Column - FIXED GITHUB DISPLAY -->
+                        <!-- Explanation Column -->
                         <td class="explanation-column">
                             {% if candidate.overall_score >= 65 %}
                                 <div class="explanation-text" style="border-left-color: #4caf50;">

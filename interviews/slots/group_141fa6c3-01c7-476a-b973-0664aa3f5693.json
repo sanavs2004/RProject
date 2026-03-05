@@ -1,0 +1,22 @@
+{
+  "group_id": "141fa6c3-01c7-476a-b973-0664aa3f5693",
+  "recruiter_email": "recruiter@company.com",
+  "slots": [
+    {
+      "id": "dcc24c00-e1b4-4c0a-a6fc-2fbd5d4d41ec",
+      "group_id": "141fa6c3-01c7-476a-b973-0664aa3f5693",
+      "date": "2026-03-04",
+      "start_time": "09:57",
+      "end_time": "10:20",
+      "duration": "30",
+      "mode": "inperson",
+      "location": "Kochi",
+      "recruiter_email": "recruiter@company.com",
+      "status": "available",
+      "created_at": "2026-03-03T11:57:40.271840",
+      "booked_by": null,
+      "booking_time": null
+    }
+  ],
+  "created_at": "2026-03-03T11:57:40.289028"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fb055a0d-9cfc-4af8-8cd0-b84df20c01e0",
+  "token": "e34dea01-555c-42cb-8859-297bbb2cbba1",
+  "candidate_email": "anusree_pp_resume__2@example.com",
+  "candidate_name": "Anusree_PP_RESUME__2",
+  "job_title": "frontend developer 20260226",
+  "slot_group_id": "141fa6c3-01c7-476a-b973-0664aa3f5693",
+  "status": "sent",
+  "sent_at": "2026-03-03T15:47:08.784582",
+  "expires_at": "2026-03-10T15:47:08.784582",
+  "selection_link": "http://127.0.0.1:5001/select-slot/e34dea01-555c-42cb-8859-297bbb2cbba1"
+}

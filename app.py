@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import os
 import uuid
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 from config import Config
-
 # Import JD module
 from jd_module import generate_job_description, get_all_jds
+from modules.interview_scheduler import InterviewScheduler
 
 # Import Resume Screening modules
 from modules.resume_screening import ResumeScreeningEngine
@@ -24,8 +25,9 @@ semantic_parser = SemanticParser()
 semantic_matcher = SemanticMatcher()
 semantic_ranker = SemanticRanker()
 skill_extractor = SkillExtractor()
+interview_scheduler = InterviewScheduler(Config)  # Moved here
 
-# Store processing status (optional - can be removed if not needed)
+# Store processing status
 processing_status = {}
 
 # Ensure directories exist
@@ -39,13 +41,84 @@ os.makedirs(Config.JD_STORE_FOLDER, exist_ok=True)
 # ======================
 @app.route('/')
 def index():
-    """Recruiter Dashboard"""
-    recent_screenings = screening_engine.get_all_screenings()[:5]
-    recent_jds = get_all_jds()[:5]
+    """Recruiter Dashboard with interview data"""
+    try:
+        # Get recent screenings
+        recent_screenings = screening_engine.get_all_screenings()[:5]
+        
+        # Get scheduled interviews
+        all_interviews = interview_scheduler.get_scheduled_interviews()
+        
+        # Calculate stats
+        total_screenings = len(screening_engine.get_all_screenings())
+        
+        # Count shortlisted candidates (score >= 65)
+        shortlisted_count = 0
+        screenings = screening_engine.get_all_screenings()[:10]
+        for s in screenings:
+            try:
+                result = screening_engine.get_screening_result(s['id'])
+                if result and result.get('candidates'):
+                    shortlisted = [c for c in result['candidates'] if c.get('overall_score', 0) >= 65]
+                    shortlisted_count += len(shortlisted)
+            except:
+                pass
+        
+        # Count pending invites
+        pending_invites = 0
+        invitations_folder = os.path.join(Config.BASE_DIR, 'interviews', 'invitations')
+        if os.path.exists(invitations_folder):
+            for file in os.listdir(invitations_folder):
+                if file.endswith('.json'):
+                    try:
+                        with open(os.path.join(invitations_folder, file), 'r') as f:
+                            inv = json.load(f)
+                            if inv.get('status') == 'sent':
+                                pending_invites += 1
+                    except:
+                        pass
+        
+        # Today's date calculations
+        today = datetime.now().date()
+        tomorrow = today + timedelta(days=1)
+        
+        # Filter today's and tomorrow's interviews
+        today_interviews = []
+        tomorrow_interviews = []
+        
+        for interview in all_interviews:
+            try:
+                interview_date = datetime.fromisoformat(interview['slot']['date']).date()
+                if interview_date == today:
+                    today_interviews.append(interview)
+                elif interview_date == tomorrow:
+                    tomorrow_interviews.append(interview)
+            except:
+                pass
+        
+        # Sort interviews by time
+        today_interviews.sort(key=lambda x: x['slot']['start_time'])
+        tomorrow_interviews.sort(key=lambda x: x['slot']['start_time'])
+        
+        return render_template('recruiter_dashboard.html',
+                             total_screenings=total_screenings,
+                             shortlisted_count=shortlisted_count,
+                             scheduled_interviews=len(all_interviews),
+                             pending_invites=pending_invites,
+                             recent_screenings=recent_screenings,
+                             today_interviews=today_interviews,
+                             tomorrow_interviews=tomorrow_interviews)
     
-    return render_template('recruiter_dashboard.html', 
-                         recent_screenings=recent_screenings,
-                         recent_jds=recent_jds)
+    except Exception as e:
+        print(f"Dashboard error: {e}")
+        return render_template('recruiter_dashboard.html',
+                             total_screenings=0,
+                             shortlisted_count=0,
+                             scheduled_interviews=0,
+                             pending_invites=0,
+                             recent_screenings=[],
+                             today_interviews=[],
+                             tomorrow_interviews=[])
 
 
 # ======================
@@ -61,35 +134,20 @@ def generate_jd():
         skills_input = data.get('skills', '')
         experience = data.get('experience')
         
-        # Parse skills (handle both string and list)
         if isinstance(skills_input, str):
             skills = [s.strip() for s in skills_input.split(',') if s.strip()]
         else:
             skills = skills_input
         
         if not role or not skills or not experience:
-            return jsonify({
-                'success': False, 
-                'error': 'Please fill all fields'
-            }), 400
+            return jsonify({'success': False, 'error': 'Please fill all fields'}), 400
         
         try:
-            # Generate JD using your module
             jd_text = generate_job_description(role, skills, experience)
-            
-            return jsonify({
-                'success': True, 
-                'jd_text': jd_text,
-                'message': 'Job description generated successfully'
-            })
-            
+            return jsonify({'success': True, 'jd_text': jd_text, 'message': 'Job description generated successfully'})
         except Exception as e:
-            return jsonify({
-                'success': False, 
-                'error': str(e)
-            }), 500
+            return jsonify({'success': False, 'error': str(e)}), 500
     
-    # GET request - show form
     return render_template('jd.html')
 
 
@@ -103,7 +161,6 @@ def jd_history():
 @app.route('/jd/<filename>')
 def view_jd(filename):
     """View a specific job description"""
-    import os
     filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
     
     if os.path.exists(filepath):
@@ -114,15 +171,9 @@ def view_jd(filename):
     return render_template('error.html', message='JD not found'), 404
 
 
-# @app.route('/api/recent-jds')
-# def api_recent_jds():
-#     """API endpoint to get recent JDs with display names"""
-#     jds = screening_engine.get_recent_jds()
-#     return jsonify(jds)
 @app.route('/api/recent-jds')
 def api_recent_jds():
     """API endpoint to get recent JDs with display names"""
-    import os
     from jd_module import STORE_FOLDER
     
     jds = []
@@ -134,18 +185,13 @@ def api_recent_jds():
                     with open(filepath, 'r', encoding='utf-8') as f:
                         content = f.read()
                     
-                    # Extract display name from filename
                     if file == "latest_jd.txt":
                         display_name = "Latest JD"
                     else:
-                        # Remove 'jd_' prefix and timestamp
-                        # Format: jd_Python_Developer_20260223_224423.txt
                         name_part = file.replace('jd_', '').replace('.txt', '')
                         parts = name_part.split('_')
                         
-                        # Check if last part is timestamp (14 digits)
                         if len(parts) > 1 and parts[-1].isdigit() and len(parts[-1]) == 14:
-                            # Remove timestamp
                             display_name = ' '.join(parts[:-1])
                         else:
                             display_name = ' '.join(parts)
@@ -153,37 +199,48 @@ def api_recent_jds():
                     jds.append({
                         'filename': file,
                         'display_name': display_name,
-                        'content': content[:200] + '...'  # Preview
+                        'content': content[:200] + '...'
                     })
                 except Exception as e:
                     print(f"Error reading {file}: {e}")
         
-        # Sort by filename (newest first)
         jds.sort(key=lambda x: x['filename'], reverse=True)
     
     return jsonify(jds)
 
+
+@app.route('/api/jd/<filename>')
+def api_jd_content(filename):
+    """Get full JD content for preview"""
+    from jd_module import STORE_FOLDER
+    
+    filepath = os.path.join(STORE_FOLDER, filename)
+    if os.path.exists(filepath):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return jsonify({'content': content})
+    return jsonify({'error': 'File not found'}), 404
+
+
+# ======================
+# RESUME SCREENING ROUTES
+# ======================
 @app.route('/screen-candidates', methods=['GET', 'POST'])
 def screen_candidates():
     """Screen candidates using semantic understanding"""
     if request.method == 'POST':
         try:
-            # Get form data
             jd_option = request.form.get('jd_option', 'new')
             job_title = request.form.get('job_title', 'Custom Job')
             jd_text = ""
             
-            # Handle JD selection
             if jd_option == 'existing':
-                # Check if selected from dropdown
                 recent_jd = request.form.get('recent_jd')
                 if recent_jd:
-                    # Load JD from file
                     jd_path = os.path.join(Config.JD_STORE_FOLDER, recent_jd)
                     if os.path.exists(jd_path):
                         with open(jd_path, 'r', encoding='utf-8') as f:
                             jd_text = f.read()
-                        # Extract job title from filename
                         job_title = recent_jd.replace('jd_', '').replace('.txt', '')
                         if '_' in job_title:
                             parts = job_title.split('_')
@@ -192,28 +249,24 @@ def screen_candidates():
                             else:
                                 job_title = ' '.join(parts)
                 
-                # Check if file uploaded
                 jd_file = request.files.get('jd_file')
                 if jd_file and jd_file.filename:
                     jd_text = jd_file.read().decode('utf-8')
                     if not job_title or job_title == 'Custom Job':
                         job_title = os.path.splitext(jd_file.filename)[0]
             else:
-                # Use textarea input
                 jd_text = request.form.get('jd_text', '').strip()
                 job_title = request.form.get('job_title', 'Custom Job')
             
             if not jd_text:
                 return jsonify({'success': False, 'error': 'Job description is required'}), 400
             
-            # Get resume files
             resume_files = request.files.getlist('resumes')
             resume_files = [f for f in resume_files if f and f.filename]
             
             if not resume_files:
                 return jsonify({'success': False, 'error': 'Please upload at least one resume'}), 400
             
-            # Run screening
             screening_id, results = screening_engine.screen_resumes(
                 jd_text=jd_text,
                 resume_files=resume_files,
@@ -231,117 +284,8 @@ def screen_candidates():
             print(f"Error in screening: {e}")
             return jsonify({'success': False, 'error': str(e)}), 500
     
-    # GET request - show form with recent JDs
     recent_jds = screening_engine.get_recent_jds() if hasattr(screening_engine, 'get_recent_jds') else []
     return render_template('screen_candidates.html', recent_jds=recent_jds)
-
-
-# @app.route('/api/jd/<filename>')
-# def get_jd_content(filename):
-#     """Get JD content for preview - handles both text and binary files"""
-#     import os
-#     filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
-    
-#     if not os.path.exists(filepath):
-#         return jsonify({'error': 'File not found'}), 404
-    
-#     try:
-#         # Try to read as text first
-#         with open(filepath, 'r', encoding='utf-8') as f:
-#             content = f.read()
-#         return jsonify({'content': content})
-#     except UnicodeDecodeError:
-#         # If it's a binary file, return a message
-#         return jsonify({'content': f'[Binary file: {filename}. Preview not available.]'})
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
-
-@app.route('/api/jd/<filename>')
-def api_jd_content(filename):
-    """Get full JD content for preview"""
-    import os
-    from jd_module import STORE_FOLDER
-    
-    filepath = os.path.join(STORE_FOLDER, filename)
-    if os.path.exists(filepath):
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return jsonify({'content': content})
-    return jsonify({'error': 'File not found'}), 404
-
-    
-
-
-# ======================
-# RESUME SCREENING ROUTES
-# # ======================
-# @app.route('/screen-candidates', methods=['GET', 'POST'])
-# def screen_candidates():
-#     """Screen candidates using semantic understanding"""
-#     if request.method == 'POST':
-#         try:
-#             # Get form data
-#             jd_option = request.form.get('jd_option', 'new')
-#             job_title = request.form.get('job_title', 'Custom Job')
-#             jd_text = ""
-            
-#             # Handle JD input
-#             if jd_option == 'existing':
-#                 # Get from existing JD file
-#                 jd_file = request.files.get('jd_file')
-#                 if jd_file and jd_file.filename:
-#                     jd_text = jd_file.read().decode('utf-8')
-#                     # Get job title from filename if not provided
-#                     if not job_title or job_title == 'Custom Job':
-#                         job_title = os.path.splitext(jd_file.filename)[0]
-#             else:
-#                 # Use textarea input
-#                 jd_text = request.form.get('jd_text', '').strip()
-            
-#             if not jd_text:
-#                 return jsonify({
-#                     'success': False, 
-#                     'error': 'Job description is required'
-#                 }), 400
-            
-#             # Get resume files
-#             resume_files = request.files.getlist('resumes')
-            
-#             # Filter out empty files
-#             resume_files = [f for f in resume_files if f and f.filename]
-            
-#             if not resume_files:
-#                 return jsonify({
-#                     'success': False, 
-#                     'error': 'Please upload at least one resume'
-#                 }), 400
-            
-#             # Run semantic screening
-#             screening_id, results = screening_engine.screen_resumes(
-#                 jd_text=jd_text,
-#                 resume_files=resume_files,
-#                 job_title=job_title
-#             )
-            
-#             return jsonify({
-#                 'success': True,
-#                 'screening_id': screening_id,
-#                 'redirect': f'/ranking-results/{screening_id}',
-#                 'message': f'✅ Processed {len(results["candidates"])} resumes with semantic understanding',
-#                 'candidates_count': len(results["candidates"])
-#             })
-            
-#         except Exception as e:
-#             print(f"Error in screening: {e}")
-#             return jsonify({
-#                 'success': False, 
-#                 'error': str(e)
-#             }), 500
-    
-#     # GET request - show screening form
-#     recent_jds = get_all_jds()[:10]
-#     return render_template('screen_candidates.html', recent_jds=recent_jds)
 
 
 @app.route('/ranking-results/<screening_id>')
@@ -368,7 +312,6 @@ def screening_history():
 @app.route('/screening-status/<screening_id>')
 def screening_status(screening_id):
     """Get screening status (for AJAX polling)"""
-    # Check if results exist
     result = screening_engine.get_screening_result(screening_id)
     
     if result:
@@ -378,7 +321,6 @@ def screening_status(screening_id):
             'redirect': f'/ranking-results/{screening_id}'
         })
     
-    # Check if still processing
     status = processing_status.get(screening_id, {
         'status': 'processing',
         'progress': 50,
@@ -407,12 +349,11 @@ def api_jds():
 
 
 # ======================
-# CANDIDATE DETAILS (Optional)
+# CANDIDATE DETAILS
 # ======================
 @app.route('/candidate/<candidate_id>')
 def candidate_details(candidate_id):
-    """View candidate details (placeholder)"""
-    # Find candidate in any screening result
+    """View candidate details"""
     screenings = screening_engine.get_all_screenings()
     
     for screening in screenings:
@@ -427,17 +368,9 @@ def candidate_details(candidate_id):
     return render_template('error.html', message='Candidate not found'), 404
 
 
-# ======================
-# ERROR HANDLERS
-# ======================
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('error.html', message='Page not found'), 404
-
 @app.route('/api/candidate/<candidate_id>')
 def get_candidate_details(candidate_id):
     """Get detailed candidate information"""
-    # Search through all screenings
     screenings = screening_engine.get_all_screenings()
     
     for screening in screenings:
@@ -482,6 +415,436 @@ def debug_candidate(screening_id):
         'total_candidates': len(candidates),
         'candidates': debug_data
     })
+
+
+# ======================
+# INTERVIEW SCHEDULING ROUTES (ONLY ONCE!)
+# ======================
+
+@app.route('/schedule-interviews/<screening_id>')
+def schedule_interviews(screening_id):
+    """Page to schedule interviews for shortlisted candidates"""
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return render_template('error.html', message='Screening not found'), 404
+    
+    shortlisted = [c for c in result['candidates'] if c.get('overall_score', 0) >= 65]
+    
+    return render_template('schedule_interviews.html', 
+                         screening=result,
+                         candidates=shortlisted,
+                         job=result['job'])
+
+
+@app.route('/create-slots', methods=['GET', 'POST'])
+def create_slots():
+    """Page for recruiters to create interview slots"""
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        
+        recruiter_email = data.get('recruiter_email', session.get('recruiter_email', 'recruiter@company.com'))
+        slots_data = data.get('slots', [])
+        
+        if not slots_data:
+            return jsonify({'success': False, 'error': 'No slots provided'}), 400
+        
+        slot_group_id = interview_scheduler.create_slots(recruiter_email, slots_data)
+        
+        return jsonify({
+            'success': True,
+            'slot_group_id': slot_group_id,
+            'message': f'Created {len(slots_data)} slots successfully'
+        })
+    
+    # Pass current date to template
+    today = datetime.now().strftime('%Y-%m-%d')
+    return render_template('create_slots.html', today=today)
+
+@app.route('/debug-email/<screening_id>')
+def debug_email(screening_id):
+    """Debug endpoint to check stored emails"""
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return jsonify({'error': 'Screening not found'}), 404
+    
+    debug_info = []
+    for candidate in result.get('candidates', []):
+        debug_info.append({
+            'filename': candidate.get('filename'),
+            'email': candidate.get('email'),
+            'has_github': candidate.get('has_github'),
+            'github_username': candidate.get('github_username'),
+            'score': candidate.get('overall_score')
+        })
+    
+    return jsonify({
+        'screening_id': screening_id,
+        'job_title': result['job']['title'],
+        'candidates': debug_info
+    })
+
+
+@app.route('/send-invites', methods=['GET', 'POST'])
+def send_invites():
+    """Page to send interview invites to shortlisted candidates"""
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        
+        screening_id = data.get('screening_id')
+        slot_group_id = data.get('slot_group_id')
+        
+        if not screening_id or not slot_group_id:
+            return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+        
+        # Get screening results
+        result = screening_engine.get_screening_result(screening_id)
+        
+        if not result:
+            return jsonify({'success': False, 'error': 'Screening not found'}), 404
+        
+        # DEBUG: Print ALL candidate data
+        print("\n" + "="*50)
+        print(f"🔍 DEBUG: Screening {screening_id} - {result['job']['title']}")
+        print("="*50)
+        
+        for i, candidate in enumerate(result['candidates']):
+            print(f"\n📄 Candidate {i+1}: {candidate.get('filename')}")
+            print(f"   Score: {candidate.get('overall_score')}")
+            
+            # Check all possible email fields
+            print(f"   email field: {candidate.get('email')}")
+            print(f"   contact_email field: {candidate.get('contact_email')}")
+            
+            # Check if there's parsed_data with email
+            if 'parsed_data' in candidate:
+                parsed = candidate['parsed_data']
+                if isinstance(parsed, dict):
+                    print(f"   parsed_data.email: {parsed.get('email')}")
+                    print(f"   parsed_data.contact_info: {parsed.get('contact_info', {}).get('email')}")
+            
+            print("-" * 30)
+        
+        # Extract candidate emails and names from shortlisted candidates
+        candidate_emails = []
+        candidate_names = []
+        
+        for candidate in result['candidates']:
+            if candidate.get('overall_score', 0) >= 65:  # Shortlisted only
+                # Try multiple places to find email
+                email = None
+                
+                # 1. Direct email field
+                email = candidate.get('email')
+                
+                # 2. Check parsed_data
+                if not email and 'parsed_data' in candidate:
+                    parsed = candidate['parsed_data']
+                    if isinstance(parsed, dict):
+                        email = parsed.get('email')
+                        
+                        # 3. Check contact_info inside parsed_data
+                        if not email and 'contact_info' in parsed:
+                            contact = parsed['contact_info']
+                            if isinstance(contact, dict):
+                                email = contact.get('email')
+                
+                # If still no email, use placeholder with warning
+                if not email:
+                    name_part = candidate['filename'].replace('.pdf', '').replace('.', ' ')
+                    email = f"{name_part.lower().replace(' ', '.')}@example.com"
+                    print(f"⚠️ WARNING: No email found for {candidate['filename']}, using placeholder: {email}")
+                else:
+                    print(f"✅ Found email for {candidate['filename']}: {email}")
+                
+                candidate_emails.append(email)
+                candidate_names.append(candidate['filename'].replace('.pdf', '').replace('.', ' '))
+        
+        print(f"\n📧 Final emails to send: {candidate_emails}")
+        
+        if not candidate_emails:
+            return jsonify({
+                'success': False, 
+                'error': 'No candidates with score ≥ 65 found'
+            }), 400
+        
+        base_url = request.host_url.rstrip('/')
+        
+        invitations = interview_scheduler.send_interview_invites(
+            candidate_emails=candidate_emails,
+            candidate_names=candidate_names,
+            job_title=result['job']['title'],
+            slot_group_id=slot_group_id,
+            base_url=base_url
+        )
+        
+        return jsonify({
+            'success': True,
+            'invitations': invitations,
+            'message': f'Sent {len(invitations)} invitations'
+        })
+    
+    # GET request - show form with recent screenings
+    screenings = screening_engine.get_all_screenings()[:10]
+    return render_template('send_invites.html', screenings=screenings)
+
+
+# @app.route('/send-invites', methods=['GET', 'POST'])
+# def send_invites():
+#     """Page to send interview invites to shortlisted candidates"""
+#     if request.method == 'POST':
+#         data = request.get_json() if request.is_json else request.form
+        
+#         screening_id = data.get('screening_id')
+#         slot_group_id = data.get('slot_group_id')
+        
+#         if not screening_id or not slot_group_id:
+#             return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+        
+#         result = screening_engine.get_screening_result(screening_id)
+        
+#         if not result:
+#             return jsonify({'success': False, 'error': 'Screening not found'}), 404
+        
+#         candidate_emails = []
+#         candidate_names = []
+        
+#         for candidate in result['candidates']:
+#             if candidate.get('overall_score', 0) >= 65:
+#                 email = candidate.get('email')
+#                 if not email:
+#                     name_part = candidate['filename'].replace('.pdf', '').replace('.', ' ')
+#                     email = f"{name_part.lower().replace(' ', '.')}@example.com"
+                
+#                 candidate_emails.append(email)
+#                 candidate_names.append(candidate['filename'].replace('.pdf', '').replace('.', ' '))
+        
+#         base_url = request.host_url.rstrip('/')
+        
+#         invitations = interview_scheduler.send_interview_invites(
+#             candidate_emails=candidate_emails,
+#             candidate_names=candidate_names,
+#             job_title=result['job']['title'],
+#             slot_group_id=slot_group_id,
+#             base_url=base_url
+#         )
+        
+#         return jsonify({
+#             'success': True,
+#             'invitations': invitations,
+#             'message': f'Sent {len(invitations)} invitations'
+#         })
+    
+#     screenings = screening_engine.get_all_screenings()[:10]
+#     return render_template('send_invites.html', screenings=screenings)
+
+
+@app.route('/scheduled-interviews')
+def scheduled_interviews():
+    """View all scheduled interviews"""
+    interviews = interview_scheduler.get_scheduled_interviews()
+    
+    from datetime import datetime
+    grouped = {}
+    for interview in interviews:
+        date = interview['slot']['date']
+        if date not in grouped:
+            grouped[date] = []
+        grouped[date].append(interview)
+    
+    return render_template('scheduled_interviews.html', 
+                         interviews=interviews,
+                         grouped=grouped)
+
+
+@app.route('/select-slot/<token>')
+def select_slot(token):
+    """Page for candidates to select interview slot"""
+    invitation = interview_scheduler.get_invitation_by_token(token)
+    
+    if not invitation:
+        return render_template('error.html', message='Invalid or expired invitation link'), 404
+    
+    if invitation['status'] == 'booked':
+        return render_template('error.html', message='This invitation has already been used'), 400
+    
+    return render_template('slot_selection.html', token=token)
+
+
+@app.route('/api/create-interview-slots', methods=['POST'])
+def api_create_interview_slots():
+    """API endpoint for recruiters to create interview slots"""
+    data = request.get_json()
+    
+    recruiter_email = data.get('recruiter_email')
+    slots = data.get('slots', [])
+    
+    if not recruiter_email or not slots:
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+    
+    slot_group_id = interview_scheduler.create_slots(recruiter_email, slots)
+    
+    return jsonify({
+        'success': True,
+        'slot_group_id': slot_group_id
+    })
+
+
+@app.route('/api/send-interview-invites', methods=['POST'])
+def api_send_interview_invites():
+    """Send interview invites to shortlisted candidates"""
+    data = request.get_json()
+    
+    screening_id = data.get('screening_id')
+    slot_group_id = data.get('slot_group_id')
+    
+    if not screening_id or not slot_group_id:
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+    
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return jsonify({'success': False, 'error': 'Screening not found'}), 404
+    
+    candidate_emails = []
+    candidate_names = []
+    
+    for candidate in result['candidates']:
+        if candidate.get('overall_score', 0) >= 65:
+            email = f"{candidate['filename'].replace('.pdf', '').replace(' ', '.').lower()}@example.com"
+            candidate_emails.append(email)
+            candidate_names.append(candidate['filename'].replace('.pdf', '').replace('.', ' '))
+    
+    base_url = request.host_url.rstrip('/')
+    
+    invitations = interview_scheduler.send_interview_invites(
+        candidate_emails=candidate_emails,
+        candidate_names=candidate_names,
+        job_title=result['job']['title'],
+        slot_group_id=slot_group_id,
+        base_url=base_url
+    )
+    
+    return jsonify({
+        'success': True,
+        'invitations': invitations
+    })
+
+
+@app.route('/api/interview-slots/<token>')
+def api_interview_slots(token):
+    """Get available slots for a token"""
+    invitation = interview_scheduler.get_invitation_by_token(token)
+    
+    if not invitation:
+        return jsonify({'success': False, 'error': 'Invalid token'}), 404
+    
+    if invitation['status'] == 'booked':
+        return jsonify({'success': False, 'error': 'You have already booked a slot'}), 400
+    
+    slots = interview_scheduler.get_available_slots(invitation['slot_group_id'])
+    
+    return jsonify({
+        'success': True,
+        'invitation': invitation,
+        'slots': slots
+    })
+
+
+@app.route('/api/book-slot', methods=['POST'])
+def api_book_slot():
+    """Book an interview slot"""
+    data = request.get_json()
+    
+    token = data.get('token')
+    slot_id = data.get('slot_id')
+    
+    if not token or not slot_id:
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+    
+    invitation = interview_scheduler.get_invitation_by_token(token)
+    
+    if not invitation:
+        return jsonify({'success': False, 'error': 'Invalid token'}), 404
+    
+    result = interview_scheduler.book_slot(
+        token=token,
+        slot_id=slot_id,
+        candidate_email=invitation['candidate_email'],
+        candidate_name=invitation['candidate_name']
+    )
+    
+    return jsonify(result)
+
+
+@app.route('/api/recent-screenings')
+def api_recent_screenings():
+    """API endpoint to get recent screenings for dropdown"""
+    screenings = screening_engine.get_all_screenings()[:10]
+    result = []
+    for s in screenings:
+        result.append({
+            'id': s['id'],
+            'job_title': s['job_title'],
+            'total': s['total'],
+            'top_score': s['top_score']
+        })
+    return jsonify(result)
+
+
+@app.route('/api/screening-candidates/<screening_id>')
+def api_screening_candidates(screening_id):
+    """Get shortlisted candidates for a screening"""
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return jsonify({'success': False, 'error': 'Screening not found'}), 404
+    
+    shortlisted = []
+    for c in result['candidates']:
+        if c.get('overall_score', 0) >= 65:
+            shortlisted.append({
+                'name': c['filename'].replace('.pdf', '').replace('.', ' '),
+                'email': c.get('email', f"{c['filename'].replace('.pdf', '').lower()}@example.com"),
+                'score': c['overall_score']
+            })
+    
+    return jsonify({
+        'success': True,
+        'job_title': result['job']['title'],
+        'candidates': shortlisted
+    })
+
+@app.route('/debug-results/<screening_id>')
+def debug_results(screening_id):
+    """Check what's actually saved in the results file"""
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return jsonify({'error': 'Not found'}), 404
+    
+    debug = []
+    for c in result.get('candidates', []):
+        debug.append({
+            'filename': c.get('filename'),
+            'saved_email': c.get('email'),
+            'has_email_field': 'email' in c,
+            'all_keys': list(c.keys())
+        })
+    
+    return jsonify({
+        'screening_id': screening_id,
+        'candidates': debug
+    })
+
+
+# ======================
+# ERROR HANDLERS
+# ======================
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('error.html', message='Page not found'), 404
 
 
 @app.errorhandler(500)

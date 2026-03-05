@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Interview Invitations - RecruitAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-secondary { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        .invite-form { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .screening-card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; border: 2px solid transparent; }
+        .screening-card:hover { border-color: #667eea; }
+        .screening-card.selected { background: #e8f5e9; border-color: #4caf50; }
+        .candidate-list { max-height: 300px; overflow-y: auto; margin: 20px 0; }
+        .candidate-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ecf0f1; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📧 Send Interview Invitations</h1>
+            <a href="/" class="btn-secondary">← Back to Dashboard</a>
+        </header>
+
+        <div class="invite-form">
+            <h2>Step 1: Select Screening</h2>
+            <p style="color: #7f8c8d;">Choose the screening session with shortlisted candidates</p>
+
+            <div id="screeningsList">
+                {% if screenings and screenings|length > 0 %}
+                    {% for screening in screenings %}
+                    <div class="screening-card" onclick="selectScreening('{{ screening.id }}', '{{ screening.job_title }}')">
+                        <strong>{{ screening.job_title }}</strong>
+                        <span style="float: right;">{{ screening.total }} candidates | Top: {{ screening.top_score }}%</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No screenings available. Please screen candidates first.</p>
+                {% endif %}
+            </div>
+
+            <div id="candidatesSection" style="display: none;">
+                <h2 style="margin-top: 30px;">Step 2: Shortlisted Candidates</h2>
+                <p>These candidates will receive interview invitations</p>
+                
+                <div id="jobTitle" style="font-weight: bold; margin-bottom: 10px;"></div>
+                <div id="candidatesList" class="candidate-list"></div>
+
+                <h2 style="margin-top: 30px;">Step 3: Slot Group ID</h2>
+                <input type="text" id="slotGroupId" placeholder="Enter slot group ID from create-slots page" style="width: 100%; padding: 12px; margin-bottom: 20px;">
+
+                <button class="btn-primary" id="sendBtn" onclick="sendInvitations()" disabled>Send Invitations</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedScreeningId = null;
+
+        async function selectScreening(screeningId, jobTitle) {
+            selectedScreeningId = screeningId;
+            
+            // Highlight selected
+            document.querySelectorAll('.screening-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            try {
+                const response = await fetch(`/api/screening-candidates/${screeningId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('jobTitle').textContent = `Job: ${data.job_title}`;
+                    
+                    let html = '';
+                    data.candidates.forEach(c => {
+                        html += `
+                            <div class="candidate-item">
+                                <span>${c.name}</span>
+                                <span style="color: #667eea; font-weight: bold;">${c.score}%</span>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('candidatesList').innerHTML = html;
+                    document.getElementById('candidatesSection').style.display = 'block';
+                    
+                    // Enable send button if slot ID exists
+                    checkSendButton();
+                }
+            } catch (error) {
+                alert('Error loading candidates');
+            }
+        }
+
+        document.getElementById('slotGroupId').addEventListener('input', checkSendButton);
+
+        function checkSendButton() {
+            const slotId = document.getElementById('slotGroupId').value;
+            document.getElementById('sendBtn').disabled = !(selectedScreeningId && slotId);
+        }
+
+        async function sendInvitations() {
+            const slotGroupId = document.getElementById('slotGroupId').value;
+            
+            try {
+                const response = await fetch('/api/send-interview-invites', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        screening_id: selectedScreeningId,
+                        slot_group_id: slotGroupId
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(`✅ Successfully sent ${data.invitations.length} invitations!`);
+                    window.location.href = '/scheduled-interviews';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to send invitations');
+            }
+        }
+    </script>
+</body>
+</html>

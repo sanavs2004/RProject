@@ -1,0 +1,12 @@
+{
+  "id": "049384e2-0d9d-4a6c-9217-c45c665b990e",
+  "token": "eaa005b5-9926-4739-832f-931e5b9b4e46",
+  "candidate_email": "kalyani@example.com",
+  "candidate_name": "kalyani",
+  "job_title": "frontend developer 20260226",
+  "slot_group_id": "d985ad36-7725-4915-b296-64855eddffc0",
+  "status": "sent",
+  "sent_at": "2026-03-03T14:57:15.352365",
+  "expires_at": "2026-03-10T14:57:15.352365",
+  "selection_link": "http://127.0.0.1:5001/select-slot/eaa005b5-9926-4739-832f-931e5b9b4e46"
+}

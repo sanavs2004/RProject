@@ -1,0 +1,5 @@
+Role Summary: As a beginner's Backend Developer at our company, you will learn and apply Java and SQL skills to assist in website functionality.
+Key Responsibilities: - Assist with basic web development tasks using Java technologies such as servlets and JSP pages. - Perform simple database operations utilizing SQL queries within the context of CRUD applications. - Collaborate closely with frontend developers for seamless integration between backend services and user interfaces.
+Required Qualifications:
+- High school diploma or equivalent; a degree in Computer Science is preferred but not mandatory at this entry level position.
+- Proficient knowledge of Java programming language, experience or willingness to learn SQL for database interactions are required skills. - Ability to work effectively as part of a team and communicate with non-technical staff members when needed.

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+        .content { padding: 30px; }
+        .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Interview Invitation</h1>
+    </div>
+    <div class="content">
+        <h2>Dear {{ candidate_name }},</h2>
+        <p>You have been shortlisted for the <strong>{{ job_title }}</strong> position.</p>
+        <p>Please select your preferred interview slot:</p>
+        <p style="text-align: center;">
+            <a href="{{ selection_link }}" class="button">Select Interview Slot</a>
+        </p>
+        <p>This invitation expires on {{ expires_at }}.</p>
+    </div>
+</body>
+</html>
