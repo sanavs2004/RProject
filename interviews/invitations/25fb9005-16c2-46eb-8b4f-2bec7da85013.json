@@ -1,0 +1,12 @@
+{
+  "id": "88d08327-053c-4476-8f2d-48da123c778c",
+  "token": "25fb9005-16c2-46eb-8b4f-2bec7da85013",
+  "candidate_email": "kalyani_-_copy@example.com",
+  "candidate_name": "kalyani_-_Copy",
+  "job_title": "full stack developer 20260305",
+  "slot_group_id": "a740fdc7-3f15-4fef-8889-72cfe53cbe2f",
+  "status": "sent",
+  "sent_at": "2026-03-05T11:20:19.944544",
+  "expires_at": "2026-03-12T11:20:19.944544",
+  "selection_link": "http://127.0.0.1:5002/select-slot/25fb9005-16c2-46eb-8b4f-2bec7da85013"
+}

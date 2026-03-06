@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from sentence_transformers import SentenceTransformer, util
+from flask import send_file
 
 # Import your JD module
 from jd_module import get_all_jds, STORE_FOLDER as JD_STORE
@@ -282,7 +283,7 @@ class ResumeScreeningEngine:
             # Check for empty files
             if char_count < 100:
                 print(f"⛔ REJECTED: Empty file ({char_count} chars)")
-                os.remove(file_path)
+                # os.remove(file_path)
                 return {
                     'candidate_id': candidate_id,
                     'filename': filename,
@@ -297,7 +298,8 @@ class ResumeScreeningEngine:
                     'is_empty_resume': True,
                     'rejection_reason': 'Empty or unreadable file',
                     'github_username': None,
-                    'has_github': False
+                    'has_github': False,
+                    'resume_path': file_path
                     # 'email': candidate_email 
                 }
             
@@ -399,9 +401,10 @@ class ResumeScreeningEngine:
             final_score = boosted_score + confidence_bonus
             final_score = min(final_score, 100)
             
-            # Clean up
-            os.remove(file_path)
-            
+            # # Clean up
+            # os.remove(file_path)
+            file_path = os.path.join(self.config.UPLOAD_FOLDER, f"{candidate_id}_{filename}")
+            file.save(file_path)
             # Return complete result with email
             return {
                 'candidate_id': candidate_id,
@@ -424,7 +427,8 @@ class ResumeScreeningEngine:
                 'github_score': github_score,
                 'github_verification': github_result,
                 'has_github': github_username is not None,
-                'is_empty_resume': False
+                'is_empty_resume': False,
+                'resume_path': file_path
             }
             
         except Exception as e:
@@ -668,7 +672,7 @@ class ResumeScreeningEngine:
             
             similarity = self.safe_cosine_similarity(point_emb, jd_emb)
             
-            if similarity > 70:
+            if similarity > 60:
                 matches.append({
                     'point': point,
                     'similarity': round(similarity, 1)

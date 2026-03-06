@@ -1,51 +1,6 @@
 {
   "screenings": [
     {
-      "screening_id": "53b4c759-661f-41fb-96e4-e1c8ca221bf9",
-      "job_title": "",
-      "date": "2026-02-23T22:16:32.897833",
-      "total_candidates": 5,
-      "average_score": 33.2,
-      "top_score": 37.5,
-      "skill_gaps": {
-        "AWS infrastructure deployment": 4,
-        "PostgreSQL database design and implementation": 4,
-        "data integrity maintenance": 3,
-        "collaboration techniques in cross-functional environments": 2,
-        "rapid iteration within Agile methodologies.": 2
-      }
-    },
-    {
-      "screening_id": "ee779474-e2d7-4fd4-8438-33ddd9dd8e61",
-      "job_title": "Web Developer",
-      "date": "2026-02-23T22:47:17.448225",
-      "total_candidates": 4,
-      "average_score": 29.7,
-      "top_score": 33.9,
-      "skill_gaps": {
-        "Database design": 2,
-        "SQL querying": 2,
-        "Code efficiency optimization": 1,
-        "Problem-solving skills": 1,
-        "Continuous learning": 1
-      }
-    },
-    {
-      "screening_id": "03d85570-12e9-4323-aa01-771a9498d54c",
-      "job_title": "20260223",
-      "date": "2026-02-23T23:33:06.395083",
-      "total_candidates": 4,
-      "average_score": 29.6,
-      "top_score": 33.8,
-      "skill_gaps": {
-        "code efficiency optimization techniques": 3,
-        "Django (Python)": 3,
-        "SQL querying skills": 2,
-        "maintainability practices in coding standards": 1,
-        "cross-browser compatibility knowledge": 1
-      }
-    },
-    {
       "screening_id": "59f2f168-61f9-4033-bb8e-a6b03778f89b",
       "job_title": "latest jd",
       "date": "2026-02-24T13:46:09.797735",
@@ -702,6 +657,63 @@
         "Ember.js": 1,
         "Vue Router": 1,
         "User Experience Design Principles": 1
+      }
+    },
+    {
+      "screening_id": "0e5a714b-59c9-43ac-8545-55d9349956c9",
+      "job_title": "full stack developer 20260305",
+      "date": "2026-03-05T11:18:23.008209",
+      "total_candidates": 1,
+      "average_score": 65.3,
+      "top_score": 65.3,
+      "skill_gaps": {
+        "MySQL": 1,
+        "Docker": 1,
+        "React": 1
+      }
+    },
+    {
+      "screening_id": "c9b78af2-f808-4b92-86c7-3307f062704d",
+      "job_title": "latest jd",
+      "date": "2026-03-05T11:22:46.447520",
+      "total_candidates": 3,
+      "average_score": 41.9,
+      "top_score": 64.5,
+      "skill_gaps": {
+        "Docker": 3,
+        "HTML": 3,
+        "MySQL": 2,
+        "Git": 1,
+        "CSS": 1
+      }
+    },
+    {
+      "screening_id": "26b58529-5768-4372-9a34-569b56ee2c82",
+      "job_title": "latest jd",
+      "date": "2026-03-05T11:28:22.153703",
+      "total_candidates": 1,
+      "average_score": 64.5,
+      "top_score": 64.5,
+      "skill_gaps": {
+        "MySQL": 1,
+        "Docker": 1,
+        "Debugging": 1,
+        "Team Collaboration": 1
+      }
+    },
+    {
+      "screening_id": "4ce7e683-4117-48a5-bfdb-804f75946ecb",
+      "job_title": "Frontend Developer 20260227",
+      "date": "2026-03-05T11:52:50.223070",
+      "total_candidates": 3,
+      "average_score": 60.8,
+      "top_score": 68.2,
+      "skill_gaps": {
+        "React JS": 2,
+        "SQL Server Management Studio (SSMS)": 2,
+        "python": 1,
+        "angular": 1,
+        "vue": 1
       }
     }
   ]

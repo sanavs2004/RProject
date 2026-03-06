@@ -88,18 +88,16 @@ class InterviewScheduler:
     def send_interview_invites(self, candidate_emails, candidate_names, job_title, slot_group_id, base_url):
         """
         Send interview invitations to shortlisted candidates
-        
-        Args:
-            candidate_emails: List of candidate email addresses
-            candidate_names: List of candidate names
-            job_title: Job title for the interview
-            slot_group_id: Group ID of available slots
-            base_url: Base URL for slot selection link
         """
         invitations = []
         
+        print(f"\n📧 SCHEDULER - Received emails: {candidate_emails}")
+        print(f"📧 SCHEDULER - Received names: {candidate_names}")
+        
         for i, email in enumerate(candidate_emails):
             name = candidate_names[i] if i < len(candidate_names) else "Candidate"
+            
+            print(f"  → Processing: {name} at {email}")
             
             # Generate unique token for this invitation
             token = str(uuid.uuid4())
@@ -113,7 +111,7 @@ class InterviewScheduler:
                 'candidate_name': name,
                 'job_title': job_title,
                 'slot_group_id': slot_group_id,
-                'status': 'sent',  # sent, viewed, booked, expired
+                'status': 'sent',
                 'sent_at': datetime.now().isoformat(),
                 'expires_at': (datetime.now() + timedelta(days=7)).isoformat(),
                 'selection_link': selection_link
@@ -128,6 +126,7 @@ class InterviewScheduler:
             
             # Send email
             self._send_invitation_email(invitation, selection_link)
+            print(f"  ✅ Invitation sent to {email}")
         
         return invitations
     

@@ -7,6 +7,9 @@ from config import Config
 # Import JD module
 from jd_module import generate_job_description, get_all_jds
 from modules.interview_scheduler import InterviewScheduler
+from flask import send_file, abort
+import os
+import glob
 
 # Import Resume Screening modules
 from modules.resume_screening import ResumeScreeningEngine
@@ -504,73 +507,44 @@ def send_invites():
         if not result:
             return jsonify({'success': False, 'error': 'Screening not found'}), 404
         
-        # DEBUG: Print ALL candidate data
-        print("\n" + "="*50)
-        print(f"🔍 DEBUG: Screening {screening_id} - {result['job']['title']}")
-        print("="*50)
-        
-        for i, candidate in enumerate(result['candidates']):
-            print(f"\n📄 Candidate {i+1}: {candidate.get('filename')}")
-            print(f"   Score: {candidate.get('overall_score')}")
-            
-            # Check all possible email fields
-            print(f"   email field: {candidate.get('email')}")
-            print(f"   contact_email field: {candidate.get('contact_email')}")
-            
-            # Check if there's parsed_data with email
-            if 'parsed_data' in candidate:
-                parsed = candidate['parsed_data']
-                if isinstance(parsed, dict):
-                    print(f"   parsed_data.email: {parsed.get('email')}")
-                    print(f"   parsed_data.contact_info: {parsed.get('contact_info', {}).get('email')}")
-            
-            print("-" * 30)
-        
         # Extract candidate emails and names from shortlisted candidates
         candidate_emails = []
         candidate_names = []
         
+        print(f"\n📧 Processing screening: {screening_id}")
+        print(f"Job Title: {result['job']['title']}")
+        print(f"Total candidates: {len(result['candidates'])}")
+        
         for candidate in result['candidates']:
-            if candidate.get('overall_score', 0) >= 65:  # Shortlisted only
-                # Try multiple places to find email
-                email = None
-                
-                # 1. Direct email field
+            score = candidate.get('overall_score', 0)
+            filename = candidate.get('filename', 'Unknown')
+            
+            print(f"\n  Candidate: {filename}")
+            print(f"  Score: {score}")
+            print(f"  Email from candidate: {candidate.get('email')}")
+            
+            if score >= 60:  # Shortlisted only
                 email = candidate.get('email')
                 
-                # 2. Check parsed_data
-                if not email and 'parsed_data' in candidate:
-                    parsed = candidate['parsed_data']
-                    if isinstance(parsed, dict):
-                        email = parsed.get('email')
-                        
-                        # 3. Check contact_info inside parsed_data
-                        if not email and 'contact_info' in parsed:
-                            contact = parsed['contact_info']
-                            if isinstance(contact, dict):
-                                email = contact.get('email')
-                
-                # If still no email, use placeholder with warning
-                if not email:
-                    name_part = candidate['filename'].replace('.pdf', '').replace('.', ' ')
-                    email = f"{name_part.lower().replace(' ', '.')}@example.com"
-                    print(f"⚠️ WARNING: No email found for {candidate['filename']}, using placeholder: {email}")
+                if email and '@' in email and '.' in email:
+                    print(f"  ✅ VALID EMAIL: {email}")
+                    candidate_emails.append(email)
+                    candidate_names.append(filename.replace('.pdf', '').replace('.', ' '))
                 else:
-                    print(f"✅ Found email for {candidate['filename']}: {email}")
-                
-                candidate_emails.append(email)
-                candidate_names.append(candidate['filename'].replace('.pdf', '').replace('.', ' '))
+                    print(f"  ❌ No valid email for shortlisted candidate: {filename}")
         
         print(f"\n📧 Final emails to send: {candidate_emails}")
+        print(f"📧 Final names: {candidate_names}")
         
         if not candidate_emails:
             return jsonify({
                 'success': False, 
-                'error': 'No candidates with score ≥ 65 found'
+                'error': 'No shortlisted candidates with valid emails found'
             }), 400
         
         base_url = request.host_url.rstrip('/')
         
+        # Call the scheduler with the correct emails
         invitations = interview_scheduler.send_interview_invites(
             candidate_emails=candidate_emails,
             candidate_names=candidate_names,
@@ -588,7 +562,6 @@ def send_invites():
     # GET request - show form with recent screenings
     screenings = screening_engine.get_all_screenings()[:10]
     return render_template('send_invites.html', screenings=screenings)
-
 
 # @app.route('/send-invites', methods=['GET', 'POST'])
 # def send_invites():
@@ -645,7 +618,10 @@ def scheduled_interviews():
     """View all scheduled interviews"""
     interviews = interview_scheduler.get_scheduled_interviews()
     
-    from datetime import datetime
+    # Get today's date for template
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    # Group interviews by date
     grouped = {}
     for interview in interviews:
         date = interview['slot']['date']
@@ -653,10 +629,13 @@ def scheduled_interviews():
             grouped[date] = []
         grouped[date].append(interview)
     
+    # Sort dates
+    sorted_grouped = dict(sorted(grouped.items()))
+    
     return render_template('scheduled_interviews.html', 
                          interviews=interviews,
-                         grouped=grouped)
-
+                         grouped=sorted_grouped,
+                         today=today)  # ← Pass today to template
 
 @app.route('/select-slot/<token>')
 def select_slot(token):
@@ -710,11 +689,24 @@ def api_send_interview_invites():
     candidate_emails = []
     candidate_names = []
     
+    print(f"\n🔍 API send-interview-invites called for screening: {screening_id}")
+    
     for candidate in result['candidates']:
-        if candidate.get('overall_score', 0) >= 65:
-            email = f"{candidate['filename'].replace('.pdf', '').replace(' ', '.').lower()}@example.com"
-            candidate_emails.append(email)
-            candidate_names.append(candidate['filename'].replace('.pdf', '').replace('.', ' '))
+        if candidate.get('overall_score', 0) >= 60:
+            email = candidate.get('email')
+            filename = candidate.get('filename')
+            
+            print(f"  Candidate: {filename} -> Email: {email}")
+            
+            if email and '@' in email:
+                candidate_emails.append(email)
+                candidate_names.append(filename.replace('.pdf', '').replace('.', ' '))
+            else:
+                # Fallback - use filename to generate email
+                fallback = filename.replace('.pdf', '').lower().replace(' ', '.') + '@example.com'
+                print(f"  ⚠️ No valid email, using fallback: {fallback}")
+                candidate_emails.append(fallback)
+                candidate_names.append(filename.replace('.pdf', '').replace('.', ' '))
     
     base_url = request.host_url.rstrip('/')
     
@@ -731,6 +723,48 @@ def api_send_interview_invites():
         'invitations': invitations
     })
 
+
+
+@app.route('/view-resume/<candidate_id>')
+def view_resume(candidate_id):
+    """Serve the actual resume PDF file"""
+    # Search through all screenings to find the candidate
+    screenings = screening_engine.get_all_screenings()
+    
+    for screening in screenings:
+        result = screening_engine.get_screening_result(screening['id'])
+        if result and result.get('candidates'):
+            for candidate in result['candidates']:
+                if candidate.get('candidate_id') == candidate_id:
+                    
+                    # Method 1: Check if resume_path is stored
+                    resume_path = candidate.get('resume_path')
+                    if resume_path and os.path.exists(resume_path):
+                        return send_file(resume_path, as_attachment=False)
+                    
+                    # Method 2: Try to find by candidate_id in upload folder
+                    upload_folder = Config.UPLOAD_FOLDER
+                    pattern = os.path.join(upload_folder, f"{candidate_id}_*")
+                    files = glob.glob(pattern)
+                    
+                    if files:
+                        return send_file(files[0], as_attachment=False)
+                    
+                    # Method 3: Try to find by filename
+                    filename = candidate.get('filename')
+                    if filename:
+                        file_path = os.path.join(upload_folder, filename)
+                        if os.path.exists(file_path):
+                            return send_file(file_path, as_attachment=False)
+                    
+                    # Method 4: Look in all subfolders
+                    for root, dirs, files in os.walk(upload_folder):
+                        for file in files:
+                            if candidate_id in file or filename in file:
+                                return send_file(os.path.join(root, file), as_attachment=False)
+    
+    # If we get here, file not found
+    return render_template('error.html', message='Resume file not found'), 404
 
 @app.route('/api/interview-slots/<token>')
 def api_interview_slots(token):
@@ -792,7 +826,6 @@ def api_recent_screenings():
         })
     return jsonify(result)
 
-
 @app.route('/api/screening-candidates/<screening_id>')
 def api_screening_candidates(screening_id):
     """Get shortlisted candidates for a screening"""
@@ -802,13 +835,25 @@ def api_screening_candidates(screening_id):
         return jsonify({'success': False, 'error': 'Screening not found'}), 404
     
     shortlisted = []
+    print(f"\n🔍 API screening-candidates called for: {screening_id}")
+    
     for c in result['candidates']:
-        if c.get('overall_score', 0) >= 65:
+        score = c.get('overall_score', 0)
+        if score >= 60:
+            email = c.get('email')
+            filename = c.get('filename')
+            
+            print(f"  Candidate: {filename}")
+            print(f"    Score: {score}")
+            print(f"    Email from data: {email}")
+            
             shortlisted.append({
-                'name': c['filename'].replace('.pdf', '').replace('.', ' '),
-                'email': c.get('email', f"{c['filename'].replace('.pdf', '').lower()}@example.com"),
-                'score': c['overall_score']
+                'name': filename.replace('.pdf', '').replace('.', ' '),
+                'email': email,
+                'score': score
             })
+    
+    print(f"  Returning {len(shortlisted)} shortlisted candidates")
     
     return jsonify({
         'success': True,
@@ -872,4 +917,4 @@ if __name__ == '__main__':
     print("   3. View Rankings → /ranking-results/<id>")
     print("="*60 + "\n")
     
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)

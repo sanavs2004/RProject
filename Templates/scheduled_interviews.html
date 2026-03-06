@@ -58,8 +58,7 @@
                 {% endif %}
             </div>
             {% for interview in interview_list %}
-            <div class="interview-card {% if date == now().strftime('%Y-%m-%d') %}today{% endif %}">
-                <div style="flex: 2;">
+            <div class="interview-card {% if date == today %}today{% endif %}">                <div style="flex: 2;">
                     <strong>{{ interview.candidate_name }}</strong>
                     <span class="badge badge-{{ interview.slot.mode }}">{{ interview.slot.mode|upper }}</span>
                     <div style="font-size: 13px; color: #7f8c8d; margin-top: 3px;">

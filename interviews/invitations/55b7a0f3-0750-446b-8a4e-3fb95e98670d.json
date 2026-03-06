@@ -1,0 +1,12 @@
+{
+  "id": "3f68bdc0-3d20-4d09-bd4e-7c8a25004dfb",
+  "token": "55b7a0f3-0750-446b-8a4e-3fb95e98670d",
+  "candidate_email": "seetha_lakshmi@example.com",
+  "candidate_name": "seetha_LAKSHMI",
+  "job_title": "Frontend Developer 20260227",
+  "slot_group_id": "a740fdc7-3f15-4fef-8889-72cfe53cbe2f",
+  "status": "sent",
+  "sent_at": "2026-03-05T11:59:42.813805",
+  "expires_at": "2026-03-12T11:59:42.813805",
+  "selection_link": "http://127.0.0.1:5002/select-slot/55b7a0f3-0750-446b-8a4e-3fb95e98670d"
+}

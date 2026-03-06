@@ -1,25 +1,349 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Invitation - RecruitAI</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-        .content { padding: 30px; }
-        .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; }
+        /* Reset styles */
+        body, p, h1, h2, h3, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Header with company branding */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .company-logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        /* Main content area */
+        .content {
+            padding: 35px 30px;
+            background: white;
+        }
+        
+        .greeting {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .greeting strong {
+            color: #667eea;
+        }
+        
+        .message-box {
+            background: #f8fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .job-details {
+            background: #ffffff;
+            border: 1px solid #e0e7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .job-details h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .job-details ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .job-details li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .job-details li:last-child {
+            border-bottom: none;
+        }
+        
+        .job-details li:before {
+            content: "•";
+            color: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        /* Button styling */
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            padding: 16px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Expiry notice */
+        .expiry-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .expiry-box:before {
+            content: "⏰";
+            font-size: 20px;
+        }
+        
+        /* Info boxes */
+        .info-box {
+            background: #e8f4fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .info-box h4 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info-box li {
+            padding: 5px 0;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-box li:before {
+            content: "✓";
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #e0e7ff, transparent);
+            margin: 25px 0;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f8fafc;
+            padding: 25px 30px;
+            text-align: center;
+            border-top: 1px solid #e0e7ff;
+        }
+        
+        .footer p {
+            color: #64748b;
+            font-size: 13px;
+            margin: 5px 0;
+        }
+        
+        .footer .company-name {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .social-links {
+            margin: 15px 0;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .social-links a:hover {
+            color: #667eea;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 480px) {
+            .content, .header, .footer {
+                padding: 20px;
+            }
+            
+            .button {
+                display: block;
+                padding: 14px 20px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Interview Invitation</h1>
-    </div>
-    <div class="content">
-        <h2>Dear {{ candidate_name }},</h2>
-        <p>You have been shortlisted for the <strong>{{ job_title }}</strong> position.</p>
-        <p>Please select your preferred interview slot:</p>
-        <p style="text-align: center;">
-            <a href="{{ selection_link }}" class="button">Select Interview Slot</a>
-        </p>
-        <p>This invitation expires on {{ expires_at }}.</p>
+    <div class="email-container">
+        <!-- Header with Company Branding -->
+        <div class="header">
+            <div class="company-logo">🚀</div>
+            <h1>RecruitAI</h1>
+            <p>AI-Powered Recruitment Platform</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Personalized Greeting -->
+            <div class="greeting">
+                Dear <strong>{{ candidate_name }}</strong>,
+            </div>
+            
+            <!-- Congratulations Message -->
+            <div class="message-box">
+                <p style="font-size: 16px; margin-bottom: 10px;">🎉 Congratulations! Based on your impressive profile and skills, you have been <strong>shortlisted</strong> for the</p>
+                <h2 style="color: #667eea; font-size: 24px; margin: 10px 0;">{{ job_title }}</h2>
+                <p style="color: #4a5568; margin-top: 10px;">position at our organization.</p>
+            </div>
+            
+            <!-- Job Details Summary -->
+            <div class="job-details">
+                <h3>📋 Position Overview</h3>
+                <ul>
+                    <li><strong>Role:</strong> {{ job_title }}</li>
+                    <li><strong>Interview Type:</strong> Technical Discussion</li>
+                    <li><strong>Duration:</strong> 45-60 minutes</li>
+                    <li><strong>Mode:</strong> Video Conference</li>
+                </ul>
+            </div>
+            
+            <!-- Call to Action - Slot Selection -->
+            <div class="button-container">
+                <a href="{{ selection_link }}" class="button">📅 Select Your Interview Slot</a>
+            </div>
+            
+            <!-- Expiry Notice -->
+            <div class="expiry-box">
+                <strong>Offer expires on {{ expires_at }}</strong> - Please book your slot before this date.
+            </div>
+            
+            <!-- What to Expect Section -->
+            <div class="info-box">
+                <h4>📌 What to Expect</h4>
+                <ul>
+                    <li>45-60 minute technical discussion</li>
+                    <li>Discussion about your experience and projects</li>
+                    <li>Q&A session about the role and company</li>
+                    <li>Opportunity to ask your questions</li>
+                </ul>
+            </div>
+            
+            <!-- Preparation Tips -->
+            <div style="background: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                <h4 style="color: #2c3e50; margin-bottom: 12px;">💡 Preparation Tips</h4>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="padding: 5px 0;">✓ Review the job description thoroughly</li>
+                    <li style="padding: 5px 0;">✓ Prepare examples of your past work</li>
+                    <li style="padding: 5px 0;">✓ Test your video/audio setup beforehand</li>
+                    <li style="padding: 5px 0;">✓ Have a quiet, professional environment</li>
+                </ul>
+            </div>
+            
+            <!-- Contact Information -->
+            <div style="background: #ffffff; border: 1px dashed #cbd5e0; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center;">
+                <p style="color: #4a5568;">📧 <strong>Need help?</strong> Contact our recruitment team at <a href="mailto:recruitment@recruitai.com" style="color: #667eea; text-decoration: none;">recruitment@recruitai.com</a></p>
+            </div>
+        </div>
+        
+        <!-- Divider -->
+        <div class="divider"></div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="company-name">RecruitAI</div>
+            <p>AI-Powered Recruitment Platform</p>
+            <p style="margin: 10px 0;">Transforming talent acquisition through intelligent automation</p>
+            
+            <div class="social-links">
+                <a href="#">LinkedIn</a> •
+                <a href="#">Twitter</a> •
+                <a href="#">Website</a>
+            </div>
+            
+            <p style="margin-top: 15px;">This is an automated message from RecruitAI. Please do not reply to this email.</p>
+            <p>&copy; 2026 RecruitAI. All rights reserved.</p>
+        </div>
     </div>
 </body>
 </html>
