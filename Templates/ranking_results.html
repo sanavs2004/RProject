@@ -39,6 +39,20 @@
         .component-exp { background: #e67e22; color: white; }
         .component-edu { background: #2ecc71; color: white; }
         .debug-panel { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 5px; border: 1px solid #ddd; }
+
+        /* ── Learning Path button styles ── */
+        .lp-btn-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .btn-lp-view {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 6px 13px; border-radius: 7px; font-size: 12px; font-weight: 600;
+            background: rgba(102,126,234,.1); border: 1px solid rgba(102,126,234,.35);
+            color: #667eea; text-decoration: none; transition: all .2s;
+        }
+        .btn-lp-view:hover { background: rgba(102,126,234,.2); color: #4a5fd4; }
+        .lp-sent-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 11px; color: #27ae60; font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +112,24 @@
                             <a href="/view-resume/{{ candidate.candidate_id }}" target="_blank" style="text-decoration: none; color: #667eea; font-weight: 500;">
                                 {{ candidate.filename }}
                             </a>
+
+                            <!-- ✅ LEARNING PATH — auto sent, just show status badge -->
+                            {% if candidate.overall_score < 65 %}
+                            <div class="lp-btn-wrap">
+                                <a href="/learning-path/{{ candidate.candidate_id }}"
+                                   target="_blank"
+                                   class="btn-lp-view">
+                                    📚 View Learning Path
+                                </a>
+                                {% if candidate.learning_path_sent %}
+                                <span class="lp-sent-badge">📧 Learning path emailed</span>
+                                {% else %}
+                                <span style="font-size:11px; color:#e67e22;">📧 Email not sent (no email found in resume)</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            <!-- END LEARNING PATH -->
+
                         </td>
                         
                         <!-- Overall Score -->
@@ -243,7 +275,6 @@
                     <tr style="border-bottom: 1px solid #ecf0f1;">
                         <td style="padding: 12px; font-weight: bold;">{{ candidate.filename }}</td>
                         
-                        <!-- Semantic Score -->
                         <td style="padding: 12px; text-align: center;">
                             {% set semantic = candidate.semantic_score if candidate.semantic_score is defined else 0 %}
                             <span class="component-badge component-semantic">
@@ -251,7 +282,6 @@
                             </span>
                         </td>
                         
-                        <!-- Skills Score -->
                         <td style="padding: 12px; text-align: center;">
                             {% set skills = candidate.skill_match_score if candidate.skill_match_score is defined else 
                                            candidate.skill_relevance if candidate.skill_relevance is defined else 0 %}
@@ -260,7 +290,6 @@
                             </span>
                         </td>
                         
-                        <!-- Experience Score -->
                         <td style="padding: 12px; text-align: center;">
                             {% set exp = candidate.experience_score if candidate.experience_score is defined else
                                         candidate.experience_relevance if candidate.experience_relevance is defined else 0 %}
@@ -269,7 +298,6 @@
                             </span>
                         </td>
                         
-                        <!-- Education Score -->
                         <td style="padding: 12px; text-align: center;">
                             {% set edu = candidate.education_score if candidate.education_score is defined else
                                         candidate.education_relevance if candidate.education_relevance is defined else 0 %}
@@ -278,7 +306,6 @@
                             </span>
                         </td>
                         
-                        <!-- GitHub Score -->
                         <td style="padding: 12px; text-align: center;">
                             {% if candidate.github_verification and candidate.github_verification.github_score %}
                                 <span class="github-badge" style="font-size: 11px;">
@@ -293,7 +320,6 @@
                             {% endif %}
                         </td>
                         
-                        <!-- Bonus -->
                         <td style="padding: 12px; text-align: center;">
                             {% if candidate.confidence_bonus and candidate.confidence_bonus > 0 %}
                                 <span class="bonus-badge">
@@ -304,7 +330,6 @@
                             {% endif %}
                         </td>
                         
-                        <!-- Overall Score -->
                         <td style="padding: 12px; text-align: center; font-weight: bold;">
                             {{ "%.1f"|format(candidate.overall_score) }}%
                         </td>
@@ -313,7 +338,6 @@
                 </tbody>
             </table>
             
-            <!-- Legend -->
             <div style="margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                 <div><span class="component-badge component-semantic" style="display: inline-block; width: 12px; height: 12px; padding: 0;"></span> Semantic (25%)</div>
                 <div><span class="component-badge component-skills" style="display: inline-block; width: 12px; height: 12px; padding: 0;"></span> Skills (40%)</div>
@@ -353,7 +377,6 @@
                 {% endfor %}
             {% endfor %}
             
-            <!-- High Priority Skills -->
             {% if high_skills %}
             <div style="margin-bottom: 25px;">
                 <h4 style="color: #f44336; margin-bottom: 10px;">🔴 High Priority Missing Skills</h4>
@@ -378,7 +401,6 @@
             </div>
             {% endif %}
             
-            <!-- Medium Priority Skills -->
             {% if medium_skills %}
             <div style="margin-bottom: 25px;">
                 <h4 style="color: #ff9800; margin-bottom: 10px;">🟠 Medium Priority Missing Skills</h4>
@@ -415,6 +437,8 @@
         function viewCandidateDetails(candidateId) {
             window.open('/view-resume/' + candidateId, '_blank');
         }
+
+
     </script>
 </body>
 </html>

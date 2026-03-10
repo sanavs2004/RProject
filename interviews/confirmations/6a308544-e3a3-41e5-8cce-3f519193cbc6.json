@@ -1,0 +1,26 @@
+{
+  "id": "6a308544-e3a3-41e5-8cce-3f519193cbc6",
+  "invitation_id": "bd62ec7c-2e88-4949-b0eb-96b422616ffc",
+  "candidate_email": "sanavs2004@gmail.com",
+  "candidate_name": "SANA_V_S_RESUME_3",
+  "recruiter_email": "recruiter@company.com",
+  "job_title": "Software Developer 20260306",
+  "slot": {
+    "id": "767935d6-043e-4577-b4d1-9c87ba140032",
+    "group_id": "5012f756-08b0-47eb-bb9c-7dd4f8fe81b1",
+    "date": "2026-03-06",
+    "start_time": "13:08",
+    "end_time": "14:08",
+    "duration": "30",
+    "mode": "inperson",
+    "location": "Kochi,infopark Phase3",
+    "recruiter_email": "recruiter@company.com",
+    "status": "booked",
+    "created_at": "2026-03-06T11:09:23.339399",
+    "booked_by": "sanavs2004@gmail.com",
+    "booking_time": "2026-03-06T11:23:37.109969"
+  },
+  "video_link": null,
+  "confirmed_at": "2026-03-06T11:23:37.114407",
+  "status": "confirmed"
+}

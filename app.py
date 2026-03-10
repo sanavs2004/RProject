@@ -17,6 +17,8 @@ from modules.semantic_parser import SemanticParser
 from modules.semantic_matcher import SemanticMatcher
 from modules.semantic_ranker import SemanticRanker
 from modules.skill_extractor import SkillExtractor
+from modules.learning_path_generator import LearningPathGenerator
+from modules.learning_path_emailer import send_learning_path_email
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -29,6 +31,7 @@ semantic_matcher = SemanticMatcher()
 semantic_ranker = SemanticRanker()
 skill_extractor = SkillExtractor()
 interview_scheduler = InterviewScheduler(Config)  # Moved here
+learning_path_gen = LearningPathGenerator(Config)
 
 # Store processing status
 processing_status = {}
@@ -349,6 +352,69 @@ def api_jds():
     """API endpoint to get all JDs"""
     jds = get_all_jds()
     return jsonify(jds)
+
+@app.route('/learning-path/<candidate_id>')
+def learning_path(candidate_id):
+    """
+    Show the personalised learning path PAGE for a candidate.
+    Linked from the ranking results page via the 📚 button.
+    """
+    # Try to load an already-generated path first (saved from screening)
+    existing = learning_path_gen.get_learning_path(candidate_id)
+    if existing:
+        return render_template('learning_path.html', learning_path=existing)
+
+    # Not generated yet — find candidate and generate now
+    screenings = screening_engine.get_all_screenings()
+    for screening in screenings:
+        result = screening_engine.get_screening_result(screening['id'])
+        if result:
+            for candidate in result.get('candidates', []):
+                if candidate.get('candidate_id') == candidate_id:
+                    lp = learning_path_gen.generate(candidate, result['job'])
+                    return render_template('learning_path.html', learning_path=lp)
+
+    return render_template('error.html', message='Candidate not found'), 404
+
+
+@app.route('/api/resend-learning-path/<candidate_id>', methods=['POST'])
+def resend_learning_path(candidate_id):
+    """
+    Recruiter manually re-sends the learning path email for a candidate.
+    Called from the ranking results page via a button.
+    """
+    screenings = screening_engine.get_all_screenings()
+    for screening in screenings:
+        result = screening_engine.get_screening_result(screening['id'])
+        if result:
+            for candidate in result.get('candidates', []):
+                if candidate.get('candidate_id') == candidate_id:
+                    # Get or generate learning path
+                    lp = learning_path_gen.get_learning_path(candidate_id)
+                    if not lp:
+                        lp = learning_path_gen.generate(candidate, result['job'])
+
+                    # Send email
+                    sent = send_learning_path_email(candidate, result['job'], lp, Config)
+                    return jsonify({
+                        'success': sent,
+                        'message': f"Learning path emailed to {candidate.get('email')}" if sent
+                                   else 'Failed to send — check SMTP settings or candidate has no email'
+                    })
+
+    return jsonify({'success': False, 'error': 'Candidate not found'}), 404
+
+
+@app.route('/api/learning-path/<candidate_id>')
+def api_get_learning_path(candidate_id):
+    """
+    Returns the learning path JSON for a candidate.
+    Useful for debugging or future frontend use.
+    """
+    lp = learning_path_gen.get_learning_path(candidate_id)
+    if lp:
+        return jsonify(lp)
+    return jsonify({'error': 'Learning path not found'}), 404
 
 
 # ======================
@@ -881,6 +947,89 @@ def debug_results(screening_id):
     return jsonify({
         'screening_id': screening_id,
         'candidates': debug
+    })
+
+
+# ======================
+# LEARNING PATH ROUTES
+# ======================
+
+from modules.learning_path_generator import LearningPathGenerator
+
+# Initialize learning path generator
+learning_path_gen = LearningPathGenerator(Config)
+
+@app.route('/generate-learning-paths/<screening_id>')
+def generate_learning_paths(screening_id):
+    """Generate learning paths for all rejected candidates in a screening"""
+    # Get screening results
+    result = screening_engine.get_screening_result(screening_id)
+    
+    if not result:
+        return render_template('error.html', message='Screening not found'), 404
+    
+    # Find rejected candidates (score < 50)
+    rejected = [c for c in result['candidates'] if c.get('overall_score', 0) < 50]
+    
+    if not rejected:
+        return render_template('error.html', message='No rejected candidates found'), 404
+    
+    generated_paths = []
+    for candidate in rejected:
+        learning_path = learning_path_gen.generate_learning_path(candidate, result['job'])
+        generated_paths.append(learning_path)
+        
+        # Send email if candidate has email
+        if candidate.get('email'):
+            base_url = request.host_url.rstrip('/')
+            learning_path_gen.send_learning_path_email(candidate['email'], learning_path, base_url)
+    
+    return render_template('learning_paths_generated.html', 
+                         paths=generated_paths,
+                         count=len(generated_paths),
+                         screening_id=screening_id)
+
+@app.route('/learning-path/<candidate_id>')
+def view_learning_path(candidate_id):
+    """View learning path for a candidate"""
+    learning_path = learning_path_gen.get_learning_path(candidate_id)
+    
+    if not learning_path:
+        return render_template('error.html', message='Learning path not found'), 404
+    
+    return render_template('learning_path.html', path=learning_path)
+
+@app.route('/api/generate-learning-path/<candidate_id>', methods=['POST'])
+def api_generate_learning_path(candidate_id):
+    """API endpoint to generate learning path for a specific candidate"""
+    data = request.get_json()
+    
+    # Find candidate in screenings
+    screenings = screening_engine.get_all_screenings()
+    candidate_data = None
+    job_data = None
+    
+    for screening in screenings:
+        result = screening_engine.get_screening_result(screening['id'])
+        if result and result.get('candidates'):
+            for c in result['candidates']:
+                if c.get('candidate_id') == candidate_id:
+                    candidate_data = c
+                    job_data = result['job']
+                    break
+        if candidate_data:
+            break
+    
+    if not candidate_data:
+        return jsonify({'success': False, 'error': 'Candidate not found'}), 404
+    
+    # Generate learning path
+    learning_path = learning_path_gen.generate_learning_path(candidate_data, job_data)
+    
+    return jsonify({
+        'success': True,
+        'learning_path': learning_path,
+        'view_url': f"/learning-path/{candidate_id}"
     })
 
 

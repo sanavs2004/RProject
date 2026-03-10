@@ -1,0 +1,12 @@
+{
+  "id": "f5b72f8d-d9ef-49cc-bfac-b5259ebad24d",
+  "token": "c34ce04a-2f73-4088-8cea-605e83a5a394",
+  "candidate_email": "sonavadakkan4@gmail.com",
+  "candidate_name": "Resume_Sona",
+  "job_title": "Software Developer 20260306",
+  "slot_group_id": "5012f756-08b0-47eb-bb9c-7dd4f8fe81b1",
+  "status": "sent",
+  "sent_at": "2026-03-06T11:21:10.558550",
+  "expires_at": "2026-03-13T11:21:10.558550",
+  "selection_link": "http://127.0.0.1:5002/select-slot/c34ce04a-2f73-4088-8cea-605e83a5a394"
+}

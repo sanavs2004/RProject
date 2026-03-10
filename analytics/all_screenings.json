@@ -1,81 +1,6 @@
 {
   "screenings": [
     {
-      "screening_id": "59f2f168-61f9-4033-bb8e-a6b03778f89b",
-      "job_title": "latest jd",
-      "date": "2026-02-24T13:46:09.797735",
-      "total_candidates": 6,
-      "average_score": 33.9,
-      "top_score": 40.1,
-      "skill_gaps": {
-        "Bootstrap": 2,
-        "Git version control on GitHub platform": 2,
-        "coding best practices and documentation standards.": 2,
-        "Docker containerization and management": 1,
-        "API developments with Django REST Framework beyond basic usage": 1
-      }
-    },
-    {
-      "screening_id": "9888d718-fb6e-4c44-b8b0-33ab69075d62",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-24T14:00:55.735280",
-      "total_candidates": 4,
-      "average_score": 36.0,
-      "top_score": 41.0,
-      "skill_gaps": {
-        "AWS services proficiency (particularly relating to S3": 1,
-        "EC2": 1,
-        "RDS for PostgreSQL)": 1,
-        "understanding of scalable web application design principles": 1,
-        "experience with database management strategies particularly using SQL databases like PostgreSQL": 1
-      }
-    },
-    {
-      "screening_id": "c901dc34-3686-4e7c-89da-829c9adeaf05",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-24T15:01:51.790472",
-      "total_candidates": 5,
-      "average_score": 33.7,
-      "top_score": 38.7,
-      "skill_gaps": {
-        "PostgreSQL database interaction expertise": 5,
-        "AWS deployment techniques": 5,
-        "CI/CD pipeline collaboration abilities": 5,
-        "software scalability strategies": 4,
-        "secure API gateway establishment.": 3
-      }
-    },
-    {
-      "screening_id": "0beb1bf2-68c5-4764-ac09-2284c0c15a5c",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T09:49:57.260830",
-      "total_candidates": 5,
-      "average_score": 33.7,
-      "top_score": 38.7,
-      "skill_gaps": {
-        "PostgreSQL database interactions": 3,
-        "API gateway security": 2,
-        "AWS infrastructure deployment": 1,
-        "CI/CD pipeline collaboration": 1,
-        "secure coding practices": 1
-      }
-    },
-    {
-      "screening_id": "d6c7a863-223a-4925-b2ce-b68d0c525255",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T14:27:50.559606",
-      "total_candidates": 5,
-      "average_score": 34.3,
-      "top_score": 41.0,
-      "skill_gaps": {
-        "AWS services expertise": 4,
-        "PostgreSQL database understanding": 4,
-        "high traffic load optimization techniques": 4,
-        "PEP 8 code standards adherence": 2,
-        "Django framework proficiency for web application development": 2
-      }
-    },
-    {
       "screening_id": "fc323971-7d37-4251-80dc-0bb07dd9c2b7",
       "job_title": "20260224",
       "date": "2026-02-25T14:58:43.385080",
@@ -714,6 +639,67 @@
         "python": 1,
         "angular": 1,
         "vue": 1
+      }
+    },
+    {
+      "screening_id": "f9ab7ee3-a3ea-4080-b4f8-517acdff29d9",
+      "job_title": "Software Developer 20260306",
+      "date": "2026-03-06T10:59:40.516281",
+      "total_candidates": 4,
+      "average_score": 61.8,
+      "top_score": 68.9,
+      "skill_gaps": {
+        "java": 2,
+        "Java": 1,
+        "SQL": 1,
+        "CSS": 1,
+        "- SQL\n- HTML": 1
+      }
+    },
+    {
+      "screening_id": "9f00797d-bf4f-4bfa-a88c-9fdfd334eed6",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-10T10:41:22.875537",
+      "total_candidates": 3,
+      "average_score": 56.1,
+      "top_score": 56.7,
+      "skill_gaps": {
+        "sql": 1
+      }
+    },
+    {
+      "screening_id": "2c6c7a49-86a2-445b-8fa2-1084e282bdcd",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-10T11:22:12.702986",
+      "total_candidates": 1,
+      "average_score": 56.2,
+      "top_score": 56.2,
+      "skill_gaps": {
+        "sql": 1
+      }
+    },
+    {
+      "screening_id": "7c0f0eb0-7e18-4081-96c7-adb96424af17",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-10T11:37:57.713428",
+      "total_candidates": 1,
+      "average_score": 56.2,
+      "top_score": 56.2,
+      "skill_gaps": {
+        "sql": 1
+      }
+    },
+    {
+      "screening_id": "f851e8ab-43e7-4350-86ae-281fdf26ccea",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-10T13:48:14.002963",
+      "total_candidates": 1,
+      "average_score": 56.2,
+      "top_score": 56.2,
+      "skill_gaps": {
+        "Java programming": 1,
+        "SQL queries": 1,
+        "servlets": 1
       }
     }
   ]

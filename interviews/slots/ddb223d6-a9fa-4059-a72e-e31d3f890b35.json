@@ -1,0 +1,15 @@
+{
+  "id": "ddb223d6-a9fa-4059-a72e-e31d3f890b35",
+  "group_id": "095b0d54-26b3-48e2-8348-5d0528d2d149",
+  "date": "2026-03-06",
+  "start_time": "13:08",
+  "end_time": "14:08",
+  "duration": "30",
+  "mode": "inperson",
+  "location": "Kochi,Sana'sdemo",
+  "recruiter_email": "recruiter@company.com",
+  "status": "available",
+  "created_at": "2026-03-06T11:10:21.273319",
+  "booked_by": null,
+  "booking_time": null
+}

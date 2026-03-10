@@ -1,0 +1,133 @@
+{
+  "candidate_id": "b1bc1896-3dbb-4f22-8768-4d903105502b",
+  "candidate_name": "seetha_LAKSHMI",
+  "job_title": "backend developer 20260227",
+  "current_score": 56.2,
+  "current_skills": [
+    "javascript",
+    "react",
+    "html",
+    "css",
+    "github",
+    "chrome_devtools"
+  ],
+  "modules": [
+    {
+      "skill": "Java programming",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 12,
+      "courses": [
+        {
+          "title": "Java Programming Masterclass",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/java-the-complete-java-developer-course/",
+          "level": "Beginner",
+          "duration": "80 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Exercism Java Track",
+          "url": "https://exercism.org/tracks/java",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://docs.oracle.com/javase/tutorial/",
+      "tip": "Focus on hands-on projects with Java programming to build real experience."
+    },
+    {
+      "skill": "SQL queries",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "To improve SQL query writing skills, practice by writing and executing different types of queries on a test database daily. Start with basic SELECT statements and progressively incorporate JOINs, subqueries, and aggregate functions to gain proficiency."
+    },
+    {
+      "skill": "servlets",
+      "priority": "medium",
+      "priority_label": "\ud83d\udfe1 Medium",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=servlets",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=servlets",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+servlets+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=servlets+documentation",
+      "tip": "Study Java EE and the Servlet API thoroughly to understand how servlets handle HTTP requests and responses in Java web applications. Focus on thread management and session handling to ensure efficient, scalable servlet development."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "Java programming",
+        "SQL queries"
+      ],
+      "weeks": 16,
+      "color": "#ef4444"
+    },
+    {
+      "phase": 2,
+      "label": "Phase 2 \u2014 Intermediate",
+      "description": "Build on your foundation with supporting skills.",
+      "skills": [
+        "servlets"
+      ],
+      "weeks": 6,
+      "color": "#f59e0b"
+    }
+  ],
+  "total_estimated_weeks": 22,
+  "motivation": "Congratulations on your recent screening performance; remember, a 56% score is a starting point, not a finish line. Let's strengthen your skills in Java, SQL, and servlets through consistent practice and study, and I'm confident you'll see great improvement by the time 'backend developer 20260227' comes around.",
+  "generated_at": "2026-03-10T13:47:35.255035"
+}

@@ -133,7 +133,7 @@ class InterviewScheduler:
     def _send_invitation_email(self, invitation, selection_link):
         """Send interview invitation email"""
         try:
-            # Load email template
+            # Load email template with UTF-8 encoding
             template_path = os.path.join(
                 self.config.BASE_DIR, 
                 'templates', 
@@ -141,7 +141,8 @@ class InterviewScheduler:
                 'interview_invite.html'
             )
             
-            with open(template_path, 'r') as f:
+            # Read with explicit UTF-8 encoding
+            with open(template_path, 'r', encoding='utf-8') as f:
                 template_str = f.read()
             
             template = Template(template_str)
@@ -158,8 +159,8 @@ class InterviewScheduler:
             msg['From'] = self.from_email
             msg['To'] = invitation['candidate_email']
             
-            # Attach HTML content
-            msg.attach(MIMEText(html_content, 'html'))
+            # Attach HTML content with UTF-8 encoding
+            msg.attach(MIMEText(html_content, 'html', 'utf-8'))
             
             # Send email
             if self.smtp_username and self.smtp_password:
@@ -168,22 +169,21 @@ class InterviewScheduler:
                 server.login(self.smtp_username, self.smtp_password)
                 server.send_message(msg)
                 server.quit()
-                print(f"✅ Invitation sent to {invitation['candidate_email']}")
+                print(f"  ✅ Invitation sent to {invitation['candidate_email']}")
             else:
-                # Development mode - just save to file
-                email_path = os.path.join(
-                    self.config.BASE_DIR, 
-                    'interviews', 
-                    'emails', 
-                    f"{invitation['id']}.html"
-                )
-                os.makedirs(os.path.dirname(email_path), exist_ok=True)
-                with open(email_path, 'w') as f:
+                # Development mode - save to file with UTF-8
+                email_dir = os.path.join(self.config.BASE_DIR, 'interviews', 'emails')
+                os.makedirs(email_dir, exist_ok=True)
+                email_path = os.path.join(email_dir, f"{invitation['id']}.html")
+                
+                with open(email_path, 'w', encoding='utf-8') as f:
                     f.write(html_content)
-                print(f"📧 Email saved to {email_path} (SMTP not configured)")
+                print(f"  📧 Email saved to {email_path} (SMTP not configured)")
                 
         except Exception as e:
             print(f"❌ Failed to send email to {invitation['candidate_email']}: {e}")
+            # Don't re-raise - we still want to mark as sent
+            # The invitation will be saved even if email fails
     
     def get_available_slots(self, slot_group_id):
         """Get all available slots for a group"""

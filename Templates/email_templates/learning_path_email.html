@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+        }
+        .content {
+            padding: 30px;
+        }
+        .info-box {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+        .skill-tag {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px;
+        }
+        .missing-tag {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Your Personalized Learning Path</h1>
+        </div>
+        
+        <div class="content">
+            <h2>Hello {{ path.candidate_name }},</h2>
+            
+            <p>Thank you for applying for the <strong>{{ path.job_title }}</strong> position. While we couldn't move forward with your application at this time, we believe in your potential and want to help you succeed.</p>
+            
+            <div class="info-box">
+                <h3 style="margin-top: 0;">📊 Your Skills Assessment</h3>
+                
+                <p><strong>✅ Your Current Skills:</strong></p>
+                <div>
+                    {% for skill in path.current_skills[:5] %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+                
+                <p style="margin-top: 15px;"><strong>📚 Skills to Develop:</strong></p>
+                <div>
+                    {% for skill in path.missing_skills[:5] %}
+                    <span class="skill-tag missing-tag">{{ skill.skill if skill is mapping else skill }}</span>
+                    {% endfor %}
+                </div>
+                
+                <p style="margin-top: 15px;"><strong>🎯 Ready to Reapply:</strong> {{ path.reapply_date }}</p>
+            </div>
+            
+            <p>We've created a <strong>personalized 3-month learning plan</strong> just for you, including:</p>
+            <ul>
+                <li>✅ Week-by-week learning roadmap</li>
+                <li>✅ Recommended courses and resources</li>
+                <li>✅ Hands-on project ideas</li>
+                <li>✅ Interview preparation tips</li>
+            </ul>
+            
+            <div style="text-align: center;">
+                <a href="{{ view_link }}" class="button">📚 View Your Complete Learning Path</a>
+            </div>
+            
+            <p>After completing the learning path, we'd love to see your progress. Simply reapply through our portal with your updated resume.</p>
+            
+            <p>Remember: Every expert was once a beginner. Keep learning and growing!</p>
+            
+            <p>Best regards,<br>
+            <strong>RecruitAI Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>This learning path was generated specifically for you using AI.</p>
+            <p>&copy; 2026 RecruitAI - AI-Powered Recruitment Platform</p>
+        </div>
+    </div>
+</body>
+</html>

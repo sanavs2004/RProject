@@ -1,0 +1,67 @@
+{
+  "candidate_id": "33bc52b3-841b-4c31-8178-4c67b3ffd43b",
+  "candidate_name": "seetha_LAKSHMI",
+  "job_title": "backend developer 20260227",
+  "current_score": 56.2,
+  "current_skills": [
+    "javascript",
+    "react",
+    "html",
+    "css",
+    "github",
+    "chrome_devtools"
+  ],
+  "modules": [
+    {
+      "skill": "sql",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "To solidify your 'sql' skills as a backend developer, practice writing complex queries using joins and subqueries, and regularly challenge yourself with new 'sql' problems found in coding platforms like HackerRank or LeetCode."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "sql"
+      ],
+      "weeks": 4,
+      "color": "#ef4444"
+    }
+  ],
+  "total_estimated_weeks": 4,
+  "motivation": "\"Congratulations on your first screening result of 56%\u2014it's a great starting point! Let's focus on strengthening your SQL skills through targeted practice and study to boost your score in the next round.\"",
+  "generated_at": "2026-03-10T11:37:19.892438"
+}

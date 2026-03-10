@@ -9,6 +9,7 @@ from flask import send_file
 
 # Import your JD module
 from jd_module import get_all_jds, STORE_FOLDER as JD_STORE
+from modules.learning_path_emailer import send_learning_path_email
 
 # Import submodules
 from modules.semantic_parser import SemanticParser
@@ -61,6 +62,15 @@ class ResumeScreeningEngine:
         except:
             self.llm_available = False
             print("⚠️ LLM not available, using basic analysis")
+
+        # Initialize learning path generator
+        try:
+            from modules.learning_path_generator import LearningPathGenerator
+            self.learning_path_gen = LearningPathGenerator(config)
+            print("✅ Learning path generator loaded")
+        except Exception as e:
+            self.learning_path_gen = None
+            print(f"⚠️ Learning path generator not loaded: {e}")
         
         print("✅ Semantic models loaded successfully")
         
@@ -136,7 +146,6 @@ class ResumeScreeningEngine:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         content = f.read()
                     
-                    # Extract job role from filename
                     display_name = file.replace('jd_', '').replace('.txt', '')
                     if '_' in display_name:
                         parts = display_name.split('_')
@@ -158,9 +167,7 @@ class ResumeScreeningEngine:
         return jds
     
     def screen_resumes(self, jd_text, resume_files, job_title="Custom Job", max_resumes=10):
-        """
-        Screen multiple resumes against a job description
-        """
+        """Screen multiple resumes against a job description"""
         if len(resume_files) > max_resumes:
             print(f"⚠️ Limiting to {max_resumes} resumes (received {len(resume_files)})")
             resume_files = resume_files[:max_resumes]
@@ -191,14 +198,36 @@ class ResumeScreeningEngine:
         
         ranked_results = self.ranker.rank_candidates_semantic(results, job)
         
+        # ── Step 1: Set decision for ALL candidates first ──────────────────
         for candidate in ranked_results:
             candidate['decision'] = self._apply_decision_rules(candidate)
-        
+            candidate['learning_path_sent'] = False  # default
+
+        # ── Step 2: Send learning path emails for rejected/hold candidates ─
+        for candidate in ranked_results:
+            action = candidate['decision'].get('action')
+            if action in ('reject', 'consider'):
+                try:
+                    if self.learning_path_gen:
+                        lp = self.learning_path_gen.generate(candidate, job)
+                        sent = send_learning_path_email(candidate, job, lp, self.config)
+                        candidate['learning_path_sent'] = sent
+                        candidate['learning_path_url'] = f"/learning-path/{candidate.get('candidate_id')}"
+                        if sent:
+                            print(f"📚 Learning path emailed → {candidate.get('email')} ({candidate.get('filename')})")
+                    else:
+                        print(f"⚠️ Learning path generator not available")
+                except Exception as e:
+                    print(f"⚠️ Learning path email failed for {candidate.get('filename')}: {e}")
+                    candidate['learning_path_sent'] = False
+
+        # ── Step 3: Skill gap analysis (OUTSIDE the loop) ─────────────────
         if hasattr(self, 'llm_available') and self.llm_available:
             skill_gap_analysis = self._analyze_skill_gaps_advanced(ranked_results, job)
         else:
             skill_gap_analysis = self._analyze_skill_gaps_basic(ranked_results, job)
         
+        # ── Step 4: Build output (OUTSIDE the loop) ───────────────────────
         output = {
             'screening_id': screening_id,
             'job': job,
@@ -209,6 +238,7 @@ class ResumeScreeningEngine:
             'recommendations': self._generate_recommendations(ranked_results, job)
         }
         
+        # ── Step 5: Save results (OUTSIDE the loop) ───────────────────────
         result_path = os.path.join(self.config.RESULTS_FOLDER, f"{screening_id}.json")
         with open(result_path, 'w', encoding='utf-8') as f:
             json.dump(output, f, indent=2)
@@ -216,38 +246,32 @@ class ResumeScreeningEngine:
         self._save_to_analytics(output)
         
         return screening_id, output
-    
+
     def _extract_email_from_text(self, text):
         """Extract email from text using improved regex"""
         import re
         
-        # More comprehensive email pattern
         email_patterns = [
-            r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',  # Standard email
-            r'mailto:([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})',  # mailto links
-            r'E[\s]*mail[\s]*:[\s]*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})',  # "Email: " format
-            r'Contact[\s]*:[\s]*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})'  # "Contact: " format
+            r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
+            r'mailto:([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})',
+            r'E[\s]*mail[\s]*:[\s]*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})',
+            r'Contact[\s]*:[\s]*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,})'
         ]
         
         for pattern in email_patterns:
             emails = re.findall(pattern, text, re.IGNORECASE)
             if emails:
-                # Clean up the email
                 email = emails[0].strip().lower()
-                # Validate it looks like a real email
                 if '@' in email and '.' in email.split('@')[1]:
                     print(f"📧 Found real email: {email}")
                     return email
         
-        # Try to find email in first few lines (often in header)
-        lines = text.split('\n')[:20]  # Check first 20 lines
+        lines = text.split('\n')[:20]
         for line in lines:
             if '@' in line and '.' in line:
-                # Look for email pattern in this line
                 words = line.split()
                 for word in words:
                     if '@' in word and '.' in word:
-                        # Clean up common artifacts
                         email = word.strip('.,;:()[]{}<>').lower()
                         if email.count('@') == 1 and '.' in email.split('@')[1]:
                             print(f"📧 Found email in header: {email}")
@@ -257,17 +281,15 @@ class ResumeScreeningEngine:
         return None
     
     def _process_single_resume_semantic(self, file, job):
-        """Process a single resume with semantic understanding (EXPERIENCE REMOVED)"""
+        """Process a single resume with semantic understanding"""
         try:
             filename = secure_filename(file.filename)
             candidate_id = str(uuid.uuid4())
             file_path = os.path.join(self.config.UPLOAD_FOLDER, f"{candidate_id}_{filename}")
             file.save(file_path)
             
-            # Parse resume
             parsed_data = self.parser.parse_resume_semantic(file_path)
             
-            # Basic validation
             text = parsed_data.get('text', '').strip()
             word_count = len(text.split())
             char_count = len(text)
@@ -275,15 +297,12 @@ class ResumeScreeningEngine:
             print(f"\n📄 Processing: {filename}")
             print(f"   Word count: {word_count}")
             
-            # Extract email
             candidate_email = self._extract_email_from_text(text)
             if candidate_email:
                 print(f"📧 Found email: {candidate_email}")
             
-            # Check for empty files
             if char_count < 100:
                 print(f"⛔ REJECTED: Empty file ({char_count} chars)")
-                # os.remove(file_path)
                 return {
                     'candidate_id': candidate_id,
                     'filename': filename,
@@ -300,38 +319,29 @@ class ResumeScreeningEngine:
                     'github_username': None,
                     'has_github': False,
                     'resume_path': file_path
-                    # 'email': candidate_email 
                 }
             
-            # Extract GitHub username
             github_username = parsed_data.get('github_username')
             
-            # Extract skills
             skills = self.skill_extractor.extract_semantic(parsed_data['text'])
             skill_count = len(skills) if skills else 0
             skill_list = [s['skill'] for s in skills[:10]] if skills else []
             print(f"   Skills found: {skill_count} - {skill_list[:5]}")
             
-            # Generate embeddings
             resume_embedding = self.embedder.encode(parsed_data['text'])
             job_embedding = np.array(job['embedding'])
             
-            # Calculate semantic similarity
             semantic_similarity = self.safe_cosine_similarity(resume_embedding, job_embedding)
             print(f"   Semantic match: {semantic_similarity:.1f}%")
             
-            # Calculate skill relevance
             skill_relevance = self._calculate_semantic_skill_relevance(skills, job['semantic_keywords'])
             
-            # Calculate education relevance
             education = self.parser.extract_education_semantic(parsed_data['text'])
             edu_relevance = self._calculate_education_relevance(education, job['description'])
             
-            # Experience not considered - using neutral value
             exp_relevance = 70
             print(f"   Experience: Not considered (using default 70%)")
             
-            # Calculate base score WITHOUT experience
             base_score = (
                 semantic_similarity * 0.40 +
                 skill_relevance * 0.50 +
@@ -339,7 +349,6 @@ class ResumeScreeningEngine:
             )
             print(f"   Base score: {base_score:.1f}% (Semantic 40%, Skills 50%, Education 10%)")
             
-            # Apply word count bonus
             if word_count > 500:
                 base_score += 5
             elif word_count > 300:
@@ -347,7 +356,6 @@ class ResumeScreeningEngine:
             elif word_count > 150:
                 base_score += 1
             
-            # Apply skill count bonus
             if skill_count >= 8:
                 base_score += 5
             elif skill_count >= 5:
@@ -355,12 +363,10 @@ class ResumeScreeningEngine:
             elif skill_count >= 3:
                 base_score += 1
             
-            # Boost score for better readability
             boosted_score = 35 + (base_score * 0.6)
             boosted_score = min(boosted_score, 95)
             print(f"   Boosted score: {boosted_score:.1f}%")
             
-            # Identify missing skills
             if hasattr(self, 'llm_available') and self.llm_available:
                 missing_skills = self._identify_missing_skills_llm(
                     skill_list,
@@ -374,7 +380,6 @@ class ResumeScreeningEngine:
                     job.get('required_skills', [])
                 )
             
-            # GitHub verification
             github_result = None
             confidence_bonus = 0
             signals_used = ['resume']
@@ -397,19 +402,13 @@ class ResumeScreeningEngine:
                             skill_verification = self.skill_verifier.verify_skills(skill_list, github_result)
                             confidence_bonus += skill_verification.get('confidence_bonus', 0)
             
-            # Calculate final score
             final_score = boosted_score + confidence_bonus
             final_score = min(final_score, 100)
             
-            # # Clean up
-            # os.remove(file_path)
-            file_path = os.path.join(self.config.UPLOAD_FOLDER, f"{candidate_id}_{filename}")
-            file.save(file_path)
-            # Return complete result with email
             return {
                 'candidate_id': candidate_id,
                 'filename': filename,
-                'email': candidate_email,  # Email extracted from resume
+                'email': candidate_email,
                 'semantic_score': round(semantic_similarity, 1),
                 'skill_match_score': round(skill_relevance, 1),
                 'skill_relevance': round(skill_relevance, 1),
@@ -424,7 +423,6 @@ class ResumeScreeningEngine:
                 'missing_skills': missing_skills,
                 'word_count': word_count,
                 'github_username': github_username,
-                'github_score': github_score,
                 'github_verification': github_result,
                 'has_github': github_username is not None,
                 'is_empty_resume': False,
@@ -522,6 +520,7 @@ class ResumeScreeningEngine:
     
     def _analyze_skill_gaps_advanced(self, candidates, job):
         """Advanced skill gap analysis using LLM"""
+        import requests
         skill_gap_analysis = {
             'most_missing_skills': {},
             'average_scores': {},
@@ -557,15 +556,11 @@ class ResumeScreeningEngine:
                 
                 prompt = f"""
                 Analyze the skill gaps for this recruitment drive.
-                
                 Job Title: {job['title']}
                 Total Candidates: {len(candidates)}
                 Average Score: {skill_gap_analysis['average_scores']['overall']}
-                
                 Top Missing Skills: {', '.join(list(skill_gap_analysis['most_missing_skills'].keys())[:3])}
-                
                 Candidate Summary: {json.dumps(candidates_summary)}
-                
                 Provide 3-4 bullet points about key skill gaps and recommendations.
                 """
                 
@@ -575,7 +570,6 @@ class ResumeScreeningEngine:
                     result = response.json()
                     analysis = result.get('response', '')
                     skill_gap_analysis['detailed_analysis'] = analysis
-                    
                     lines = analysis.split('\n')
                     recommendations = [l.strip('-• ') for l in lines if l.strip() and (l.startswith('-') or l.startswith('•'))]
                     skill_gap_analysis['recommendations'] = recommendations[:3]
