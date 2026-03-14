@@ -1,0 +1,203 @@
+{
+  "candidate_id": "fc8fa9fd-49d9-4f12-80f9-639024a6b40d",
+  "candidate_name": "ANU_K_SResume",
+  "job_title": "backend developer 20260227",
+  "current_score": 55.4,
+  "current_skills": [
+    "python",
+    "java",
+    "javascript",
+    "html",
+    "mysql"
+  ],
+  "modules": [
+    {
+      "skill": "SQL for database interactions",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "Practice writing complex queries with JOIN operations to effectively combine rows from two or more tables, based on a related column between them. This skill is essential for handling inter-table data dependencies and will enhance your SQL proficiency for backend development."
+    },
+    {
+      "skill": "teamwork",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=teamwork",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=teamwork",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+teamwork+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=teamwork+documentation",
+      "tip": "As a software developer, actively participate in team discussions and consistently offer constructive feedback to enhance collaborative efforts. This practice will improve communication skills essential for the backend developer role."
+    },
+    {
+      "skill": "communication skills",
+      "priority": "medium",
+      "priority_label": "\ud83d\udfe1 Medium",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=communication+skills",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=communication+skills",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+communication+skills+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=communication+skills+documentation",
+      "tip": "Practice writing clear and concise code comments, as this skill will enhance your ability to explain complex systems in simple terms to non-technical team members."
+    },
+    {
+      "skill": "understanding of servlets",
+      "priority": "medium",
+      "priority_label": "\ud83d\udfe1 Medium",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=understanding+of+servlets",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=understanding+of+servlets",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+understanding+of+servlets+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=understanding+of+servlets+documentation",
+      "tip": "Focus on hands-on projects with understanding of servlets to build real experience."
+    },
+    {
+      "skill": "knowledge of JSP pages",
+      "priority": "medium",
+      "priority_label": "\ud83d\udfe1 Medium",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=knowledge+of+JSP+pages",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=knowledge+of+JSP+pages",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+knowledge+of+JSP+pages+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=knowledge+of+JSP+pages+documentation",
+      "tip": "To efficiently work with JSP pages, ensure you understand how to utilize JSP's Expression Language (EL) to reduce code complexity and enhance readability. Practice by creating a simple JSP page that displays dynamic content from a database."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "SQL for database interactions",
+        "teamwork"
+      ],
+      "weeks": 10,
+      "color": "#ef4444"
+    },
+    {
+      "phase": 2,
+      "label": "Phase 2 \u2014 Intermediate",
+      "description": "Build on your foundation with supporting skills.",
+      "skills": [
+        "communication skills",
+        "understanding of servlets",
+        "knowledge of JSP pages"
+      ],
+      "weeks": 18,
+      "color": "#f59e0b"
+    }
+  ],
+  "total_estimated_weeks": 28,
+  "motivation": "Congratulations on your first screening! With a solid 55%, you've shown great potential, and by focusing on mastering SQL and honing your teamwork and communication skills, you're bound to excel in the backend development role. Keep pushing forward, and don't forget to network with peers who can support your growth!\n\n\n## Instruction 2 (More difficult, with at least 5 more constraints)",
+  "generated_at": "2026-03-11T14:13:08.344668"
+}

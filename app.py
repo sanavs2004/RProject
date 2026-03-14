@@ -19,6 +19,7 @@ from modules.semantic_ranker import SemanticRanker
 from modules.skill_extractor import SkillExtractor
 from modules.learning_path_generator import LearningPathGenerator
 from modules.learning_path_emailer import send_learning_path_email
+from modules.fit_predictor import FitPredictor
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -32,6 +33,7 @@ semantic_ranker = SemanticRanker()
 skill_extractor = SkillExtractor()
 interview_scheduler = InterviewScheduler(Config)  # Moved here
 learning_path_gen = LearningPathGenerator(Config)
+fit_predictor = FitPredictor(os.path.join(Config.BASE_DIR, 'models'))
 
 # Store processing status
 processing_status = {}
@@ -415,6 +417,244 @@ def api_get_learning_path(candidate_id):
     if lp:
         return jsonify(lp)
     return jsonify({'error': 'Learning path not found'}), 404
+
+@app.route('/api/ml-model-info')
+def api_ml_model_info():
+    """Returns ML model metadata — accuracy, training info etc."""
+    return jsonify(fit_predictor.get_model_info())
+
+
+@app.route('/api/retrain-model', methods=['POST'])
+def api_retrain_model():
+    """Force retrain the XGBoost+SVM model with fresh synthetic data."""
+    try:
+        info = fit_predictor.retrain()
+        return jsonify({
+            'success': True,
+            'message': f"Model retrained! Accuracy: {info.get('ensemble_accuracy')}%",
+            'info': info
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
+
+
+# ════════════════════════════════════════════════════════════════
+#  FEATURE 1 PATCH — Add these routes to app.py
+#  Paste BEFORE the error handlers section
+# ════════════════════════════════════════════════════════════════
+
+@app.route('/jd-share/<filename>')
+def jd_share(filename):
+    """Public shareable JD page — anyone with the link can view and apply."""
+    filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
+
+    if not os.path.exists(filepath):
+        return render_template('error.html', message='Job posting not found'), 404
+
+    with open(filepath, 'r', encoding='utf-8') as f:
+        jd_content = f.read()
+
+    # Build a clean job title from filename
+    name_part = filename.replace('jd_', '').replace('.txt', '')
+    parts = name_part.split('_')
+    if len(parts) > 1 and parts[-1].isdigit() and len(parts[-1]) == 14:
+        job_title = ' '.join(parts[:-1]).title()
+    else:
+        job_title = ' '.join(parts).title()
+
+    # Get file creation time as posted date
+    created_ts = os.path.getctime(filepath)
+    posted_date = datetime.fromtimestamp(created_ts).strftime('%d %b %Y')
+
+    # Check for deadline stored in meta file
+    meta_path = filepath.replace('.txt', '_meta.json')
+    deadline = None
+    deadline_passed = False
+    if os.path.exists(meta_path):
+        with open(meta_path, 'r') as f:
+            meta = json.load(f)
+        deadline = meta.get('deadline')
+        if deadline:
+            try:
+                dl_date = datetime.strptime(deadline, '%Y-%m-%d').date()
+                deadline_passed = dl_date < datetime.now().date()
+                deadline = dl_date.strftime('%d %b %Y')
+            except:
+                pass
+
+    return render_template('jd_share.html',
+                           filename=filename,
+                           job_title=job_title,
+                           jd_content=jd_content,
+                           posted_date=posted_date,
+                           deadline=deadline,
+                           deadline_passed=deadline_passed)
+
+
+@app.route('/apply/<filename>')
+def apply_portal(filename):
+    """Candidate self-upload portal for a specific JD."""
+    filepath = os.path.join(Config.JD_STORE_FOLDER, filename)
+
+    if not os.path.exists(filepath):
+        return render_template('error.html', message='Job posting not found'), 404
+
+    # Check deadline
+    meta_path = filepath.replace('.txt', '_meta.json')
+    deadline_passed = False
+    if os.path.exists(meta_path):
+        with open(meta_path, 'r') as f:
+            meta = json.load(f)
+        deadline = meta.get('deadline')
+        if deadline:
+            try:
+                dl_date = datetime.strptime(deadline, '%Y-%m-%d').date()
+                deadline_passed = dl_date < datetime.now().date()
+            except:
+                pass
+
+    if deadline_passed:
+        return render_template('error.html', message='Applications for this position are closed.'), 403
+
+    # Build job title
+    name_part = filename.replace('jd_', '').replace('.txt', '')
+    parts = name_part.split('_')
+    if len(parts) > 1 and parts[-1].isdigit() and len(parts[-1]) == 14:
+        job_title = ' '.join(parts[:-1]).title()
+    else:
+        job_title = ' '.join(parts).title()
+
+    return render_template('apply.html',
+                           filename=filename,
+                           job_title=job_title)
+
+
+@app.route('/api/candidate-apply', methods=['POST'])
+def api_candidate_apply():
+    """
+    Handles candidate self-application.
+    Saves resume to uploads folder with candidate name + email injected.
+    """
+    try:
+        candidate_name  = request.form.get('candidate_name', '').strip()
+        candidate_email = request.form.get('candidate_email', '').strip()
+        jd_filename     = request.form.get('jd_filename', '').strip()
+        resume_file     = request.files.get('resume')
+
+        # Validate
+        if not candidate_name:
+            return jsonify({'success': False, 'error': 'Name is required'}), 400
+        if not candidate_email or '@' not in candidate_email:
+            return jsonify({'success': False, 'error': 'Valid email is required'}), 400
+        if not resume_file or not resume_file.filename:
+            return jsonify({'success': False, 'error': 'Resume file is required'}), 400
+
+        ext = os.path.splitext(resume_file.filename)[1].lower()
+        if ext not in ['.pdf', '.docx']:
+            return jsonify({'success': False, 'error': 'Only PDF or DOCX files are accepted'}), 400
+
+        # Check deadline
+        jd_path = os.path.join(Config.JD_STORE_FOLDER, jd_filename)
+        meta_path = jd_path.replace('.txt', '_meta.json')
+        if os.path.exists(meta_path):
+            with open(meta_path, 'r') as f:
+                meta = json.load(f)
+            deadline = meta.get('deadline')
+            if deadline:
+                try:
+                    dl_date = datetime.strptime(deadline, '%Y-%m-%d').date()
+                    if dl_date < datetime.now().date():
+                        return jsonify({'success': False, 'error': 'Application deadline has passed'}), 403
+                except:
+                    pass
+
+        # Save resume with candidate_id prefix
+        candidate_id = str(uuid.uuid4())[:8]
+        safe_name    = candidate_name.lower().replace(' ', '_')
+        save_name    = f"{candidate_id}_{safe_name}{ext}"
+        save_path    = os.path.join(Config.UPLOAD_FOLDER, save_name)
+        resume_file.save(save_path)
+
+        # Save application metadata so recruiter can see who applied
+        applications_folder = os.path.join(Config.BASE_DIR, 'applications')
+        os.makedirs(applications_folder, exist_ok=True)
+
+        application = {
+            'candidate_id'   : candidate_id,
+            'candidate_name' : candidate_name,
+            'candidate_email': candidate_email,
+            'jd_filename'    : jd_filename,
+            'resume_path'    : save_path,
+            'resume_filename': save_name,
+            'applied_at'     : datetime.now().isoformat(),
+            'status'         : 'pending'
+        }
+
+        app_file = os.path.join(applications_folder, f"{candidate_id}.json")
+        with open(app_file, 'w') as f:
+            json.dump(application, f, indent=2)
+
+        print(f"✅ New application: {candidate_name} <{candidate_email}> for {jd_filename}")
+
+        return jsonify({
+            'success'      : True,
+            'candidate_id' : candidate_id,
+            'message'      : 'Application submitted successfully!'
+        })
+
+    except Exception as e:
+        print(f"Application error: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/set-deadline', methods=['POST'])
+def api_set_deadline():
+    """Set or update application deadline for a JD."""
+    data     = request.get_json()
+    filename = data.get('filename')
+    deadline = data.get('deadline')   # format: YYYY-MM-DD
+
+    if not filename or not deadline:
+        return jsonify({'success': False, 'error': 'Missing filename or deadline'}), 400
+
+    jd_path   = os.path.join(Config.JD_STORE_FOLDER, filename)
+    meta_path = jd_path.replace('.txt', '_meta.json')
+
+    if not os.path.exists(jd_path):
+        return jsonify({'success': False, 'error': 'JD not found'}), 404
+
+    # Load existing meta or create new
+    meta = {}
+    if os.path.exists(meta_path):
+        with open(meta_path, 'r') as f:
+            meta = json.load(f)
+
+    meta['deadline']   = deadline
+    meta['updated_at'] = datetime.now().isoformat()
+
+    with open(meta_path, 'w') as f:
+        json.dump(meta, f, indent=2)
+
+    return jsonify({'success': True, 'message': f'Deadline set to {deadline}'})
+
+
+@app.route('/applications')
+def view_applications():
+    """Recruiter view — all candidate self-applications."""
+    applications_folder = os.path.join(Config.BASE_DIR, 'applications')
+    apps = []
+
+    if os.path.exists(applications_folder):
+        for file in sorted(os.listdir(applications_folder), reverse=True):
+            if file.endswith('.json'):
+                try:
+                    with open(os.path.join(applications_folder, file)) as f:
+                        apps.append(json.load(f))
+                except:
+                    pass
+
+    return render_template('applications.html', applications=apps)
 
 
 # ======================

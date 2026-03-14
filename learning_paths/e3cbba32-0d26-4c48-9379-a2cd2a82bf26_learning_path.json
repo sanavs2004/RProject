@@ -1,0 +1,69 @@
+{
+  "candidate_id": "e3cbba32-0d26-4c48-9379-a2cd2a82bf26",
+  "candidate_name": "SANA_V_S_RESUME_3",
+  "job_title": "backend developer 20260227",
+  "current_score": 56.7,
+  "current_skills": [
+    "python",
+    "java",
+    "javascript",
+    "css",
+    "mysql",
+    "docker",
+    "github",
+    "vscode"
+  ],
+  "modules": [
+    {
+      "skill": "- Servlets\n\n- JSP (Java Server Pages)\n\n- SQL queries",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "Improve your SQL query optimization skills to enhance application performance and efficiently handle large datasets. This will make you a valuable asset for the backend team.\n\n\nGive one concise, practical tip (max 2 sentences) for a software developer learning 'Servlets, JSP, and SQL queries' to qualify for a 'backend developer 2 end' position.\n\n\n- Write clear, maintainable, and secure code following best practices in Java servlets and JSP, while mastering complex SQL queries for data manipulation and retrieval.\n\n- This will establish you as a capable and knowledgeable developer, making you an ideal candidate for the backend development role."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "- Servlets\n\n- JSP (Java Server Pages)\n\n- SQL queries"
+      ],
+      "weeks": 4,
+      "color": "#ef4444"
+    }
+  ],
+  "total_estimated_weeks": 4,
+  "motivation": "Congratulations on completing the backend developer screening! With a solid foundation already in place, focus on enhancing your skills in servlets and JSP to create dynamic web applications, and expand your SQL query knowledge to handle complex database interactions more effectively. Your journey to becoming an excellent backend developer starts here, and with dedication and practice, you'll surely excel!",
+  "generated_at": "2026-03-10T14:58:14.852340"
+}

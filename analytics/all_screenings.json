@@ -1,49 +1,6 @@
 {
   "screenings": [
     {
-      "screening_id": "fc323971-7d37-4251-80dc-0bb07dd9c2b7",
-      "job_title": "20260224",
-      "date": "2026-02-25T14:58:43.385080",
-      "total_candidates": 4,
-      "average_score": 36.2,
-      "top_score": 40.1,
-      "skill_gaps": {
-        "GitHub": 3,
-        "docker container management": 3,
-        "data flow integration": 3,
-        "coding best practices": 2,
-        "Bootstrap": 2
-      }
-    },
-    {
-      "screening_id": "0294df3a-440b-434a-84f4-05d598544dc6",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T14:59:29.808497",
-      "total_candidates": 3,
-      "average_score": 35.6,
-      "top_score": 41.1,
-      "skill_gaps": {
-        "postgresql": 2,
-        "aws": 2,
-        "1. Django\n2. PostgreSQL\n3. AWS (implied from maintaining database interactions using services likely provided by AWS)": 1,
-        "python": 1,
-        "django": 1
-      }
-    },
-    {
-      "screening_id": "89e4dfc2-dfd3-4989-a880-304ee0092b12",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T15:45:13.176968",
-      "total_candidates": 1,
-      "average_score": 27.1,
-      "top_score": 27.1,
-      "skill_gaps": {
-        "SQL": 1,
-        "PostgreSQL": 1,
-        "AWS knowledge in cloud infrastructure and database integration using Python technologies. None (If the candidate's proficiency with SQL and understanding of Django framework is strong enough to assume they would quickly adapt)": 1
-      }
-    },
-    {
       "screening_id": "2f93986a-49e5-49ec-a597-cfd67280879c",
       "job_title": "Senior Python Developer 20260224",
       "date": "2026-02-25T21:44:28.200009",
@@ -700,6 +657,51 @@
         "Java programming": 1,
         "SQL queries": 1,
         "servlets": 1
+      }
+    },
+    {
+      "screening_id": "092236ad-b421-40de-8bde-7b545cd23548",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-10T14:59:57.455227",
+      "total_candidates": 3,
+      "average_score": 58.7,
+      "top_score": 64.1,
+      "skill_gaps": {
+        "Servlets": 2,
+        "JSP": 2,
+        "SQL queries\n\n\n## Instruction 2 (More Diff_01/Difficulty 2/Added Constraints)": 1,
+        "- Servlets\n\n- JSP (Java Server Pages)\n\n- SQL queries": 1,
+        "SQL": 1
+      }
+    },
+    {
+      "screening_id": "cc80fa57-e753-40a4-8f25-6fbf8f38781d",
+      "job_title": "java developer  20260226",
+      "date": "2026-03-10T15:47:18.397673",
+      "total_candidates": 1,
+      "average_score": 51.9,
+      "top_score": 51.9,
+      "skill_gaps": {
+        "- Java programming": 1,
+        "SQL database management with MySQL": 1,
+        "cross-functional team collaboration": 1,
+        "code quality standards": 1,
+        "data structure integrity": 1
+      }
+    },
+    {
+      "screening_id": "c785c736-6fa2-4e88-ad59-dbfdb169a02a",
+      "job_title": "backend developer 20260227",
+      "date": "2026-03-11T14:13:45.024072",
+      "total_candidates": 3,
+      "average_score": 58.1,
+      "top_score": 62.7,
+      "skill_gaps": {
+        "SQL for database interactions": 2,
+        "understanding of servlets": 2,
+        "Java programming": 1,
+        "teamwork": 1,
+        "communication skills": 1
       }
     }
   ]

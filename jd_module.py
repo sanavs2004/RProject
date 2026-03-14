@@ -2,10 +2,12 @@ import requests
 import re
 import os
 from datetime import datetime
+from config import Config
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 # STORE_FOLDER = "jd_store"
-STORE_FOLDER = os.path.join(os.path.dirname(__file__), 'jd_store')
+# STORE_FOLDER = os.path.join(os.path.dirname(__file__), 'jd_store')
+STORE_FOLDER = Config.JD_STORE_FOLDER
 MODEL_NAME = "phi3"
 
 

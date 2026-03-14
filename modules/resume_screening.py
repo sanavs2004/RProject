@@ -675,35 +675,85 @@ class ResumeScreeningEngine:
         return matches
     
     def _apply_decision_rules(self, candidate):
-        """Apply decision rules based on thresholds"""
-        SHORTLIST_THRESHOLD = 60
-        REJECT_THRESHOLD = 50
-        
-        score = candidate['overall_score']
-        
-        if score >= SHORTLIST_THRESHOLD:
+        """
+        Apply decision rules using ML fit score as primary decision maker.
+        Falls back to overall_score if ML prediction is not available.
+        """
+        # ── Use ML fit score if available, else fall back to overall_score ──
+        ml_score     = candidate.get('ml_fit_score')
+        ml_label     = candidate.get('ml_fit_label')
+        overall_score = candidate['overall_score']
+
+        if ml_score is not None:
+            # ML score is the primary decision maker
+            score        = ml_score
+            score_source = 'ML (XGBoost+SVM)'
+
+            if ml_label == 'Strong Fit':       # ml_score >= 70
+                return {
+                    'action'      : 'shortlist',
+                    'message'     : f'ML model predicts Strong Fit ({ml_score}% confidence)',
+                    'next_step'   : 'interview_invite',
+                    'display'     : '✅ SHORTLISTED',
+                    'color'       : '#4caf50',
+                    'score_source': score_source,
+                    'ml_score'    : ml_score,
+                    'rule_score'  : overall_score
+                }
+            elif ml_label == 'Potential Fit':  # ml_score 45-70
+                return {
+                    'action'      : 'consider',
+                    'message'     : f'ML model predicts Potential Fit ({ml_score}% confidence)',
+                    'next_step'   : 'hold',
+                    'display'     : '⏸️ HOLD',
+                    'color'       : '#ff9800',
+                    'score_source': score_source,
+                    'ml_score'    : ml_score,
+                    'rule_score'  : overall_score
+                }
+            else:                              # ml_label == 'Not a Fit'
+                return {
+                    'action'      : 'reject',
+                    'message'     : f'ML model predicts Not a Fit ({ml_score}% confidence)',
+                    'next_step'   : 'learning_path',
+                    'display'     : '❌ REJECTED',
+                    'color'       : '#f44336',
+                    'score_source': score_source,
+                    'ml_score'    : ml_score,
+                    'rule_score'  : overall_score,
+                    'missing_skills': candidate.get('missing_skills', [])
+                }
+
+        # ── Fallback: rule-based using overall_score ─────────────────────
+        print(f"⚠️ ML score not available for {candidate.get('filename')} — using rule-based")
+        score = overall_score
+
+        if score >= 60:
             return {
-                'action': 'shortlist',
-                'message': 'Candidate meets criteria for shortlisting',
-                'next_step': 'interview_invite',
-                'display': '✅ SHORTLISTED',
-                'color': '#4caf50'
+                'action'      : 'shortlist',
+                'message'     : 'Candidate meets criteria for shortlisting',
+                'next_step'   : 'interview_invite',
+                'display'     : '✅ SHORTLISTED',
+                'color'       : '#4caf50',
+                'score_source': 'Rule-based (fallback)'
             }
-        elif score >= REJECT_THRESHOLD:
+        elif score >= 50:
             return {
-                'action': 'consider',
-                'message': 'Candidate shows potential, consider for future',
-                'next_step': 'hold',
-                'display': '⏸️ HOLD',
-                'color': '#ff9800'
+                'action'      : 'consider',
+                'message'     : 'Candidate shows potential, consider for future',
+                'next_step'   : 'hold',
+                'display'     : '⏸️ HOLD',
+                'color'       : '#ff9800',
+                'score_source': 'Rule-based (fallback)'
             }
         else:
             return {
-                'action': 'reject',
-                'message': 'Candidate does not meet minimum requirements',
-                'next_step': 'learning_path',
-                'display': '❌ REJECTED',
-                'color': '#f44336',
+                'action'      : 'reject',
+                'message'     : 'Candidate does not meet minimum requirements',
+                'next_step'   : 'learning_path',
+                'display'     : '❌ REJECTED',
+                'color'       : '#f44336',
+                'score_source': 'Rule-based (fallback)',
                 'missing_skills': candidate.get('missing_skills', [])
             }
     

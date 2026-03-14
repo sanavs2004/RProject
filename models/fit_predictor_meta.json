@@ -1,0 +1,20 @@
+{
+  "trained_at": "2026-03-10T14:46:48.850225",
+  "n_samples": 2000,
+  "features": [
+    "semantic_score",
+    "skill_match_score",
+    "education_score",
+    "github_score",
+    "confidence_bonus",
+    "skill_count",
+    "word_count_norm",
+    "has_github"
+  ],
+  "xgb_accuracy": 83.5,
+  "svm_accuracy": 78.5,
+  "ensemble_accuracy": 81.8,
+  "precision": 83.3,
+  "recall": 82.9,
+  "f1_score": 83.1
+}

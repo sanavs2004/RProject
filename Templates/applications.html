@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Applications — RecruitAI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; padding: 40px 24px; }
+
+        .header {
+            max-width: 900px;
+            margin: 0 auto 28px;
+        }
+
+        .header h1 { font-size: 24px; color: #111827; margin-bottom: 4px; }
+        .header p  { font-size: 14px; color: #6b7280; }
+
+        .card {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        thead { background: #f8fafc; }
+        th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 18px;
+            font-size: 14px;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f9fafb; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pending  { background: #fef3c7; color: #92400e; }
+        .badge-screened { background: #d1fae5; color: #065f46; }
+
+        .btn-screen {
+            padding: 6px 14px;
+            background: #1a7bf2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty .icon { font-size: 40px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📥 Candidate Applications</h1>
+    <p>Resumes submitted via the public apply portal.</p>
+</div>
+
+<div class="card">
+    {% if applications %}
+    <table>
+        <thead>
+            <tr>
+                <th>Candidate</th>
+                <th>Email</th>
+                <th>Applied For</th>
+                <th>Applied At</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td><strong>{{ app.candidate_name }}</strong></td>
+                <td>{{ app.candidate_email }}</td>
+                <td>{{ app.jd_filename.replace('jd_','').replace('.txt','').replace('_',' ').title() }}</td>
+                <td>{{ app.applied_at[:10] }}</td>
+                <td>
+                    <span class="badge badge-{{ app.status }}">
+                        {{ app.status | capitalize }}
+                    </span>
+                </td>
+                <td>
+                    <a href="/screen-candidates" class="btn-screen">Screen →</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        <div class="icon">📭</div>
+        <p>No applications yet. Share a JD link to start receiving applications.</p>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

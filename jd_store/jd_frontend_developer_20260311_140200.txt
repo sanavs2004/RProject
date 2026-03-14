@@ -1,0 +1,15 @@
+Role Summary:
+Aspiring Frontend Developer with a passion for cutting-edge web technologies seeking to contribute to dynamic digital projects.
+Key Responsibilities:
+- Design and develop user interfaces with HTML, CSS, JavaScript, Next.js, and React.js.
+- Collaborate with cross-functional teams to ensure responsive design and optimal user experiences.
+- Implement and troubleshoot frontend problems efficiently.
+- Stay updated with the latest web development trends and tools.
+Required Qualifications:
+- Bachelor’s degree in Computer Science, Information Technology, or related field.
+- Proven experience with Next.js, React.js, and Angular.
+- Strong understanding of HTML, CSS, and JavaScript fundamentals.
+- Excellent communication and teamwork skills.
+Job Title: Frontend Developer
+Experience Required: 0-1 years
+Key Skills: Next.js, React.js, Angular, HTML, CSS, JavaScript

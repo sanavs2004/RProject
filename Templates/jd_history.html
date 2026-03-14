@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,10 +16,12 @@
         .jd-title { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
         .jd-meta { color: #7f8c8d; font-size: 14px; margin-bottom: 15px; }
         .jd-preview { background: #f8f9fa; padding: 15px; border-radius: 5px; max-height: 150px; overflow-y: auto; font-size: 13px; border: 1px solid #e0e0e0; margin-bottom: 15px; }
-        .jd-actions { display: flex; gap: 10px; }
-        .btn-view, .btn-use { flex: 1; padding: 8px; text-align: center; border-radius: 5px; text-decoration: none; }
-        .btn-view { background: #3498db; color: white; }
-        .btn-use { background: #27ae60; color: white; }
+        .jd-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-view, .btn-use, .btn-share { flex: 1; padding: 8px; text-align: center; border-radius: 5px; text-decoration: none; font-size: 13px; font-weight: 600; }
+        .btn-view  { background: #3498db; color: white; }
+        .btn-use   { background: #27ae60; color: white; }
+        .btn-share { background: #f39c12; color: white; }
+        .btn-share:hover { background: #e67e22; }
         .empty-state { text-align: center; padding: 60px; background: #f8f9fa; border-radius: 10px; }
         .empty-state h2 { color: #2c3e50; margin-bottom: 10px; }
         .empty-state p { color: #7f8c8d; margin-bottom: 20px; }
@@ -33,7 +37,7 @@
                 <a href="/generate-jd" class="btn-secondary" style="margin-left: 10px;">+ New JD</a>
             </div>
         </header>
-        
+
         {% if jds and jds|length > 0 %}
             <div class="jd-grid">
                 {% for jd in jds %}
@@ -42,8 +46,9 @@
                     <div class="jd-meta">Created: {{ jd.filename[3:11] if jd.filename.startswith('jd_') else 'Unknown' }}</div>
                     <div class="jd-preview">{{ jd.content[:200] }}...</div>
                     <div class="jd-actions">
-                        <a href="/jd/{{ jd.filename }}" class="btn-view">View</a>
-                        <a href="/screen-candidates?use_jd={{ jd.filename }}" class="btn-use">Use for Screening</a>
+                        <a href="/jd/{{ jd.filename }}" class="btn-view">👁 View</a>
+                        <a href="/screen-candidates?use_jd={{ jd.filename }}" class="btn-use">⚡ Use</a>
+                        <a href="/jd-share/{{ jd.filename }}" class="btn-share">🔗 Share</a>
                     </div>
                 </div>
                 {% endfor %}

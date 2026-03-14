@@ -1,0 +1,19 @@
+Role Summary:
+The Data Analyst role involves analyzing large datasets, extracting valuable insights, and visualizing results to drive business decisions.
+Key Responsibilities:
+- Conduct exploratory data analysis to identify trends and patterns.
+- Develop data models using SQL for efficient data retrieval.
+- Clean and preprocess data for analysis and report generation.
+- Create visual representations of data using tools such as Power BI and Tableau.
+Required Qualifications:
+- Bachelor's degree in Statistics, Computer Science, or related field.
+- Proficient in Python, R, and SQL for data analysis and manipulation.
+- Extensive experience with data visualization tools and software.
+- Strong foundation in statistics for data interpretation.
+Job Title: Data Analyst
+Experience Required: 3-5 years
+Key Skills: Python / R
+SQL
+Excel
+Data Visualization (Power BI / Tableau)
+Statistics basics

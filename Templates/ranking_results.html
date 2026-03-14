@@ -62,7 +62,7 @@
             <p>{{ job.description[:200] if job and job.description else 'No description' }}...</p>
         </div>
         
-        <div class="stats-grid">
+        <div class="stats-grid" style="grid-template-columns: repeat(7, 1fr);">
             <div class="stat-card">
                 <div class="stat-value">{{ candidates|length if candidates else 0 }}</div>
                 <div class="stat-label">Total Candidates</div>
@@ -87,6 +87,11 @@
                 <div class="stat-value">{{ "%.1f"|format(candidates[0].overall_score) if candidates and candidates[0].overall_score else 0 }}%</div>
                 <div class="stat-label">🏆 Top Score</div>
             </div>
+            <!-- ML Model active card -->
+            <div class="stat-card" style="border-top: 3px solid #667eea;">
+                <div class="stat-value" style="font-size: 16px; margin-top: 4px;">XGB+SVM</div>
+                <div class="stat-label">🤖 ML Active</div>
+            </div>
         </div>
         
         <div class="ranking-table">
@@ -96,6 +101,7 @@
                         <th>Rank</th>
                         <th>Candidate</th>
                         <th>Overall</th>
+                        <th>🤖 ML Fit</th>
                         <th>GitHub</th>
                         <th>Skills Found</th>
                         <th>Missing Skills</th>
@@ -141,8 +147,33 @@
                                 {{ "%.1f"|format(candidate.overall_score) }}%
                             </span>
                         </td>
-                        
-                        <!-- GitHub Score -->
+
+                        <!-- 🤖 ML Fit Prediction -->
+                        <td>
+                            {% if candidate.ml_fit_label %}
+                                <span style="
+                                    display:inline-block; padding:4px 10px; border-radius:12px;
+                                    font-size:12px; font-weight:700;
+                                    {% if candidate.ml_fit_label == 'Strong Fit' %}
+                                        background:#e8f5e9; color:#2e7d32;
+                                    {% elif candidate.ml_fit_label == 'Potential Fit' %}
+                                        background:#fff3e0; color:#e65100;
+                                    {% else %}
+                                        background:#ffebee; color:#c62828;
+                                    {% endif %}
+                                ">
+                                    {% if candidate.ml_fit_label == 'Strong Fit' %}✅
+                                    {% elif candidate.ml_fit_label == 'Potential Fit' %}⚡
+                                    {% else %}❌{% endif %}
+                                    {{ candidate.ml_fit_label }}
+                                </span>
+                                <div style="font-size:11px; color:#7f8c8d; margin-top:4px;">
+                                    {{ candidate.ml_fit_score }}% · {{ candidate.ml_fit_confidence }} confidence
+                                </div>
+                            {% else %}
+                                <span style="color:#95a5a6;">—</span>
+                            {% endif %}
+                        </td>
                         <td>
                             {% if candidate.github_score %}
                                 <span class="github-badge">
@@ -268,6 +299,7 @@
                         <th style="padding: 12px; text-align: center;">GitHub</th>
                         <th style="padding: 12px; text-align: center;">Bonus</th>
                         <th style="padding: 12px; text-align: center;">Overall</th>
+                        <th style="padding: 12px; text-align: center;">🤖 ML Fit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -332,6 +364,25 @@
                         
                         <td style="padding: 12px; text-align: center; font-weight: bold;">
                             {{ "%.1f"|format(candidate.overall_score) }}%
+                        </td>
+
+                        <!-- ML Fit in breakdown table -->
+                        <td style="padding: 12px; text-align: center;">
+                            {% if candidate.ml_fit_label %}
+                                <span style="
+                                    display:inline-block; padding:3px 8px; border-radius:10px;
+                                    font-size:11px; font-weight:700;
+                                    {% if candidate.ml_fit_label == 'Strong Fit' %}
+                                        background:#e8f5e9; color:#2e7d32;
+                                    {% elif candidate.ml_fit_label == 'Potential Fit' %}
+                                        background:#fff3e0; color:#e65100;
+                                    {% else %}
+                                        background:#ffebee; color:#c62828;
+                                    {% endif %}
+                                ">{{ candidate.ml_fit_score }}%</span>
+                            {% else %}
+                                <span style="color:#95a5a6;">—</span>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

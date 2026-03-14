@@ -1,0 +1,139 @@
+{
+  "candidate_id": "55b2f9bc-40d7-4769-a801-2edbba101337",
+  "candidate_name": "ANU_K_SResume",
+  "job_title": "backend developer 20260227",
+  "current_score": 55.4,
+  "current_skills": [
+    "python",
+    "java",
+    "javascript",
+    "html",
+    "mysql"
+  ],
+  "modules": [
+    {
+      "skill": "Servlets",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=Servlets",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=Servlets",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+Servlets+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=Servlets+documentation",
+      "tip": "One practical tip for a servlet developer is to ensure proficiency in Java EE, specifically understanding how to create, configure, and deploy servlets within an enterprise environment. This is crucial for handling web requests efficiently and is a fundamental skill for a backend developer."
+    },
+    {
+      "skill": "JSP",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=JSP",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=JSP",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+JSP+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=JSP+documentation",
+      "tip": "Ensure your JSP code is well-organized and separates concerns clearly, as good architecture is key for backend development roles."
+    },
+    {
+      "skill": "SQL",
+      "priority": "medium",
+      "priority_label": "\ud83d\udfe1 Medium",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "Focus on hands-on projects with SQL to build real experience."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "Servlets",
+        "JSP"
+      ],
+      "weeks": 12,
+      "color": "#ef4444"
+    },
+    {
+      "phase": 2,
+      "label": "Phase 2 \u2014 Intermediate",
+      "description": "Build on your foundation with supporting skills.",
+      "skills": [
+        "SQL"
+      ],
+      "weeks": 4,
+      "color": "#f59e0b"
+    }
+  ],
+  "total_estimated_weeks": 16,
+  "motivation": "Congratulations on completing the screening test! With your foundation in Servlets, JSP, and SQL, you're on the right track\u2014focus on practical projects to solidify these skills, and don't hesitate to reach out for mentorship or additional resources as you prepare to excel as a backend developer.",
+  "generated_at": "2026-03-10T14:59:21.459882"
+}
