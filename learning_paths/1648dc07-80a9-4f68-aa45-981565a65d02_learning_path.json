@@ -1,0 +1,67 @@
+{
+  "candidate_id": "1648dc07-80a9-4f68-aa45-981565a65d02",
+  "candidate_name": "6e2c96da_sana_v_s",
+  "job_title": "Java Developer  20260226",
+  "current_score": 55.5,
+  "current_skills": [
+    "python",
+    "java",
+    "javascript",
+    "css",
+    "docker",
+    "github"
+  ],
+  "modules": [
+    {
+      "skill": "- SQL database management (MySQL)\n- C++ programming\n- Team collaboration",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "For SQL database management (MySQL):\n\n- Regularly practice writing complex SQL queries to improve efficiency and understanding of database relationships.\n\n\nFor C++ programming:\n\n- Implement design patterns like Singleton or Observer in your C++ projects to enhance code reuse and maintainability.\n\n\nFor team collaboration:\n\n- Schedule weekly code reviews with your team to ensure code quality and foster a collaborative environment.\n\n\nFor the Java Developer position:\n\n- Acquire proficiency in Java Streams and Lambda expressions to effectively handle large data sets and perform complex operations concisely."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "- SQL database management (MySQL)\n- C++ programming\n- Team collaboration"
+      ],
+      "weeks": 4,
+      "color": "#ef4444"
+    }
+  ],
+  "total_estimated_weeks": 4,
+  "motivation": "Great job on your Java Developer 20260226 screening with a 56% score! With a solid foundation in place, let's enhance your SQL database expertise with MySQL, refine your C++ skills, and nurture team collaboration, which will propel you to new heights in your next interview.",
+  "generated_at": "2026-03-15T22:39:50.947050"
+}

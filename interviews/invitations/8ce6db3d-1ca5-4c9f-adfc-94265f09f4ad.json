@@ -1,0 +1,14 @@
+{
+  "id": "d65b2d37-7e12-43e3-bbca-95b42d324f3d",
+  "token": "8ce6db3d-1ca5-4c9f-adfc-94265f09f4ad",
+  "candidate_email": "sanavadakkan10@gmail.com",
+  "candidate_name": "seetha_LAKSHMI",
+  "job_title": "frontend developer 20260311",
+  "slot_group_id": "4b3c8597-21d3-4907-8abb-4fc00847e152",
+  "status": "booked",
+  "sent_at": "2026-03-15T22:51:27.342060",
+  "expires_at": "2026-03-22T22:51:27.342060",
+  "selection_link": "http://127.0.0.1:5002/select-slot/8ce6db3d-1ca5-4c9f-adfc-94265f09f4ad",
+  "booked_slot_id": "3d58d464-3c7d-444b-9875-342e2ec28e01",
+  "booked_at": "2026-03-15T23:18:58.919915"
+}

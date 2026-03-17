@@ -1,0 +1,15 @@
+{
+  "id": "cfb54677-0e4d-4bb5-b168-3171a899271b",
+  "group_id": "efc04370-6157-4a83-b519-35b4a19362a6",
+  "date": "2026-03-16",
+  "start_time": "11:27",
+  "end_time": "12:26",
+  "duration": "60",
+  "mode": "inperson",
+  "location": "",
+  "recruiter_email": "recruiter@company.com",
+  "status": "available",
+  "created_at": "2026-03-15T23:26:33.034782",
+  "booked_by": null,
+  "booking_time": null
+}

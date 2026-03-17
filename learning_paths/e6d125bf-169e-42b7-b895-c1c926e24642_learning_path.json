@@ -1,0 +1,139 @@
+{
+  "candidate_id": "e6d125bf-169e-42b7-b895-c1c926e24642",
+  "candidate_name": "660e3ef9_anu",
+  "job_title": "Java Developer  20260226",
+  "current_score": 52.7,
+  "current_skills": [
+    "python",
+    "java",
+    "javascript",
+    "html",
+    "mysql"
+  ],
+  "modules": [
+    {
+      "skill": "C++",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=C++",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=C++",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+C+++tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=C+++documentation",
+      "tip": "Focus on mastering Java first, since Java Developer roles typically require a strong foundation in Java. Practice writing efficient, clean code with proper use of collections and concurrency features."
+    },
+    {
+      "skill": "SQL (using MySQL specifically)",
+      "priority": "high",
+      "priority_label": "\ud83d\udd34 High",
+      "estimated_weeks": 4,
+      "courses": [
+        {
+          "title": "SQL for Data Science",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/learn/sql-for-data-science",
+          "level": "Beginner",
+          "duration": "4 weeks"
+        },
+        {
+          "title": "The Complete SQL Bootcamp",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/",
+          "level": "Beginner",
+          "duration": "9 hours"
+        }
+      ],
+      "practice": [
+        {
+          "title": "SQLZoo",
+          "url": "https://sqlzoo.net/",
+          "type": "Practice"
+        },
+        {
+          "title": "LeetCode SQL",
+          "url": "https://leetcode.com/problemset/database/",
+          "type": "Practice"
+        }
+      ],
+      "docs": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tip": "Practice writing complex JOIN queries using multiple tables to simulate real-world data relationships, ensuring familiarity with performance optimization techniques like indexing."
+    },
+    {
+      "skill": "team collaboration (expressed through coding experience",
+      "priority": "medium",
+      "priority_label": "\ud83d\udfe1 Medium",
+      "estimated_weeks": 6,
+      "courses": [
+        {
+          "title": "Search on Coursera",
+          "platform": "Coursera",
+          "url": "https://www.coursera.org/search?query=team+collaboration+(expressed+through+coding+experience",
+          "level": "Varies",
+          "duration": "Varies"
+        },
+        {
+          "title": "Search on Udemy",
+          "platform": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=team+collaboration+(expressed+through+coding+experience",
+          "level": "Varies",
+          "duration": "Varies"
+        }
+      ],
+      "practice": [
+        {
+          "title": "Search on YouTube",
+          "url": "https://www.youtube.com/results?search_query=learn+team+collaboration+(expressed+through+coding+experience+tutorial",
+          "type": "Video"
+        }
+      ],
+      "docs": "https://www.google.com/search?q=team+collaboration+(expressed+through+coding+experience+documentation",
+      "tip": "Focus on hands-on projects with team collaboration (expressed through coding experience to build real experience."
+    }
+  ],
+  "timeline": [
+    {
+      "phase": 1,
+      "label": "Phase 1 \u2014 Foundation",
+      "description": "Master the most critical missing skills first.",
+      "skills": [
+        "C++",
+        "SQL (using MySQL specifically)"
+      ],
+      "weeks": 10,
+      "color": "#ef4444"
+    },
+    {
+      "phase": 2,
+      "label": "Phase 2 \u2014 Intermediate",
+      "description": "Build on your foundation with supporting skills.",
+      "skills": [
+        "team collaboration (expressed through coding experience"
+      ],
+      "weeks": 6,
+      "color": "#f59e0b"
+    }
+  ],
+  "total_estimated_weeks": 16,
+  "motivation": "Keep pushing your limits \u2013 your 53% in the screening shows potential, and with focused practice on C++, SQL mastery with MySQL, and enhancing your team collaboration skills through coding projects, you'll surely make a strong Java Developer in 2026!\n\n\nI'm sorry, but I can't assist with that.",
+  "generated_at": "2026-03-15T22:41:20.264888"
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Screen Logs — RecruitAI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; padding: 40px 24px; }
+
+        .header { max-width: 900px; margin: 0 auto 28px; }
+        .header h1 { font-size: 24px; color: #111827; margin-bottom: 4px; }
+        .header p  { font-size: 14px; color: #6b7280; }
+
+        .card {
+            max-width: 900px; margin: 0 auto 20px;
+            background: white; border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 24px;
+        }
+
+        .log-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 16px;
+        }
+
+        .log-title { font-size: 16px; font-weight: 700; color: #111827; }
+        .log-date  { font-size: 13px; color: #6b7280; }
+
+        .stats-row {
+            display: flex; gap: 16px; margin-bottom: 16px;
+        }
+
+        .stat {
+            flex: 1; padding: 12px; border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-num  { font-size: 22px; font-weight: 700; }
+        .stat-label{ font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+        .stat-total      { background: #eff6ff; }
+        .stat-total .stat-num { color: #1a7bf2; }
+        .stat-shortlisted{ background: #f0fdf4; }
+        .stat-shortlisted .stat-num { color: #16a34a; }
+        .stat-rejected   { background: #fef2f2; }
+        .stat-rejected .stat-num { color: #dc2626; }
+
+        .applicants { font-size: 13px; color: #374151; }
+        .applicants strong { display: block; margin-bottom: 6px; }
+        .applicant-tag {
+            display: inline-block; padding: 3px 10px;
+            background: #f3f4f6; border-radius: 20px;
+            font-size: 12px; margin: 2px;
+        }
+
+        .btn-view {
+            display: inline-block; padding: 8px 16px;
+            background: #1a7bf2; color: white;
+            border-radius: 6px; font-size: 13px;
+            text-decoration: none; font-weight: 600;
+        }
+
+        .empty { text-align: center; padding: 60px; color: #9ca3af; }
+        .empty .icon { font-size: 40px; margin-bottom: 12px; }
+
+        .trigger-btn {
+            display: inline-block; padding: 10px 20px;
+            background: #10b981; color: white;
+            border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; margin-bottom: 24px;
+            max-width: 900px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🤖 Auto Screen Logs</h1>
+    <p>Automatic screening results triggered after JD deadlines.</p>
+</div>
+
+<!-- Manual trigger for testing -->
+<div style="max-width:900px; margin: 0 auto 16px;">
+    <button class="trigger-btn" onclick="triggerNow()">
+        ▶ Trigger Auto Screen Now (for testing)
+    </button>
+</div>
+
+{% if logs %}
+    {% for log in logs %}
+    <div class="card">
+        <div class="log-header">
+            <div class="log-title">📋 {{ log.jd_filename }}</div>
+            <div class="log-date">{{ log.processed_at[:10] }}</div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat stat-total">
+                <div class="stat-num">{{ log.total }}</div>
+                <div class="stat-label">Total Screened</div>
+            </div>
+            <div class="stat stat-shortlisted">
+                <div class="stat-num">{{ log.shortlisted }}</div>
+                <div class="stat-label">Shortlisted</div>
+            </div>
+            <div class="stat stat-rejected">
+                <div class="stat-num">{{ log.rejected }}</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+        </div>
+
+        <div class="applicants">
+            <strong>Applicants:</strong>
+            {% for name in log.applicants %}
+                <span class="applicant-tag">{{ name }}</span>
+            {% endfor %}
+        </div>
+
+        {% if log.screening_id %}
+        <div style="margin-top: 16px;">
+            <a href="/ranking-results/{{ log.screening_id }}" class="btn-view">
+                View Results →
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <div class="empty">
+            <div class="icon">🤖</div>
+            <p>No auto screenings yet. Set a deadline on a JD and share the apply link!</p>
+        </div>
+    </div>
+{% endif %}
+
+<script>
+async function triggerNow() {
+    if (!confirm('Trigger auto screening now? This will process all past-deadline JDs.')) return;
+    const res  = await fetch('/api/trigger-auto-screen', { method: 'POST' });
+    const data = await res.json();
+    alert(data.success ? '✅ Done! Refresh to see logs.' : '❌ Error: ' + data.error);
+    if (data.success) location.reload();
+}
+</script>
+
+</body>
+</html>

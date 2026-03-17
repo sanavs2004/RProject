@@ -20,6 +20,9 @@ from modules.skill_extractor import SkillExtractor
 from modules.learning_path_generator import LearningPathGenerator
 from modules.learning_path_emailer import send_learning_path_email
 from modules.fit_predictor import FitPredictor
+from apscheduler.schedulers.background import BackgroundScheduler
+from auto_screener import auto_screener
+from analytics_engine import analytics_engine
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -34,6 +37,7 @@ skill_extractor = SkillExtractor()
 interview_scheduler = InterviewScheduler(Config)  # Moved here
 learning_path_gen = LearningPathGenerator(Config)
 fit_predictor = FitPredictor(os.path.join(Config.BASE_DIR, 'models'))
+scheduler = BackgroundScheduler()
 
 # Store processing status
 processing_status = {}
@@ -42,6 +46,32 @@ processing_status = {}
 os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(Config.RESULTS_FOLDER, exist_ok=True)
 os.makedirs(Config.JD_STORE_FOLDER, exist_ok=True)
+
+
+ 
+# Run every hour
+scheduler.add_job(
+    func    = auto_screener.check_and_process_deadlines,
+    trigger = 'interval',
+    hours   = 1,
+    id      = 'auto_screener',
+    name    = 'Auto Screen after Deadline',
+    replace_existing = True
+)
+ 
+# Also run once at startup (after 10 seconds) to catch any missed deadlines
+scheduler.add_job(
+    func    = auto_screener.check_and_process_deadlines,
+    trigger = 'date',
+    run_date = datetime.now() + timedelta(seconds=10),
+    id       = 'startup_check',
+    name     = 'Startup deadline check'
+)
+ 
+scheduler.start()
+print("✅ AutoScreener scheduler started — checking deadlines every hour.")
+ 
+ 
 
 
 # ======================
@@ -608,35 +638,35 @@ def api_candidate_apply():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/set-deadline', methods=['POST'])
-def api_set_deadline():
-    """Set or update application deadline for a JD."""
-    data     = request.get_json()
-    filename = data.get('filename')
-    deadline = data.get('deadline')   # format: YYYY-MM-DD
+# @app.route('/api/set-deadline', methods=['POST'])
+# def api_set_deadline():
+#     """Set or update application deadline for a JD."""
+#     data     = request.get_json()
+#     filename = data.get('filename')
+#     deadline = data.get('deadline')   # format: YYYY-MM-DD
 
-    if not filename or not deadline:
-        return jsonify({'success': False, 'error': 'Missing filename or deadline'}), 400
+#     if not filename or not deadline:
+#         return jsonify({'success': False, 'error': 'Missing filename or deadline'}), 400
 
-    jd_path   = os.path.join(Config.JD_STORE_FOLDER, filename)
-    meta_path = jd_path.replace('.txt', '_meta.json')
+#     jd_path   = os.path.join(Config.JD_STORE_FOLDER, filename)
+#     meta_path = jd_path.replace('.txt', '_meta.json')
 
-    if not os.path.exists(jd_path):
-        return jsonify({'success': False, 'error': 'JD not found'}), 404
+#     if not os.path.exists(jd_path):
+#         return jsonify({'success': False, 'error': 'JD not found'}), 404
 
-    # Load existing meta or create new
-    meta = {}
-    if os.path.exists(meta_path):
-        with open(meta_path, 'r') as f:
-            meta = json.load(f)
+#     # Load existing meta or create new
+#     meta = {}
+#     if os.path.exists(meta_path):
+#         with open(meta_path, 'r') as f:
+#             meta = json.load(f)
 
-    meta['deadline']   = deadline
-    meta['updated_at'] = datetime.now().isoformat()
+#     meta['deadline']   = deadline
+#     meta['updated_at'] = datetime.now().isoformat()
 
-    with open(meta_path, 'w') as f:
-        json.dump(meta, f, indent=2)
+#     with open(meta_path, 'w') as f:
+#         json.dump(meta, f, indent=2)
 
-    return jsonify({'success': True, 'message': f'Deadline set to {deadline}'})
+#     return jsonify({'success': True, 'message': f'Deadline set to {deadline}'})
 
 
 @app.route('/applications')
@@ -956,6 +986,48 @@ def select_slot(token):
     
     return render_template('slot_selection.html', token=token)
 
+@app.route('/analytics')
+def analytics():
+    """Full recruitment analytics dashboard."""
+    data = analytics_engine.get_dashboard_data()
+    return render_template('analytics.html', data=data)
+ 
+ 
+@app.route('/api/analytics')
+def api_analytics():
+    """Analytics data as JSON — for future use."""
+    data = analytics_engine.get_dashboard_data()
+    return jsonify(data)
+
+@app.route('/api/slot-groups')
+def api_slot_groups():
+    groups = interview_scheduler.get_all_slot_groups()
+    return jsonify({'groups': groups})
+
+@app.route('/model-report')
+def model_report():
+    """Show ML model training report with confusion matrix."""
+    import json
+    report_path = os.path.join(Config.BASE_DIR, 'models', 'training_report.json')
+    matrix_path = os.path.join(Config.BASE_DIR, 'models', 'confusion_matrix.png')
+ 
+    report = None
+    if os.path.exists(report_path):
+        with open(report_path) as f:
+            report = json.load(f)
+ 
+    has_matrix = os.path.exists(matrix_path)
+    return render_template('model_report.html', report=report, has_matrix=has_matrix)
+ 
+ 
+@app.route('/models/confusion_matrix.png')
+def serve_confusion_matrix():
+    """Serve confusion matrix image."""
+    matrix_path = os.path.join(Config.BASE_DIR, 'models', 'confusion_matrix.png')
+    if os.path.exists(matrix_path):
+        return send_file(matrix_path, mimetype='image/png')
+    return '', 404
+
 
 @app.route('/api/create-interview-slots', methods=['POST'])
 def api_create_interview_slots():
@@ -1188,6 +1260,93 @@ def debug_results(screening_id):
         'screening_id': screening_id,
         'candidates': debug
     })
+
+
+@app.route('/api/set-deadline', methods=['POST'])
+def api_set_deadline():
+    """Set deadline + optional slot_group_id for a JD."""
+    data     = request.get_json()
+    filename = data.get('filename')
+    deadline = data.get('deadline')        # YYYY-MM-DD
+    slot_group_id = data.get('slot_group_id', None)
+ 
+    if not filename or not deadline:
+        return jsonify({'success': False, 'error': 'Missing filename or deadline'}), 400
+ 
+    jd_path   = os.path.join(Config.JD_STORE_FOLDER, filename)
+    meta_path = jd_path.replace('.txt', '_meta.json')
+ 
+    if not os.path.exists(jd_path):
+        return jsonify({'success': False, 'error': 'JD not found'}), 404
+ 
+    meta = {}
+    if os.path.exists(meta_path):
+        with open(meta_path, 'r') as f:
+            meta = json.load(f)
+ 
+    meta['deadline']      = deadline
+    meta['status']        = 'open'
+    meta['updated_at']    = datetime.now().isoformat()
+    if slot_group_id:
+        meta['slot_group_id'] = slot_group_id
+ 
+    with open(meta_path, 'w') as f:
+        json.dump(meta, f, indent=2)
+ 
+    return jsonify({
+        'success' : True,
+        'message' : f'Deadline set to {deadline}. Auto screening will trigger after deadline.'
+    })
+ 
+ 
+@app.route('/api/trigger-auto-screen', methods=['POST'])
+def api_trigger_auto_screen():
+    """
+    Manually trigger auto screening — useful for testing
+    without waiting for the scheduler.
+    """
+    try:
+        auto_screener.check_and_process_deadlines()
+        return jsonify({'success': True, 'message': 'Auto screening triggered.'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+ 
+ 
+@app.route('/api/jd-status/<filename>')
+def api_jd_status(filename):
+    """Get current status of a JD — open, processed, or no deadline."""
+    meta_path = os.path.join(Config.JD_STORE_FOLDER, filename.replace('.txt', '_meta.json'))
+ 
+    if not os.path.exists(meta_path):
+        return jsonify({'status': 'no_deadline', 'deadline': None})
+ 
+    with open(meta_path, 'r') as f:
+        meta = json.load(f)
+ 
+    return jsonify({
+        'status'       : meta.get('status', 'open'),
+        'deadline'     : meta.get('deadline'),
+        'processed_at' : meta.get('processed_at'),
+        'screening_id' : meta.get('screening_id'),
+    })
+ 
+ 
+@app.route('/auto-screen-logs')
+def auto_screen_logs():
+    """View all auto screening logs."""
+    log_folder = os.path.join(Config.BASE_DIR, 'auto_screen_logs')
+    logs = []
+ 
+    if os.path.exists(log_folder):
+        for file in sorted(os.listdir(log_folder), reverse=True):
+            if file.endswith('.json'):
+                try:
+                    with open(os.path.join(log_folder, file)) as f:
+                        logs.append(json.load(f))
+                except:
+                    pass
+ 
+    return render_template('auto_screen_logs.html', logs=logs)
 
 
 # ======================

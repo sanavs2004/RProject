@@ -11,238 +11,398 @@
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 500; color: #34495e; }
         input, select { width: 100%; padding: 12px; border: 2px solid #ecf0f1; border-radius: 8px; font-size: 14px; }
+        input:focus, select:focus { border-color: #667eea; outline: none; }
         .slot-card { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea; }
         .remove-slot { background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; float: right; }
-        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; margin-right: 10px; }
-        .btn-success { background: #27ae60; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; }
-        .slot-list { margin-top: 30px; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; margin-right: 10px; font-size: 14px; }
+        .btn-success { background: #27ae60; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .btn-add { background: #f0f4ff; color: #667eea; border: 2px dashed #667eea; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 14px; width: 100%; margin-top: 10px; }
+        .btn-add:hover { background: #e8edff; }
+
+        /* ── Success banner shown after slots created ── */
+        .success-banner {
+            display: none;
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .success-banner h3 {
+            color: #2e7d32;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .group-id-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+        }
+
+        .group-id-text {
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a2e;
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .btn-copy.copied { background: #9e9e9e; }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-send {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-view {
+            background: #f0f4ff;
+            color: #667eea;
+            border: 1px solid #667eea;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        /* ── Existing groups ── */
+        .existing-section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .group-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .group-info { flex: 1; }
+        .group-id-small { font-family: monospace; font-size: 12px; color: #555; word-break: break-all; }
+        .group-meta { font-size: 12px; color: #7f8c8d; margin-top: 3px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🗓️ Create Interview Slots</h1>
-            <a href="/" class="btn-secondary">← Back to Dashboard</a>
-        </header>
-
-        <div class="slot-form">
-            <h2>Set Your Availability</h2>
-            <p style="color: #7f8c8d; margin-bottom: 20px;">Create multiple interview slots for candidates to book</p>
-
-            <div class="form-group">
-                <label>Recruiter Email</label>
-                <input type="email" id="recruiterEmail" value="recruiter@company.com" placeholder="your-email@company.com">
-            </div>
-
-            <div id="slotsContainer">
-                <!-- Slots will be added here dynamically -->
-                <div class="slot-card" id="slot-1">
-                    <button type="button" class="remove-slot" onclick="removeSlot(1)">×</button>
-                    <h3>Slot #1</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div>
-                            <label>Date</label>
-                            <input type="date" class="slot-date" id="date-1" min="{{ today }}">
-                        </div>
-                        <div>
-                            <label>Start Time</label>
-                            <input type="time" class="slot-start" id="start-1">
-                        </div>
-                        <div>
-                            <label>End Time</label>
-                            <input type="time" class="slot-end" id="end-1">
-                        </div>
-                        <div>
-                            <label>Duration (minutes)</label>
-                            <select class="slot-duration" id="duration-1">
-                                <option value="30">30 minutes</option>
-                                <option value="45">45 minutes</option>
-                                <option value="60" selected>60 minutes</option>
-                                <option value="90">90 minutes</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Mode</label>
-                            <select class="slot-mode" id="mode-1">
-                                <option value="video">📹 Video Call</option>
-                                <option value="phone">📞 Phone Call</option>
-                                <option value="inperson">🏢 In-Person</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Location/Link</label>
-                            <input type="text" class="slot-location" id="location-1" placeholder="Google Meet link or address">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <button class="btn-secondary" onclick="addSlot()">+ Add Another Slot</button>
-            </div>
-
-            <div style="margin-top: 30px; text-align: center;">
-                <button class="btn-primary" onclick="previewSlots()">Preview Slots</button>
-                <button class="btn-success" onclick="createSlots()">Create Slots</button>
-            </div>
+<div class="container">
+    <header>
+        <h1>🗓️ Create Interview Slots</h1>
+        <div>
+            <a href="/scheduled-interviews" class="btn-secondary">View Schedule</a>
+            <a href="/" class="btn-secondary" style="margin-left:8px;">← Dashboard</a>
         </div>
+    </header>
 
-        <!-- Preview Modal (hidden by default) -->
-        <div id="previewModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
-            <div style="background: white; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 10px;">
-                <h3>Preview Slots</h3>
-                <div id="previewList"></div>
-                <div style="text-align: right; margin-top: 20px;">
-                    <button class="btn-secondary" onclick="closePreview()">Close</button>
-                </div>
-            </div>
+    <!-- ── SUCCESS BANNER (shown after creation) ── -->
+    <div class="success-banner" id="successBanner">
+        <h3>✅ Slots Created Successfully!</h3>
+        <p style="color:#388e3c; margin-bottom:10px;">
+            Your interview slots are ready. Copy the Group ID below and use it when sending invitations.
+        </p>
+        <div class="group-id-box">
+            <div class="group-id-text" id="displayedGroupId">—</div>
+            <button class="btn-copy" id="copyBtn" onclick="copyGroupId()">📋 Copy ID</button>
+        </div>
+        <div class="action-btns">
+            <a href="#" id="sendInvitesLink" class="btn-send">📧 Go to Send Invites →</a>
+            <a href="/scheduled-interviews" class="btn-view">📅 View Schedule</a>
+            <button onclick="resetForm()" class="btn-view">+ Create More Slots</button>
         </div>
     </div>
 
-    <script>
-        let slotCount = 1;
+    <!-- ── SLOT CREATION FORM ── -->
+    <div class="slot-form" id="slotForm">
+        <h2>Set Your Availability</h2>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">
+            Create multiple interview slots for candidates to book
+        </p>
 
-        function addSlot() {
-            slotCount++;
-            const container = document.getElementById('slotsContainer');
-            const today = "{{ today }}";  // Pass today from Flask
-            const newSlot = document.createElement('div');
-            newSlot.className = 'slot-card';
-            newSlot.id = `slot-${slotCount}`;
-            newSlot.innerHTML = `
-                <button type="button" class="remove-slot" onclick="removeSlot(${slotCount})">×</button>
-                <h3>Slot #${slotCount}</h3>
+        <div class="form-group">
+            <label>Recruiter Email</label>
+            <input type="email" id="recruiterEmail"
+                   value="recruiter@company.com"
+                   placeholder="your-email@company.com">
+        </div>
+
+        <div id="slotsContainer">
+            <!-- First slot pre-built -->
+            <div class="slot-card" id="slot-1">
+                <h3 style="margin-bottom:14px;">Slot #1</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div>
                         <label>Date</label>
-                        <input type="date" class="slot-date" id="date-${slotCount}" min="${today}">
+                        <input type="date" id="date-1" min="{{ today }}">
                     </div>
                     <div>
                         <label>Start Time</label>
-                        <input type="time" class="slot-start" id="start-${slotCount}">
+                        <input type="time" id="start-1">
                     </div>
                     <div>
                         <label>End Time</label>
-                        <input type="time" class="slot-end" id="end-${slotCount}">
+                        <input type="time" id="end-1">
                     </div>
                     <div>
-                        <label>Duration</label>
-                        <select class="slot-duration" id="duration-${slotCount}">
-                            <option value="30">30 min</option>
-                            <option value="45">45 min</option>
-                            <option value="60">60 min</option>
-                            <option value="90">90 min</option>
+                        <label>Duration (minutes)</label>
+                        <select id="duration-1">
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60" selected>60 minutes</option>
+                            <option value="90">90 minutes</option>
                         </select>
                     </div>
                     <div>
                         <label>Mode</label>
-                        <select class="slot-mode" id="mode-${slotCount}">
-                            <option value="video">Video</option>
-                            <option value="phone">Phone</option>
-                            <option value="inperson">In-Person</option>
+                        <select id="mode-1">
+                            <option value="video">🎥 Video Call</option>
+                            <option value="phone">📞 Phone Call</option>
+                            <option value="inperson">🏢 In-Person</option>
                         </select>
                     </div>
                     <div>
-                        <label>Location</label>
-                        <input type="text" class="slot-location" id="location-${slotCount}" placeholder="Link or address">
+                        <label>Video Link / Location</label>
+                        <input type="text" id="location-1"
+                               placeholder="https://meet.google.com/...">
                     </div>
                 </div>
-            `;
-            container.appendChild(newSlot);
-        }
-        function removeSlot(id) {
-            if (slotCount > 1) {
-                document.getElementById(`slot-${id}`).remove();
+            </div>
+        </div>
+
+        <button class="btn-add" onclick="addSlot()">+ Add Another Slot</button>
+
+        <div style="margin-top: 24px; text-align: center; display:flex; gap:10px; justify-content:center;">
+            <button class="btn-success" onclick="createSlots()">
+                ✅ Create All Slots
+            </button>
+        </div>
+    </div>
+
+    <!-- ── EXISTING SLOT GROUPS ── -->
+    <div class="existing-section">
+        <h3 style="margin-bottom:6px;">📋 Existing Slot Groups</h3>
+        <p style="color:#7f8c8d;font-size:13px;margin-bottom:16px;">
+            Copy any Group ID to use when sending invitations
+        </p>
+        <div id="existingGroups">
+            <p style="color:#aaa;font-size:13px;">Loading...</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let slotCount = 1;
+    const today = "{{ today }}";
+
+    // Load existing groups on page load
+    window.onload = () => loadExistingGroups();
+
+    function addSlot() {
+        slotCount++;
+        const id  = slotCount;
+        const div = document.createElement('div');
+        div.className = 'slot-card';
+        div.id        = `slot-${id}`;
+        div.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h3>Slot #${id}</h3>
+                <button type="button" class="remove-slot" onclick="removeSlot(${id})">✕ Remove</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div><label>Date</label>
+                    <input type="date" id="date-${id}" min="${today}"></div>
+                <div><label>Start Time</label>
+                    <input type="time" id="start-${id}"></div>
+                <div><label>End Time</label>
+                    <input type="time" id="end-${id}"></div>
+                <div><label>Duration (minutes)</label>
+                    <select id="duration-${id}">
+                        <option value="30">30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60" selected>60 minutes</option>
+                        <option value="90">90 minutes</option>
+                    </select></div>
+                <div><label>Mode</label>
+                    <select id="mode-${id}">
+                        <option value="video">🎥 Video Call</option>
+                        <option value="phone">📞 Phone Call</option>
+                        <option value="inperson">🏢 In-Person</option>
+                    </select></div>
+                <div><label>Video Link / Location</label>
+                    <input type="text" id="location-${id}"
+                           placeholder="https://meet.google.com/..."></div>
+            </div>`;
+        document.getElementById('slotsContainer').appendChild(div);
+    }
+
+    function removeSlot(id) {
+        const el = document.getElementById(`slot-${id}`);
+        if (el) el.remove();
+    }
+
+    function getActiveSlotIds() {
+        return Array.from(document.getElementById('slotsContainer').children)
+                    .map(d => parseInt(d.id.replace('slot-', '')));
+    }
+
+    async function createSlots() {
+        const recruiterEmail = document.getElementById('recruiterEmail').value.trim();
+        if (!recruiterEmail) { alert('Please enter your email.'); return; }
+
+        const slots = [];
+        for (const id of getActiveSlotIds()) {
+            const date  = document.getElementById(`date-${id}`)?.value;
+            const start = document.getElementById(`start-${id}`)?.value;
+            const end   = document.getElementById(`end-${id}`)?.value;
+            const dur   = document.getElementById(`duration-${id}`)?.value;
+            const mode  = document.getElementById(`mode-${id}`)?.value;
+            const loc   = document.getElementById(`location-${id}`)?.value || '';
+
+            if (!date || !start || !end) {
+                alert(`Please fill all fields for Slot #${id}`); return;
             }
+            if (start >= end) {
+                alert(`End time must be after start time for Slot #${id}`); return;
+            }
+            slots.push({ date, start_time: start, end_time: end,
+                         duration: dur, mode, location: loc, video_link: loc });
         }
 
-        function previewSlots() {
-            const slots = [];
-            let valid = true;
+        if (!slots.length) { alert('Add at least one slot.'); return; }
 
-            for (let i = 1; i <= slotCount; i++) {
-                const slot = document.getElementById(`slot-${i}`);
-                if (!slot) continue;
+        try {
+            const res  = await fetch('/api/create-interview-slots', {
+                method : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body   : JSON.stringify({ recruiter_email: recruiterEmail, slots })
+            });
+            const data = await res.json();
 
-                const date = document.getElementById(`date-${i}`).value;
-                const start = document.getElementById(`start-${i}`).value;
-                const end = document.getElementById(`end-${i}`).value;
-                const duration = document.getElementById(`duration-${i}`).value;
-                const mode = document.getElementById(`mode-${i}`).value;
-                const location = document.getElementById(`location-${i}`).value;
-
-                if (!date || !start || !end) {
-                    alert(`Please fill all fields for Slot ${i}`);
-                    valid = false;
-                    break;
-                }
-
-                slots.push({
-                    date, start, end, duration, mode, location
-                });
+            if (data.success) {
+                // ── Show success banner with Group ID ──
+                const groupId = data.slot_group_id;
+                document.getElementById('displayedGroupId').textContent = groupId;
+                document.getElementById('sendInvitesLink').href =
+                    `/send-invites?slot_group_id=${groupId}`;
+                document.getElementById('successBanner').style.display = 'block';
+                document.getElementById('slotForm').style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                loadExistingGroups();
+            } else {
+                alert('Error: ' + data.error);
             }
-
-            if (valid && slots.length > 0) {
-                let previewHtml = '<ul style="list-style: none; padding: 0;">';
-                slots.forEach((slot, index) => {
-                    previewHtml += `
-                        <li style="padding: 10px; border-bottom: 1px solid #ecf0f1;">
-                            <strong>Slot ${index + 1}:</strong> ${slot.date} | ${slot.start}-${slot.end} | 
-                            ${slot.mode} | ${slot.location || 'TBD'}
-                        </li>
-                    `;
-                });
-                previewHtml += '</ul>';
-                document.getElementById('previewList').innerHTML = previewHtml;
-                document.getElementById('previewModal').style.display = 'block';
-            }
+        } catch (e) {
+            alert('Network error: ' + e.message);
         }
+    }
 
-        function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
-        }
+    function copyGroupId() {
+        const id  = document.getElementById('displayedGroupId').textContent;
+        const btn = document.getElementById('copyBtn');
+        navigator.clipboard.writeText(id).then(() => {
+            btn.textContent = '✅ Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = '📋 Copy ID';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
 
-        async function createSlots() {
-            const slots = [];
-            const recruiterEmail = document.getElementById('recruiterEmail').value;
+    function resetForm() {
+        document.getElementById('successBanner').style.display = 'none';
+        document.getElementById('slotForm').style.display    = 'block';
+    }
 
-            for (let i = 1; i <= slotCount; i++) {
-                const slot = document.getElementById(`slot-${i}`);
-                if (!slot) continue;
+    async function loadExistingGroups() {
+        try {
+            const res  = await fetch('/api/slot-groups');
+            const data = await res.json();
+            const el   = document.getElementById('existingGroups');
 
-                const date = document.getElementById(`date-${i}`).value;
-                const start = document.getElementById(`start-${i}`).value;
-                const end = document.getElementById(`end-${i}`).value;
-                const duration = document.getElementById(`duration-${i}`).value;
-                const mode = document.getElementById(`mode-${i}`).value;
-                const location = document.getElementById(`location-${i}`).value;
-
-                if (!date || !start || !end) {
-                    alert(`Please fill Slot ${i} completely`);
-                    return;
-                }
-
-                slots.push({ date, start_time: start, end_time: end, duration, mode, location });
+            if (!data.groups || !data.groups.length) {
+                el.innerHTML = '<p style="color:#aaa;font-size:13px;">No slot groups yet.</p>';
+                return;
             }
 
-            try {
-                const response = await fetch('/api/create-interview-slots', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recruiter_email: recruiterEmail, slots })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    alert(`✅ Successfully created ${slots.length} slots!`);
-                    window.location.href = `/send-invites?slot_group_id=${data.slot_group_id}`;
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            } catch (error) {
-                alert('Failed to create slots');
-            }
+            el.innerHTML = data.groups.map(g => {
+                const avail = (g.slots || []).filter(s => s.status === 'available').length;
+                const total = (g.slots || []).length;
+                return `
+                <div class="group-row">
+                    <div class="group-info">
+                        <div class="group-id-small">${g.group_id}</div>
+                        <div class="group-meta">
+                            ${total} slot(s) · ${avail} available ·
+                            Created ${g.created_at ? g.created_at.slice(0,10) : '—'}
+                        </div>
+                    </div>
+                    <button class="btn-copy" onclick="copyText('${g.group_id}', this)"
+                            style="flex-shrink:0;">📋 Copy</button>
+                    <a href="/send-invites?slot_group_id=${g.group_id}"
+                       style="background:#667eea;color:white;border:none;padding:8px 14px;
+                              border-radius:6px;font-size:13px;font-weight:600;
+                              text-decoration:none;flex-shrink:0;">
+                        Send Invites →
+                    </a>
+                </div>`;
+            }).join('');
+        } catch (e) {
+            document.getElementById('existingGroups').innerHTML =
+                '<p style="color:#aaa;font-size:13px;">Could not load groups.</p>';
         }
-    </script>
+    }
+
+    function copyText(text, btn) {
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => btn.textContent = orig, 2000);
+        });
+    }
+</script>
 </body>
 </html>

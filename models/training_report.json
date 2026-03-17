@@ -1,0 +1,49 @@
+{
+  "trained_on": "Kaggle Resume Dataset (Real Data)",
+  "dataset_url": "https://www.kaggle.com/datasets/gauravduttakiit/resume-dataset",
+  "trained_at": "2026-03-16T14:10:35.147218",
+  "models": "XGBoost (200 trees) + SVM (RBF kernel)",
+  "ensemble_weights": "60% XGBoost + 40% SVM",
+  "features": [
+    "semantic_score",
+    "skill_match_score",
+    "education_score",
+    "github_score",
+    "confidence_bonus",
+    "skill_count",
+    "word_count_norm",
+    "has_github"
+  ],
+  "classes": [
+    "Not a Fit (0)",
+    "Potential Fit (1)",
+    "Strong Fit (2)"
+  ],
+  "xgb_accuracy": 55.7,
+  "svm_accuracy": 56.5,
+  "ensemble_accuracy": 56.1,
+  "cv_mean": 52.1,
+  "cv_std": 6.5,
+  "precision": {
+    "Not a Fit": 52.4,
+    "Potential Fit": 85.2,
+    "Strong Fit": 55.0
+  },
+  "recall": {
+    "Not a Fit": 34.8,
+    "Potential Fit": 22.5,
+    "Strong Fit": 84.2
+  },
+  "f1_score": {
+    "Not a Fit": 41.9,
+    "Potential Fit": 35.7,
+    "Strong Fit": 66.6
+  },
+  "support": {
+    "Not a Fit": 155,
+    "Potential Fit": 102,
+    "Strong Fit": 240
+  },
+  "train_samples": 1986,
+  "test_samples": 497
+}

@@ -1,0 +1,37 @@
+{
+  "group_id": "efc04370-6157-4a83-b519-35b4a19362a6",
+  "recruiter_email": "recruiter@company.com",
+  "slots": [
+    {
+      "id": "53894153-0802-4ad7-bcd1-9763f06510f3",
+      "group_id": "efc04370-6157-4a83-b519-35b4a19362a6",
+      "date": "2026-03-18",
+      "start_time": "11:26",
+      "end_time": "14:25",
+      "duration": "60",
+      "mode": "phone",
+      "location": "",
+      "recruiter_email": "recruiter@company.com",
+      "status": "available",
+      "created_at": "2026-03-15T23:26:33.033432",
+      "booked_by": null,
+      "booking_time": null
+    },
+    {
+      "id": "cfb54677-0e4d-4bb5-b168-3171a899271b",
+      "group_id": "efc04370-6157-4a83-b519-35b4a19362a6",
+      "date": "2026-03-16",
+      "start_time": "11:27",
+      "end_time": "12:26",
+      "duration": "60",
+      "mode": "inperson",
+      "location": "",
+      "recruiter_email": "recruiter@company.com",
+      "status": "available",
+      "created_at": "2026-03-15T23:26:33.034782",
+      "booked_by": null,
+      "booking_time": null
+    }
+  ],
+  "created_at": "2026-03-15T23:26:33.038011"
+}

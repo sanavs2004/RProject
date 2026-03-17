@@ -1,62 +1,6 @@
 {
   "screenings": [
     {
-      "screening_id": "2f93986a-49e5-49ec-a597-cfd67280879c",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T21:44:28.200009",
-      "total_candidates": 1,
-      "average_score": 26.2,
-      "top_score": 26.2,
-      "skill_gaps": {
-        "sql": 1,
-        "postgresql": 1,
-        "aws": 1
-      }
-    },
-    {
-      "screening_id": "605f1a26-d607-424e-8af8-9e2e5d921811",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T21:57:53.661744",
-      "total_candidates": 0,
-      "average_score": 0,
-      "top_score": 0,
-      "skill_gaps": {}
-    },
-    {
-      "screening_id": "175c6410-2541-4914-8503-5620b51f24d4",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T22:02:13.109004",
-      "total_candidates": 0,
-      "average_score": 0,
-      "top_score": 0,
-      "skill_gaps": {}
-    },
-    {
-      "screening_id": "ef08b7b4-26e7-45a3-a0f0-4f982950afed",
-      "job_title": "Senior Python Developer 20260224",
-      "date": "2026-02-25T22:07:23.354185",
-      "total_candidates": 1,
-      "average_score": 26.2,
-      "top_score": 26.2,
-      "skill_gaps": {
-        "PostgreSQL": 1,
-        "AWS infrastructure deployment expertise": 1,
-        "CI/CD pipeline collaboration experience. None (the listed Python programming proficiency is implicit in Django development)": 1
-      }
-    },
-    {
-      "screening_id": "d5fae720-2972-44e1-bdbf-5ddacaa9e2dd",
-      "job_title": "20260224",
-      "date": "2026-02-25T22:33:07.817427",
-      "total_candidates": 1,
-      "average_score": 27.5,
-      "top_score": 27.5,
-      "skill_gaps": {
-        "Docker container management for server deployment; Git branching strategies within GitHub platforms; understanding of responsive design principles using HTML5 and CSS3 (missing: JavaScript": 1,
-        "Bootstrap components)": 1
-      }
-    },
-    {
       "screening_id": "da01fdfc-3746-42d6-9e29-3d09e2331014",
       "job_title": "Senior Python Developer 20260224",
       "date": "2026-02-25T22:38:26.429130",
@@ -702,6 +646,71 @@
         "Java programming": 1,
         "teamwork": 1,
         "communication skills": 1
+      }
+    },
+    {
+      "screening_id": "d9f5b4e0-da24-4b21-848d-fbf5fc572650",
+      "job_title": "Java Developer  20260226",
+      "date": "2026-03-15T22:39:07.061263",
+      "total_candidates": 4,
+      "average_score": 57.5,
+      "top_score": 61.5,
+      "skill_gaps": {
+        "C++": 2,
+        "Team Collaboration": 1,
+        "Problem-Solving\n\n\n```python\n\n# In a real-world application": 1,
+        "- Java programming\n- SQL database management (MySQL)\n- C++ programming\n\n\nSince the candidate is missing all three": 1,
+        "there's no need for a skill not mentioned in the resume. Therefore": 1
+      }
+    },
+    {
+      "screening_id": "f63407c1-8bbf-4b2f-8954-289052abeb24",
+      "job_title": "Java Developer  20260226",
+      "date": "2026-03-15T22:40:56.737025",
+      "total_candidates": 4,
+      "average_score": 57.5,
+      "top_score": 61.5,
+      "skill_gaps": {
+        "- Java programming\n\n- SQL database management using MySQL\n\n- Basic understanding of C++": 1
+      }
+    },
+    {
+      "screening_id": "63eaee45-9fe3-4d0e-bd4e-9c90934b478a",
+      "job_title": "frontend developer 20260311",
+      "date": "2026-03-15T22:48:08.152178",
+      "total_candidates": 1,
+      "average_score": 70.7,
+      "top_score": 70.7,
+      "skill_gaps": {
+        "- Next.js": 1,
+        "Angular": 1,
+        "cross-functional team collaboration": 1,
+        "problem-solving": 1,
+        "staying updated with web development trends and tools": 1
+      }
+    },
+    {
+      "screening_id": "2e85418a-e152-4caa-8924-e8f08f174418",
+      "job_title": "Frontend Developer 20260226",
+      "date": "2026-03-16T14:36:49.100088",
+      "total_candidates": 1,
+      "average_score": 73.7,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "- Angular\n- Ember.js\n- Vue Router/Router Mode\n\n\nNow": 1,
+        "for a more challenging instruction with added constraints.": 1
+      }
+    },
+    {
+      "screening_id": "0c5efdc6-f3a7-49fc-8f6a-ebc2cc6a9325",
+      "job_title": "Frontend Developer 20260226",
+      "date": "2026-03-16T14:37:41.041771",
+      "total_candidates": 1,
+      "average_score": 73.7,
+      "top_score": 73.7,
+      "skill_gaps": {
+        "angular": 1,
+        "vue": 1
       }
     }
   ]

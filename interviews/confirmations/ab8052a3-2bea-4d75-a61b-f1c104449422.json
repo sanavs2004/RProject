@@ -1,0 +1,26 @@
+{
+  "id": "ab8052a3-2bea-4d75-a61b-f1c104449422",
+  "invitation_id": "d65b2d37-7e12-43e3-bbca-95b42d324f3d",
+  "candidate_email": "sanavadakkan10@gmail.com",
+  "candidate_name": "seetha_LAKSHMI",
+  "recruiter_email": "recruiter@company.com",
+  "job_title": "frontend developer 20260311",
+  "slot": {
+    "id": "3d58d464-3c7d-444b-9875-342e2ec28e01",
+    "group_id": "4b3c8597-21d3-4907-8abb-4fc00847e152",
+    "date": "2026-03-16",
+    "start_time": "10:49",
+    "end_time": "11:50",
+    "duration": "60",
+    "mode": "video",
+    "location": "Infopark phase1 kochi",
+    "recruiter_email": "recruiter@company.com",
+    "status": "booked",
+    "created_at": "2026-03-15T22:50:40.565650",
+    "booked_by": "sanavadakkan10@gmail.com",
+    "booking_time": "2026-03-15T23:18:58.918092"
+  },
+  "video_link": "https://meet.google.com/6e114c3f0be3",
+  "confirmed_at": "2026-03-15T23:18:58.922657",
+  "status": "confirmed"
+}
